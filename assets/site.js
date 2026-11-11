@@ -4,5 +4,5 @@ window.SITE = {
   brand: "GYMTOS",                   /* 센터 이름 */
   branch: "도당점",                  /* 지점 이름 */
   site: "https://gusrb0259-png.github.io",   /* 사이트 주소 (og 미리보기 그림 등) */
-  att_api: ""                        /* 출석 창고(Apps Script 웹 앱) 주소 — 세팅 3단계에서 넣음. 비어 있으면 출석·인바디·루틴 고치기 저장이 안 됨 */
+  att_api: "https://script.google.com/macros/s/AKfycbwEYa2aXdpGeiPMNwnXqg1TAU7Pu2YdOKYxZ7NWSEcmHWOLQacTQwmYbfAPcQFG8zvvSw/exec"                        /* 출석 창고(Apps Script 웹 앱) 주소 — 세팅 3단계에서 넣음. 비어 있으면 출석·인바디·루틴 고치기 저장이 안 됨 */
 };
