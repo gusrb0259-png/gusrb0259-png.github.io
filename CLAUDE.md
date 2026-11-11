@@ -21,6 +21,14 @@
 7. **샘플 회원** `m/sample-k7d2qx/` 은 확인용 — 실제 회원이 생기면 지우고 members.js 에서도 빼기.
 8. 끝나면 커밋·푸시, 사이트 열어서 확인, 이 '처음 세팅' 체크 표시.
 
+### 처음 세팅 진행 (2026-11-11~12)
+- [x] 1 정보: 박현규 · GYMTOS 도당점 · 테마 블랙+골드 (남 #1C1C1E+금 #C9A227 / 여 브론즈 #8E6A2E). 가격표 그대로. **연락처·자격·경력은 나중에 받기로 함(트레이너 요청) — guide.html·intro.html 빈칸 남아 있음**
+- [x] 2 GitHub: gusrb0259-png/gusrb0259-png.github.io, Pages main /(root) 켬. 선생님 페이지 coach-co8rde/
+- [x] 3 출석 창고: 구글 시트 "PT노트 출석"(id 18po4y_uM6DBckDWfApIqwXTuUhIlMuy9_-p9Pcy1oXk) + 독립 Apps Script 프로젝트(1AJEhpYyWzXEGr07jgRd8WwWJe4ZbdJO5nqMHEeOsACfoQhUuaSOl04qn, Drive API 추가). 시트에 붙은 스크립트가 아니라서 붙여넣을 때 book_()의 `p.getProperty('SS')` 뒤에 `|| '<시트 id>'` 를 붙여서 넣음 — 재배포 때도 똑같이. 웹 앱 주소는 assets/site.js att_api.
+- [ ] 4 선생님 폰 연결 (열쇠는 대화로 전달함)
+- [ ] 6 PT 안내서 연락처·자격·경력·사진
+- [ ] 7 샘플 회원은 첫 실제 회원 생기면 지우기
+
 ## 테마 바꾸는 곳 (선생님마다 자기 색)
 - `assets/style.css` 맨 위 `:root` 색 변수(남 테마)와 `:root[data-sex="F"]`(여 테마) — 화면 대부분은 여기 변수만 바꾸면 됨. 그 밖에 #1F3864·#C2185B·#17294B 를 직접 쓴 곳 grep.
 - `assets/exicons.js` 움직이는 아이콘 색(사람·기구·자극 부위, M/F).
@@ -32,7 +40,7 @@
 ---
 
 
-OOO 트레이너의 회원별 PT 노트 사이트. 깃허브 페이지로 공개: https://gusrb0259-png.github.io
+박현규 트레이너(GYMTOS 도당점)의 회원별 PT 노트 사이트. 깃허브 페이지로 공개: https://gusrb0259-png.github.io
 답변은 항상 한국어로.
 
 ## 운영 원칙 (2026-11-03 트레이너 요청)
