@@ -546,7 +546,7 @@
     if (b) { b.outerHTML = attCheckStrip(); setupAttCheck(); }
     var g = document.querySelector(".attgauge"); if (g) g.outerHTML = attGauge();
     var c = document.querySelector(".cal"); if (c) { c.outerHTML = attCalendar(); setupCal(); }
-    var bs = document.getElementById("badges"); if (bs) { bs.outerHTML = badgeSection(bs.getAttribute("data-num")); setupBadges(); }
+    var bs = document.getElementById("badges"); if (bs) { bs.outerHTML = badgeSection(bs.getAttribute("data-num")); setupBadges(); setupFold((location.hash || "").replace(/^#/, "")); }
     var mb = document.querySelector(".mm-body"); if (mb) mb.innerHTML = muscleBody();
     alignText(document);
   }
@@ -2480,6 +2480,7 @@
     litApply(tab);
     setupAttCheck(); setupCal(); setupIb(); setupBadges(); setupMuscle(); setupRtEdit();
     if (after) after();
+    setupFold(hsh, jumpTo);
     var flashEl = null;
     if (tab === "notice") {
       nMarkSeen();
@@ -2503,6 +2504,43 @@
       window.scrollTo(0, 0);
     }
   }
+  /* ---------------- 칸 접기·펼치기 (2026-11-12 트레이너 "항목들 펼치고 접을 수 있는 토글")
+     번호 제목(.head)이 있는 칸마다 제목이나 오른쪽 ⌄ 를 누르면 접힘/펼침. 이 폰에 기억(localStorage ptnote:<주소>:fold, 키 = 화면:제목).
+     주소로 바로 찾아간 칸(#goal-badges 등)은 접혀 있어도 펼쳐서 보여 줌. 월간 리포트(#report)는 그대로. */
+  var FOLD_LS = "ptnote:" + SLUG + ":fold";
+  function foldGet() { try { return JSON.parse(localStorage.getItem(FOLD_LS) || "{}") || {}; } catch (e) { return {}; } }
+  var foldJump = null;
+  function foldSet(o) { try { localStorage.setItem(FOLD_LS, JSON.stringify(o)); } catch (e) {} }
+  function setupFold(hsh, jumpTo) {
+    if (/^report/.test(hsh)) return;
+    if (jumpTo === undefined) jumpTo = foldJump; else foldJump = jumpTo;
+    var page = (hsh || "home").replace(/^(routine)-.*/, "$1").replace(/^form-.*/, "form").replace(/^(goal-badges|badges|journey)$/, "goal");
+    var st = foldGet();
+    Array.prototype.forEach.call(document.querySelectorAll("#view section"), function (sec) {
+      var hd = sec.firstElementChild;
+      if (!hd || !hd.classList.contains("head") || !hd.querySelector("h2") || !hd.nextElementSibling || sec.querySelector(".fbody")) return;
+      var key = page + ":" + hd.querySelector("h2").textContent.trim();
+      var body = document.createElement("div"); body.className = "fbody";
+      while (hd.nextSibling) body.appendChild(hd.nextSibling);
+      sec.appendChild(body);
+      var btn = document.createElement("button");
+      btn.type = "button"; btn.className = "fold-btn";
+      btn.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+      hd.appendChild(btn);
+      sec.classList.add("foldable");
+      function apply(f) { sec.classList.toggle("folded", f); btn.setAttribute("aria-expanded", f ? "false" : "true"); btn.setAttribute("aria-label", (f ? "펼치기 · " : "접기 · ") + key.split(":")[1]); }
+      var jumped = jumpTo && (sec.id === jumpTo || sec.querySelector("#" + jumpTo));
+      apply(!!st[key] && !jumped);
+      hd.addEventListener("click", function (e) {
+        if (e.target.closest("a, button:not(.fold-btn), input, select, label")) return;
+        var o = foldGet(), f = !sec.classList.contains("folded");
+        if (f) o[key] = 1; else delete o[key];
+        foldSet(o); apply(f);
+        if (!f) alignText(sec);
+      });
+    });
+  }
+
   window.addEventListener("hashchange", route);
   route();
   nDot();

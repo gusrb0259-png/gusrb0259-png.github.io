@@ -214,6 +214,10 @@ _tools/anatomy_v3.py  인체모형 v3 (자극 부위 그림). build(경로, 앞 
 - 순서: 내장 브라우저로 Apps Script 프로젝트 편집기 열기(script.google.com/home → 내 프로젝트) → javascript로 `monaco.editor.getModels()[0].pushEditOperations([], [{range: md.getFullModelRange(), text: CODE}], ()=>null)` (CODE = _tools/attendance_apps_script.gs 내용, JSON 문자열로) → 저장 아이콘 → 배포 ▾ → 배포 관리 → 연필 → 버전 "새 버전" → 배포. 배포 ID는 그대로라 사이트 주소 안 바꿔도 됨.
 - 확인: github.io 탭에서 fetch(ATT_API+"?m=sample-k7d2qx") 응답 키(ok·days·routine·bnotices·kv). 컴퓨터가 꺼져 있거나 로그인이 풀렸으면 그때만 트레이너에게 부탁.
 
+## 칸 접기·펼치기 — 회원 노트 (2026-11-12 트레이너 "항목들 펼치고 접을 수 있는 토글")
+- 번호 제목(.head)이 첫 줄인 모든 칸(section)에 오른쪽 위 ⌄ 버튼 — 제목줄을 눌러도 접힘/펼침. 기기마다 기억(localStorage ptnote:<주소>:fold, 키 = 화면:제목, #goal-badges 등은 goal로 묶음).
+- 주소로 찾아간 칸(#goal-badges)은 접혀 있어도 펼쳐 보여 줌. 월간 리포트는 제외. 배지 칸처럼 나중에 다시 그리는 칸은 다시 그린 뒤 setupFold() 다시 부름(이미 감싼 칸은 건너뜀). 코드 app.js setupFold, style.css .foldable·.fold-btn·.fbody(display:contents).
+
 ## 새 공지 팝업 (2026-11-05 트레이너 요청)
 - data.js notices 맨 위에 새 공지를 올리면, 회원이 PT 노트를 열 때 화면 위에서 팝업이 내려왔다가 약 5초 뒤 사라짐(위로 밀어도 닫힘). 누르면 공지 탭의 그 공지로 이동해 반짝 표시.
 - 공지 하나당 팝업은 한 번만. 공지 탭을 열기 전까지 아래 '공지' 탭에 빨간 점. 14일 넘은 공지는 새 공지로 안 침.
