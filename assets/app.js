@@ -2468,10 +2468,12 @@
     else if (hsh === "report" || /^report-\d{4}-\d{2}$/.test(hsh)) { html = renderReport(hsh.slice(7)); tab = "routine"; after = setupReport; }
     else if ((hsh === "body" || hsh === "inbody") && IB_ON) { html = renderBody(); tab = "body"; }
     else { html = renderHome(); }
-    var wasRoutine = view.getAttribute("data-tab") === "routine";
+    var prevTab = view.getAttribute("data-tab");
+    var wasRoutine = prevTab === "routine";
     if (tab !== "routine") view.removeAttribute("data-day");
     view.innerHTML = html + rtSaveBar();
     view.setAttribute("data-tab", tab);
+    appAnim(prevTab, tab);
     Array.prototype.forEach.call(document.querySelectorAll(".tabs a"), function (a) {
       if (a.getAttribute("data-tab") === tab) a.setAttribute("aria-current", "page"); else a.removeAttribute("aria-current");
     });
@@ -2540,6 +2542,74 @@
       });
     });
   }
+
+  /* ---------------- 앱처럼 (2026-11-12 트레이너 "앱처럼 — 2번") — 화면 넘김 애니메이션 · 옆으로 밀어 탭 이동 · 당겨서 새로고침 · 시작 화면 · 눌림 효과(style.css)
+     휴대폰 '동작 줄이기'면 애니메이션 없음. 고치기 창(.rtsheet)·팝업이 떠 있을 때와 가로로 밀리는 칸 안에서는 밀기·당기기 안 함. */
+  var RM = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  function tabOrder() { return Array.prototype.map.call(document.querySelectorAll(".tabs a[data-tab]"), function (a) { return a.getAttribute("data-tab"); }); }
+  function appAnim(prev, tab) {
+    if (RM || !prev) return;
+    var o = tabOrder(), a = o.indexOf(prev), b = o.indexOf(tab);
+    var cls = prev === tab ? "v-in" : (a > -1 && b > -1 && b < a ? "v-in-l" : "v-in-r");
+    view.classList.remove("v-in", "v-in-l", "v-in-r"); void view.offsetWidth; view.classList.add(cls);
+    var cur = document.querySelector('.tabs a[aria-current="page"]');
+    if (cur && prev !== tab) { cur.classList.remove("tab-pop"); void cur.offsetWidth; cur.classList.add("tab-pop"); }
+  }
+  view.addEventListener("animationend", function (e) { if (e.target === view) view.classList.remove("v-in", "v-in-l", "v-in-r"); });
+  function blocked(t) {
+    if (document.querySelector(".rtsheet-bg, .bgpop-wrap.in, .ibsheet") || document.documentElement.classList.contains("rts-open")) return true;
+    for (var el = t; el && el !== document.body; el = el.parentElement) {
+      if (/^(INPUT|TEXTAREA|SELECT|VIDEO)$/.test(el.tagName)) return true;
+      if (el.scrollWidth > el.clientWidth + 4) { var ox = getComputedStyle(el).overflowX; if (ox === "auto" || ox === "scroll") return true; }
+    }
+    return false;
+  }
+  var tx = 0, ty = 0, tOn = false, pull = 0, pullEl = null, tStart = 0;
+  function pullBox() {
+    if (!pullEl) { pullEl = document.createElement("div"); pullEl.className = "ptr"; pullEl.innerHTML = '<span class="ptr-i"><svg viewBox="0 0 24 24"><path d="M20 12a8 8 0 1 1-2.3-5.6M20 4v4.5h-4.5" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span>'; document.body.appendChild(pullEl); }
+    return pullEl;
+  }
+  document.addEventListener("touchstart", function (e) {
+    if (e.touches.length !== 1 || blocked(e.target)) { tOn = false; return; }
+    tOn = true; tx = e.touches[0].clientX; ty = e.touches[0].clientY; pull = 0; tStart = Date.now();
+  }, { passive: true });
+  document.addEventListener("touchmove", function (e) {
+    if (!tOn) return;
+    var dy = e.touches[0].clientY - ty, dx = e.touches[0].clientX - tx;
+    if (window.scrollY <= 0 && dy > 0 && Math.abs(dy) > Math.abs(dx) * 1.4) {
+      pull = Math.min(110, dy * 0.5);
+      var b = pullBox(); b.classList.add("on"); b.classList.toggle("ready", pull >= 64);
+      b.style.transform = "translate(-50%," + (pull - 48) + "px) rotate(" + (pull * 3) + "deg)";
+    } else if (pull) { pull = 0; if (pullEl) pullEl.classList.remove("on", "ready"); }
+  }, { passive: true });
+  document.addEventListener("touchend", function (e) {
+    if (!tOn) return; tOn = false;
+    var t = e.changedTouches[0], dx = t.clientX - tx, dy = t.clientY - ty;
+    if (pull) {
+      var go = pull >= 64; pull = 0;
+      if (go) {
+        pullEl.classList.add("spin"); pullEl.style.transform = "translate(-50%,24px)";
+        try { attSync(); ibSync(); } catch (x) {}
+        setTimeout(function () { route(); pullEl.classList.remove("on", "ready", "spin"); pullEl.style.transform = ""; attToast("새로 불러왔어요"); }, 900);
+      } else { pullEl.classList.remove("on", "ready"); pullEl.style.transform = ""; }
+      return;
+    }
+    if (Math.abs(dx) > 70 && Math.abs(dx) > Math.abs(dy) * 1.8 && Date.now() - tStart < 700) {
+      var o = tabOrder(), cur = view.getAttribute("data-tab"), i = o.indexOf(cur);
+      if (i < 0) return;
+      var n = dx < 0 ? i + 1 : i - 1;
+      if (n >= 0 && n < o.length) location.hash = o[n];
+    }
+  }, { passive: true });
+  /* 시작 화면 — 이 창에서 처음 열 때 한 번(로고 + 회원 이름), 0.9초 뒤 사라짐. 선생님 아이패드 안 칸(iframe)·PT 안내서 데모에선 안 띄움 */
+  (function () {
+    var seen = false; try { seen = sessionStorage.getItem("ptsplash:" + SLUG) === "1"; sessionStorage.setItem("ptsplash:" + SLUG, "1"); } catch (e) {}
+    if (seen || DEMO || window.self !== window.top) return;
+    var sp = document.createElement("div"); sp.className = "splash";
+    sp.innerHTML = '<img src="' + BASE + 'logo.png" alt=""><b>' + esc(M.name) + ' 회원님</b><span>MY PT NOTE</span>';
+    document.body.appendChild(sp);
+    setTimeout(function () { sp.classList.add("out"); setTimeout(function () { sp.remove(); }, 450); }, RM ? 300 : 900);
+  })();
 
   window.addEventListener("hashchange", route);
   route();

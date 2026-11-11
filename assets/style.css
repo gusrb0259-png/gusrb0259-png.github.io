@@ -1145,3 +1145,41 @@ section.folded .fold-btn svg { transform: rotate(-90deg); }
 section.folded > .fbody { display: none; }
 .fbody { display: contents; }
 @media (prefers-reduced-motion: reduce) { .fold-btn svg { transition: none; } }
+
+/* ---------- 앱처럼 (2026-11-12) ---------- */
+html { -webkit-tap-highlight-color: transparent; overscroll-behavior-y: contain; }
+body { overscroll-behavior-y: contain; }
+/* 화면 넘김 */
+.view.v-in { animation: vIn .28s ease-out; }
+.view.v-in-r { animation: vInR .3s cubic-bezier(.2,.8,.3,1); }
+.view.v-in-l { animation: vInL .3s cubic-bezier(.2,.8,.3,1); }
+@keyframes vIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+@keyframes vInR { from { opacity: 0; transform: translateX(28px); } to { opacity: 1; transform: none; } }
+@keyframes vInL { from { opacity: 0; transform: translateX(-28px); } to { opacity: 1; transform: none; } }
+/* 아래 탭 고를 때 톡 */
+.tabs a.tab-pop svg { animation: tabPop .35s cubic-bezier(.3,1.6,.5,1); }
+@keyframes tabPop { 0% { transform: scale(.8); } 60% { transform: scale(1.18); } 100% { transform: scale(1); } }
+/* 눌림 */
+.tabs a, .btn, .card-link, .day-tile, .panel a, button, .notice, .fcard { transition: transform .12s ease, opacity .12s ease; }
+.tabs a:active, .btn:active, .card-link:active, .day-tile:active, .panel a:active, button:active, .fcard:active { transform: scale(.96); }
+.notice:active { transform: scale(.985); }
+/* 당겨서 새로고침 */
+.ptr { position: fixed; left: 50%; top: calc(env(safe-area-inset-top, 0px) + 56px); z-index: 30; width: 40px; height: 40px; margin-top: -40px; border-radius: 50%; background: var(--paper); color: var(--faint);
+  box-shadow: 0 4px 14px rgba(0,0,0,.16); display: grid; place-items: center; opacity: 0; transform: translate(-50%, -48px); pointer-events: none; }
+.ptr.on { opacity: 1; }
+.ptr.ready { color: var(--primary); }
+.ptr svg { width: 22px; height: 22px; display: block; }
+.ptr.spin { transition: transform .2s; }
+.ptr.spin .ptr-i { animation: ptrSpin .7s linear infinite; display: block; }
+@keyframes ptrSpin { to { transform: rotate(360deg); } }
+/* 시작 화면 */
+.splash { position: fixed; inset: 0; z-index: 100; background: var(--primary); color: #fff; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; transition: opacity .4s ease, transform .4s ease; }
+.splash img { width: 150px; filter: brightness(1.6); animation: spIn .6s cubic-bezier(.2,.8,.3,1) both; }
+.splash b { font-size: 26px; font-weight: 900; letter-spacing: -.01em; animation: spIn .6s .12s cubic-bezier(.2,.8,.3,1) both; }
+.splash span { font-size: 12px; font-weight: 700; letter-spacing: .3em; color: var(--muted); animation: spIn .6s .22s cubic-bezier(.2,.8,.3,1) both; }
+.splash.out { opacity: 0; transform: scale(1.04); pointer-events: none; }
+@keyframes spIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) {
+  .view.v-in, .view.v-in-l, .view.v-in-r, .tabs a.tab-pop svg, .splash img, .splash b, .splash span { animation: none; }
+  .tabs a:active, .btn:active, .card-link:active, .day-tile:active, .panel a:active, button:active, .fcard:active, .notice:active { transform: none; }
+}
