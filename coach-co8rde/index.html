@@ -98,6 +98,7 @@
 .rkhide { display: none !important; }
 .rank.all .rkhide { display: grid !important; }
 .nmbox { margin-bottom: 12px; }
+.mcare { color: #B4541A !important; font-weight: 700; font-size: 12.5px !important; margin-top: 2px !important; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .nmdone { margin-top: 12px; padding: 12px 14px; border-radius: 12px; background: var(--gold-bg, #FFF3D1); display: flex; flex-direction: column; gap: 6px; }
 .nmdone b { font-size: 15px; } .nmdone p { margin: 0; font-size: 13px; color: var(--sub); }
 .nmdone code { font-size: 13px; word-break: break-all; background: #fff; border-radius: 8px; padding: 8px 10px; border: 1px solid var(--rule); }
@@ -218,6 +219,7 @@ section.folded .fsum:not(:empty) { display: inline; }
         <label>성별<select id="nmSex"><option value="F">여성 (브론즈 골드)</option><option value="M">남성 (블랙 골드)</option></select></label>
         <label>PT 시작한 달<input id="nmStart" type="month"></label>
         <label>목표 <small>없어도 돼요 · 노트 첫 화면에 나와요</small><input id="nmGoal" maxlength="40" placeholder="예: 다이어트 · 체지방 감량" autocomplete="off"></label>
+        <label>불편하거나 아픈 곳 <small>없어도 돼요 · 회원님 '목표' 탭과 이 목록에 나와요</small><textarea id="nmCare" rows="2" maxlength="300" placeholder="예: 오른쪽 무릎 계단 내려갈 때 통증, 허리 디스크 이력"></textarea></label>
         <label id="nmKeyWrap" hidden>선생님 열쇠 <small>처음 한 번만</small><input id="nmK" type="password" autocomplete="off"></label>
         <p class="bnmsg" id="nmMsg" role="status"></p>
         <div class="row"><button type="button" id="nmCancel">취소</button><button type="submit" class="fill" id="nmSend">노트 만들기</button></div>
@@ -344,7 +346,7 @@ section.folded .fsum:not(:empty) { display: inline; }
     var jt = journeyText(M);
     var stKey = !days ? "wait" : on ? "on" : rest ? "rest" : "off";
     return '<div class="mcard ' + sex + '" data-name="' + esc(M.name) + '" data-cho="' + esc(cho(M.name)) + '" data-st="' + stKey + '"><a class="mtop" href="' + base + '#home"><span class="av ' + sex + '">' + esc(M.name.charAt(0)) + '</span>' +
-      '<div><h3>' + esc(M.name) + ' 회원님</h3><p>' + esc(M.goal || "") + (jt ? ' · ' + jt : '') + '</p></div>' + st + '</a>' +
+      '<div><h3>' + esc(M.name) + ' 회원님</h3><p>' + esc(M.goal || "") + (jt ? ' · ' + jt : '') + '</p>' + (M.care ? '<p class="mcare">⚠ ' + esc(String(M.care).replace(/\s*\n\s*/g, " · ")) + '</p>' : '') + '</div>' + st + '</a>' +
       '<div class="mrow2">' + info + '</div>' +
       '<div class="qlinks"><a class="' + sex + '" href="' + base + '#home">홈</a><a class="' + sex + '" href="' + base + '#goal">출석·목표</a>' +
       '<a class="' + sex + '" href="' + base + '#routine">루틴</a><a class="' + sex + '" href="' + base + '#forms">복습지</a></div></div>';
@@ -572,6 +574,8 @@ section.folded .fsum:not(:empty) { display: inline; }
           .then(function (j) {
             /* 선생님이 폰에서 고친 루틴(창고)이 있으면 그걸로 — 쉬는 날·버전도 그대로 맞춤 */
             if (j && j.ok && j.routine && j.routine.routine && j.routine.base === rtBase(r.M.routine)) { r.M.routine = j.routine.routine; r.M._rted = 1; }
+            /* 불편하거나 아픈 곳 (2026-11-12) — 폰에서 고친 것(창고 pub:m:<주소>:care)이 있으면 그걸로 */
+            if (j && j.ok && j.kv && typeof j.kv["pub:m:" + r.slug + ":care"] === "string") r.M.care = j.kv["pub:m:" + r.slug + ":care"];
             return j && j.ok ? j.days : {};
           }).catch(function () { return {}; })
           .then(function (days) {
@@ -645,6 +649,7 @@ section.folded .fsum:not(:empty) { display: inline; }
       notices: [{ date: d, title: "PT 노트가 열렸어요", body: name.slice(-2) + " 회원님만의 운동 노트예요! 루틴·자세 복습지·식단이 여기에 차곡차곡 올라와요. 운동하러 오면 '오늘 출석'도 꼭 눌러 주세요." }],
       next_class: null, forms: [], routine: null, diet: null, created: ymd(now)
     };
+    var care = document.getElementById("nmCare").value.trim(); if (care) M.care = care;
     if (!M.journey) delete M.journey;
     btn.disabled = true; msg.textContent = "만드는 중…";
     rosterLoad().then(function (ro) {

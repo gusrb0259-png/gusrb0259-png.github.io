@@ -458,6 +458,7 @@
       '<h1>' + esc(M.goal || "나의 목표") + '</h1><div class="en">' + esc(M.name) + ' 회원님 · ' + (BP ? '기초 → 벌크 → 컷팅, 바프 촬영까지 함께 가요' : '기초 → 변화 → 자립, 3단계로 함께 가요') + '</div>' +
       '<div class="who"><strong>' + (now ? (now.month ? now.month + '개월차' : '곧 시작해요') + ' · ' + now.stage.no + '단계 ' + esc(now.stage.short) : '') + '</strong><span>담당 ' + esc(TRN) + ' 트레이너</span></div></div></div>' +
       '<div class="keypoint"><small>KEY POINT</small><p>' + (BP ? '목표는 하나, 바프 촬영날! 그 의지라면 충분해요. 단계마다 함께 넘어가요!' : '혼자 가는 길이 아니에요. 단계마다 함께 넘어가요!') + '</p></div></div>';
+    h += careSection();
     var n4 = "03", n5 = "04";   /* 몸 변화 기록은 2026-11-06 '몸변화' 탭(#body)으로, 근육 지도는 2026-11-08 루틴 탭으로 이동 */
     var attSec = '<section id="att">' + head("01", "출석률 · 출석 달력", "얼마나 꾸준히 나왔는지 봐요") + '<div class="panel attcard">' + attGauge() + attCalendar() + '</div></section>';
     if (!now) {
@@ -554,10 +555,54 @@
     attSave(Object.keys(attTimes));
     try { localStorage.setItem(ATT_KEY_T(), JSON.stringify(attTimes)); } catch (e) {}
   }
+  /* ---------------- 불편하거나 아픈 곳 (2026-11-12 트레이너 "목표 쓰는 것처럼 불편하거나 아픈 곳도")
+     data.js M.care(문자열) 또는 선생님이 폰에서 고친 것(창고 저장소 pub:m:<주소>:care, 빈 글자 = 지움)이 있으면 목표 탭 맨 위에.
+     선생님 보기에서만 ✎ 고치기. PT 안내서 데모(DEMO)에서는 안 보임(손님에게 회원 몸 상태가 보이지 않게). */
+  var CARE_K = "pub:m:" + SLUG + ":care", CARE_LS = "ptnote:" + SLUG + ":care";
+  function careText() {
+    var v = null; try { v = localStorage.getItem(CARE_LS); } catch (e) {}
+    return v !== null ? v : (M.care || "");
+  }
+  function careServer(kv) {
+    var had, now;
+    try { had = localStorage.getItem(CARE_LS); } catch (e) { return; }
+    if (kv && typeof kv[CARE_K] === "string") { now = kv[CARE_K]; try { localStorage.setItem(CARE_LS, now); } catch (e) {} }
+    else { now = null; try { localStorage.removeItem(CARE_LS); } catch (e) {} }
+    if (had !== now && /^#(goal|journey)/.test(location.hash)) route();
+  }
+  function careSection() {
+    if (DEMO) return "";
+    var t = careText();
+    if (!t && !COACH_MODE) return "";
+    return '<section id="care"><div class="panel carebox' + (t ? '' : ' empty') + '"><div class="care-h"><b>⚠ 불편하거나 아픈 곳</b>' +
+      (COACH_MODE ? '<button type="button" class="care-ed" id="careEdit">✎ ' + (t ? '고치기' : '적기') + '</button>' : '') + '</div>' +
+      (t ? '<p class="care-t">' + esc(t) + '</p><p class="care-s">선생님이 수업·루틴에 반영해요. 운동 중에 아프면 바로 말해 주세요!</p>'
+         : '<p class="care-s">아직 없어요 — 회원님이 불편하거나 아픈 곳을 적어 두면 여기 나와요</p>') + '</div></section>';
+  }
+  document.addEventListener("click", function (e) {
+    if (!e.target.closest || !e.target.closest("#careEdit")) return;
+    var hasKey = !!rtKey();
+    var sh = rtSheet("불편하거나 아픈 곳",
+      '<label class="rtl">회원님 노트 목표 탭에 보여요 <small>비우면 지워져요</small><textarea id="careIn" rows="4" maxlength="300" placeholder="예: 오른쪽 무릎 계단 내려갈 때 통증, 허리 디스크 이력">' + esc(careText()) + '</textarea></label>' +
+      '<label class="rtl" id="sKeyWrap"' + (hasKey ? ' hidden' : '') + '>선생님 열쇠 <small>처음 한 번만</small><input id="sKey" type="password" autocomplete="off"></label>',
+      function (s) {
+        var v = s.querySelector("#careIn").value.trim(), key = (s.querySelector("#sKey").value || "").trim() || rtKey();
+        if (!key) { s.querySelector("#sKeyWrap").hidden = false; return "선생님 열쇠를 넣어 주세요"; }
+        s.msg("저장하는 중…");
+        rtPost({ a: "kv_set", key: key, k: CARE_K, v: v }).then(function (j) {
+          if (!j || !j.ok) { rtErr(j, s); return; }
+          try { localStorage.setItem("ptkey", key); localStorage.setItem(CARE_LS, v); } catch (x) {}
+          s.close(); route(); attToast(v ? "저장했어요 · 회원님 노트에 바로 보여요" : "지웠어요");
+        }).catch(function () { s.msg(rtNetMsg()); });
+        return true;
+      }, "저장 · 바로 반영");
+    var ta = sh.querySelector("#careIn"); if (ta) ta.focus();
+  });
+
   function attCall(q) {
     return fetch(ATT_API + "?m=" + encodeURIComponent(SLUG) + (q || ""), { cache: "no-store" })
       .then(function (r) { return r.json(); })
-      .then(function (j) { if (!j || !j.ok) throw new Error("save"); attApply(j.days); if ("routine" in j) rtServer(j.routine); if ("bnotices" in j) bnServer(j.bnotices); return j; });
+      .then(function (j) { if (!j || !j.ok) throw new Error("save"); attApply(j.days); if ("routine" in j) rtServer(j.routine); if ("bnotices" in j) bnServer(j.bnotices); if ("kv" in j) careServer(j.kv); return j; });
   }
   function attSync() {
     if (!ATT_API) return;

@@ -1126,3 +1126,12 @@ html.rts-open, html.rts-open body { overflow: hidden; }
 .rtcp-d b { color: var(--primary); }
 .rtcp-d em { font-style: normal; font-weight: 800; color: var(--ink); margin-right: 6px; }
 .rtcp-d.rest { opacity: .55; }
+
+/* 불편하거나 아픈 곳 (2026-11-12) — 목표 탭 맨 위 */
+.carebox { border: 1.5px solid #F0C9A0; background: #FFF8EF; padding: 14px 16px; display: flex; flex-direction: column; gap: 6px; }
+.carebox.empty { border-style: dashed; background: var(--paper); }
+.care-h { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.care-h b { font-size: 15px; color: #B4541A; }
+.care-ed { font: inherit; font-size: 13px; font-weight: 800; color: var(--primary); background: var(--paper); border: 1.5px dashed var(--gold-line); border-radius: 99px; padding: 4px 12px; cursor: pointer; }
+.care-t { margin: 0; font-size: 15.5px; font-weight: 700; color: var(--ink); white-space: pre-line; }
+.care-s { margin: 0; font-size: 12.5px; color: var(--sub); }
