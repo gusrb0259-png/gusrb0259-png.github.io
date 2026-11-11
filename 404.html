@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>PT 노트 · GYMTOS 도당점</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#1C1C1E" id="tc">
+<link rel="icon" href="/assets/icon.png">
+<link rel="apple-touch-icon" href="/assets/icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap">
+<link rel="stylesheet" href="/assets/style.css">
+<!-- 2026-11-12: 선생님 페이지 "＋ 새 회원 노트 만들기"로 만든 회원은 폴더(data.js)가 없음 → GitHub Pages가 이 404.html을 보여 줌.
+     주소 /m/<주소>/ 에서 회원 주소를 읽고, 출석 창고 저장소(pub:m:<주소>:profile)에서 노트 정보를 받아 app.js로 그림. -->
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-check" viewBox="0 0 12 12"><path d="M2.4 6.3 5 8.7l4.6-5.2" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-x" viewBox="0 0 12 12"><path d="M3.3 3.3l5.4 5.4M8.7 3.3 3.3 8.7" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round"/></symbol>
+</svg>
+<header class="bar"><div class="bar-in"><a href="#home"><img src="../../assets/logo.png" alt="GYMTOS"></a><span id="barName">PT 노트</span></div></header>
+<main class="wrap"><div class="view" id="view" aria-live="polite"></div></main>
+<nav class="tabs" aria-label="메뉴"><div class="tabs-in">
+  <a href="#home" data-tab="home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M3.5 10.5 12 4l8.5 6.5V20a1 1 0 0 1-1 1H15v-6H9v6H4.5a1 1 0 0 1-1-1z"/></svg>홈</a>
+  <a href="#forms" data-tab="forms"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="m10 9 5 3-5 3z" fill="currentColor"/></svg>복습지</a>
+  <a href="#routine" data-tab="routine"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6.5 8v8M17.5 8v8M3.5 10v4M20.5 10v4M6.5 12h11"/></svg>루틴</a>
+  <a href="#diet" data-tab="diet"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="13" cy="13" r="6.5"/><path d="M4 4v6M6.5 4v6M4 7h2.5M5.2 10v10"/></svg>식단</a>
+  <a href="#notice" data-tab="notice"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M4 10v4h3l6 4V6L7 10z"/><path d="M16.5 9.5a3.5 3.5 0 0 1 0 5M19 7a7 7 0 0 1 0 10" stroke-linecap="round"/></svg>공지</a>
+</div></nav>
+<script src="/assets/site.js"></script>
+<script>
+(function () {
+  var mm = location.pathname.match(/^\/m\/([a-z0-9-]{3,40})\/?$/);
+  var view = document.getElementById("view");
+  function fail(t, s) {
+    document.querySelector(".tabs").hidden = true;
+    view.innerHTML = '<div class="panel empty" style="text-align:center;padding:40px 18px"><h3>' + t + '</h3><p style="color:var(--sub)">' + s + '</p></div>';
+  }
+  if (!mm) { fail("페이지를 찾을 수 없어요", "담당 트레이너에게 받은 내 주소로 들어와 주세요"); return; }
+  if (!/\/$/.test(location.pathname)) { location.replace(location.pathname + "/" + location.search + location.hash); return; }
+  var slug = mm[1], API = (window.SITE || {}).att_api;
+  view.innerHTML = '<div class="panel empty" style="text-align:center;padding:40px 18px"><h3>노트 불러오는 중…</h3></div>';
+  if (!API) { fail("노트를 불러올 수 없어요", "잠시 뒤 다시 열어 주세요"); return; }
+  function go(M) {
+    window.MEMBER = M; window.ATT_SLUG = slug;
+    var nm = M.name + " 회원님 PT 노트";
+    document.title = nm + " · " + ((window.SITE || {}).brand || "GYMTOS") + " " + ((window.SITE || {}).branch || "");
+    document.getElementById("barName").textContent = nm;
+    if (M.sex === "F") document.getElementById("tc").setAttribute("content", "#8E6A2E");
+    view.innerHTML = "";
+    var a = document.createElement("script"); a.src = "/assets/exicons.js";
+    a.onload = a.onerror = function () { var b = document.createElement("script"); b.src = "/assets/app.js"; document.body.appendChild(b); };
+    document.body.appendChild(a);
+  }
+  var LS = "ptnote:" + slug + ":profile", cached = null;
+  try { cached = JSON.parse(localStorage.getItem(LS) || "null"); } catch (e) {}
+  fetch(API + "?m=" + encodeURIComponent(slug), { cache: "no-store" }).then(function (r) { return r.json(); }).then(function (j) {
+    var M = j && j.kv && j.kv["pub:m:" + slug + ":profile"];
+    if (!M) { if (cached) return go(cached); return fail("노트를 찾을 수 없어요", "주소가 맞는지 담당 트레이너에게 확인해 주세요"); }
+    try { localStorage.setItem(LS, JSON.stringify(M)); } catch (e) {}
+    go(M);
+  }).catch(function () { if (cached) go(cached); else fail("노트를 불러오지 못했어요", "인터넷 연결을 확인하고 다시 열어 주세요"); });
+})();
+</script>
+</body>
+</html>

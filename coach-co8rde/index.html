@@ -97,6 +97,12 @@
 .rkmore { font: inherit; font-size: 13px; font-weight: 700; color: var(--primary); background: var(--tint); border: 0; border-radius: 10px; padding: 9px; cursor: pointer; }
 .rkhide { display: none !important; }
 .rank.all .rkhide { display: grid !important; }
+.nmbox { margin-bottom: 12px; }
+.nmdone { margin-top: 12px; padding: 12px 14px; border-radius: 12px; background: var(--gold-bg, #FFF3D1); display: flex; flex-direction: column; gap: 6px; }
+.nmdone b { font-size: 15px; } .nmdone p { margin: 0; font-size: 13px; color: var(--sub); }
+.nmdone code { font-size: 13px; word-break: break-all; background: #fff; border-radius: 8px; padding: 8px 10px; border: 1px solid var(--rule); }
+.nmdone .row { display: flex; gap: 8px; } .nmdone .row > * { flex: 1; text-align: center; font: inherit; font-size: 14px; font-weight: 800; border-radius: 10px; padding: 10px; border: 1.5px solid var(--rule); background: #fff; color: var(--ink); text-decoration: none; cursor: pointer; }
+.nmdone .row .fill { background: var(--primary); color: #fff; border-color: var(--primary); }
 .bnnew { width: 100%; font: inherit; font-size: 15px; font-weight: 800; color: #fff; background: var(--primary); border: 0; border-radius: 12px; padding: 12px; cursor: pointer; }
 .bnf { display: flex; flex-direction: column; gap: 10px; margin-top: 2px; }
 .bnf label { display: flex; flex-direction: column; gap: 5px; font-size: 13px; font-weight: 800; color: var(--sub); }
@@ -205,6 +211,19 @@ section.folded .fsum:not(:empty) { display: inline; }
 
   <section data-fold="list">
     <div class="head"><h2>회원 목록</h2><p>이름을 누르면 그 회원님 PT 노트로</p></div>
+    <div class="panel nmbox">
+      <button type="button" class="bnnew" id="nmOpen">＋ 새 회원 노트 만들기</button>
+      <form class="bnf" id="nmForm" hidden>
+        <label>회원 이름<input id="nmName" maxlength="20" placeholder="예: 김지수" autocomplete="off" required></label>
+        <label>성별<select id="nmSex"><option value="F">여성 (브론즈 골드)</option><option value="M">남성 (블랙 골드)</option></select></label>
+        <label>PT 시작한 달<input id="nmStart" type="month"></label>
+        <label>목표 <small>없어도 돼요 · 노트 첫 화면에 나와요</small><input id="nmGoal" maxlength="40" placeholder="예: 다이어트 · 체지방 감량" autocomplete="off"></label>
+        <label id="nmKeyWrap" hidden>선생님 열쇠 <small>처음 한 번만</small><input id="nmK" type="password" autocomplete="off"></label>
+        <p class="bnmsg" id="nmMsg" role="status"></p>
+        <div class="row"><button type="button" id="nmCancel">취소</button><button type="submit" class="fill" id="nmSend">노트 만들기</button></div>
+      </form>
+      <div class="nmdone" id="nmDone" hidden></div>
+    </div>
     <div class="sbar" id="sbar">
       <label class="sbox"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5" fill="none" stroke="currentColor" stroke-width="2.4"/><path d="M15.5 15.5 20 20" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg>
         <input type="search" id="q" placeholder="회원 이름 검색 (초성도 돼요 · ㅊㅈㅎ)" autocomplete="off" aria-label="회원 이름 검색">
@@ -243,7 +262,8 @@ section.folded .fsum:not(:empty) { display: inline; }
   if (SITE.trainer) document.getElementById("trn").textContent = SITE.trainer + " 트레이너";
   document.title = "PT 노트 선생님 · " + BRN;
   var API = SITE.att_api || "";
-  var LIST = window.COACH_MEMBERS || [];
+  var LIST = (window.COACH_MEMBERS || []).slice();
+  var ROSTER_M = {};   /* 폰에서 만든 회원(창고 coach:roster) — 주소 → 노트 정보 */
   var DK = ["일", "월", "화", "수", "목", "금", "토"];
   try { sessionStorage.setItem("ptcoach", location.pathname); localStorage.setItem("ptcoach", location.pathname); sessionStorage.removeItem("ptdemo"); } catch (e) {}
   /* 루틴 고치기 열쇠 (2026-11-10): 주소 끝 #key=… 로 한 번 열면 이 휴대폰에 저장 → 회원 루틴 탭에서 바로 저장됨 */
@@ -265,12 +285,23 @@ section.folded .fsum:not(:empty) { display: inline; }
   function esc(s) { return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); }
   var now = new Date(), today = ymd(now);
   document.getElementById("today").textContent = (now.getMonth() + 1) + "월 " + now.getDate() + "일 " + DK[now.getDay()] + "요일";
-  document.getElementById("sAll").textContent = LIST.length;
-  document.getElementById("sub").textContent = BRN + " · 담당 회원 " + LIST.length + "명";
+  function setCount() {
+    document.getElementById("sAll").textContent = LIST.length;
+    document.getElementById("sub").textContent = BRN + " · 담당 회원 " + LIST.length + "명";
+  }
+  setCount();
 
   function loadMember(slug) {
-    return fetch("/m/" + slug + "/data.js", { cache: "no-store" }).then(function (r) { return r.text(); }).then(function (t) {
-      var w = {}; new Function("window", t)(w); return w.MEMBER;
+    return fetch("/m/" + slug + "/data.js", { cache: "no-store" }).then(function (r) {
+      if (!r.ok) throw new Error("nofile");
+      return r.text();
+    }).then(function (t) {
+      var w = {}; new Function("window", t)(w); if (!w.MEMBER) throw new Error("nodata"); return w.MEMBER;
+    }).catch(function () {   /* 폰에서 만든 회원(2026-11-12) — 창고 저장소 pub:m:<주소>:profile */
+      if (ROSTER_M[slug]) return ROSTER_M[slug];
+      return fetch(API + "?m=" + encodeURIComponent(slug), { cache: "no-store" }).then(function (r) { return r.json(); }).then(function (j) {
+        var M = j && j.kv && j.kv["pub:m:" + slug + ":profile"]; if (!M) throw new Error("nomember"); return M;
+      });
     });
   }
   function journeyText(M) {
@@ -558,7 +589,92 @@ section.folded .fsum:not(:empty) { display: inline; }
       });
     });
   }
-  render();
+  /* ---------- 새 회원 노트 만들기 (2026-11-12 트레이너 "이름만 넣으면 페이지 자동으로")
+     창고 저장소에 pub:m:<주소>:profile(노트 정보) + coach:roster(회원 목록, 선생님만 읽기) 저장 → 사이트 404.html이 /m/<주소>/ 를 노트로 그려 줌.
+     Claude가 나중에 data.js를 만들면(복습지·식단 등) 그 파일이 우선. */
+  var RO = ["g","kk","n","d","tt","r","m","b","pp","s","ss","","j","jj","ch","k","t","p","h"],
+      RV = ["a","ae","ya","yae","eo","e","yeo","ye","o","wa","wae","oe","yo","u","wo","we","wi","yu","eu","ui","i"],
+      RF = ["","k","k","k","n","n","n","t","l","k","m","l","l","l","p","l","m","p","p","t","t","ng","t","t","k","t","p","t"];
+  function roman(name) {
+    var n = String(name || "").replace(/\s+/g, ""), g = /^[가-힣]{3,4}$/.test(n) ? n.slice(1) : n, out = "";
+    for (var i = 0; i < g.length; i++) {
+      var c = g.charCodeAt(i) - 0xAC00;
+      if (c >= 0 && c < 11172) out += RO[Math.floor(c / 588)] + RV[Math.floor((c % 588) / 28)] + RF[c % 28];
+      else if (/[a-z0-9]/i.test(g[i])) out += g[i].toLowerCase();
+    }
+    return (out || "m").slice(0, 14);
+  }
+  function rand6() { var a = "abcdefghijklmnopqrstuvwxyz0123456789", o = "", r = new Uint8Array(6); (window.crypto || window.msCrypto).getRandomValues(r); for (var i = 0; i < 6; i++) o += a[r[i] % 36]; return o; }
+  function kvPost(body, key) {
+    body.m = "coach"; body.key = key;
+    function once() { return fetch(API, { method: "POST", body: JSON.stringify(body) }).then(function (r) { return r.json(); }); }
+    return once().catch(function () { return new Promise(function (ok) { setTimeout(ok, 2500); }).then(once); });
+  }
+  function rosterLoad() {
+    var k = bnKey(); if (!k || !API) return Promise.resolve([]);
+    return kvPost({ a: "kv_get", prefix: "coach:roster" }, k).then(function (j) {
+      return j && j.ok && j.kv && Array.isArray(j.kv["coach:roster"]) ? j.kv["coach:roster"] : [];
+    }).catch(function () { return []; });
+  }
+  function rosterMerge(list) {
+    list.forEach(function (r) { if (r && r.slug && LIST.indexOf(r.slug) < 0) LIST.push(r.slug); });
+    setCount();
+  }
+  var nmForm = document.getElementById("nmForm"), nmOpen = document.getElementById("nmOpen"), nmDone = document.getElementById("nmDone");
+  nmOpen.addEventListener("click", function () {
+    nmForm.hidden = false; nmOpen.hidden = true; nmDone.hidden = true; document.getElementById("nmMsg").textContent = "";
+    var st = document.getElementById("nmStart"); if (!st.value) st.value = now.getFullYear() + "-" + pad(now.getMonth() + 1);
+    document.getElementById("nmKeyWrap").hidden = !!bnKey();
+    document.getElementById("nmName").focus();
+  });
+  document.getElementById("nmCancel").addEventListener("click", function () { nmForm.hidden = true; nmOpen.hidden = false; });
+  nmForm.addEventListener("submit", function (e) {
+    e.preventDefault();
+    var msg = document.getElementById("nmMsg"), btn = document.getElementById("nmSend");
+    var name = document.getElementById("nmName").value.trim(), sex = document.getElementById("nmSex").value;
+    var st = document.getElementById("nmStart").value, goal = document.getElementById("nmGoal").value.trim();
+    var key = document.getElementById("nmK").value.trim() || bnKey();
+    if (!name) { msg.textContent = "회원 이름을 넣어 주세요"; return; }
+    if (!key) { document.getElementById("nmKeyWrap").hidden = false; msg.textContent = "선생님 열쇠를 넣어 주세요"; return; }
+    if (!API) { msg.textContent = "출석 창고 주소가 없어서 만들 수 없어요"; return; }
+    var slug = roman(name) + "-" + rand6();
+    var d = (now.getFullYear()) + ". " + (now.getMonth() + 1) + ". " + now.getDate();
+    var M = {
+      name: name, sex: sex, since: st ? st.replace("-", ". ").replace(/\. 0/, ". ") : "", goal: goal || "나만의 운동 노트",
+      journey: st ? { start: st + "-15" } : undefined,
+      notices: [{ date: d, title: "PT 노트가 열렸어요", body: name.slice(-2) + " 회원님만의 운동 노트예요! 루틴·자세 복습지·식단이 여기에 차곡차곡 올라와요. 운동하러 오면 '오늘 출석'도 꼭 눌러 주세요." }],
+      next_class: null, forms: [], routine: null, diet: null, created: ymd(now)
+    };
+    if (!M.journey) delete M.journey;
+    btn.disabled = true; msg.textContent = "만드는 중…";
+    rosterLoad().then(function (ro) {
+      if (ro.some(function (r) { return r.name === name; }) && !confirm(name + " 회원님 노트가 이미 있어요. 하나 더 만들까요?")) throw { quiet: 1 };
+      ro.push({ slug: slug, name: name, sex: sex, created: ymd(now) });
+      var items = {}; items["pub:m:" + slug + ":profile"] = M; items["coach:roster"] = ro;
+      return kvPost({ a: "kv_set", items: items }, key);
+    }).then(function (j) {
+      btn.disabled = false;
+      if (!j || !j.ok) {
+        if (j && j.error === "key") { try { localStorage.removeItem("ptkey"); } catch (x) {} document.getElementById("nmKeyWrap").hidden = false; msg.textContent = "선생님 열쇠가 맞지 않아요. 다시 넣어 주세요"; }
+        else msg.textContent = "저장이 안 됐어요 (" + ((j && j.error) || "연결") + ") — 잠시 뒤 다시 눌러 주세요";
+        return;
+      }
+      try { localStorage.setItem("ptkey", key); } catch (x) {}
+      ROSTER_M[slug] = M; rosterMerge([{ slug: slug }]);
+      var url = location.origin + "/m/" + slug + "/";
+      nmForm.reset(); nmForm.hidden = true; nmOpen.hidden = false; nmDone.hidden = false;
+      nmDone.innerHTML = '<b>' + esc(name) + ' 회원님 노트가 생겼어요</b><p>회원님께 이 링크를 보내 주세요</p><code>' + esc(url) + '</code>' +
+        '<div class="row"><button type="button" id="nmCopy">링크 복사</button><a class="fill" href="/m/' + slug + '/">노트 열기</a></div>';
+      document.getElementById("nmCopy").addEventListener("click", function () {
+        var b = this;
+        (navigator.clipboard ? navigator.clipboard.writeText(url) : Promise.reject()).then(function () { b.textContent = "복사됐어요 ✓"; })
+          .catch(function () { prompt("링크를 길게 눌러 복사하세요", url); });
+      });
+      render();
+    }).catch(function (err) { btn.disabled = false; msg.textContent = err && err.quiet ? "" : "저장이 안 됐어요 — 인터넷 연결을 확인해 주세요"; });
+  });
+
+  rosterLoad().then(function (ro) { rosterMerge(ro); render(); });
   document.getElementById("refresh").addEventListener("click", render);
   document.addEventListener("visibilitychange", function () { if (!document.hidden) render(); });
 })();

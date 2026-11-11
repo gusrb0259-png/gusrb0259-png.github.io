@@ -78,6 +78,14 @@ _tools/anatomy_v3.py  인체모형 v3 (자극 부위 그림). build(경로, 앞 
 | 홍길동 (샘플, 가상) | m/sample-k7d2qx/ | M |
 | 이다혜 | m/dahye-dfpttw/ | F |
 
+## 폰에서 새 회원 노트 만들기 (2026-11-12 트레이너 "클로드 말고 PT 노트 안에서 이름만 넣으면 자동으로")
+- 선생님 페이지 회원 목록 위 "＋ 새 회원 노트 만들기" → 이름·성별·PT 시작한 달·목표(선택) → 주소 `<이름 로마자>-<랜덤6>` 자동(성 빼고 이름만 로마자, coach index.html roman()) → 링크 복사·노트 열기.
+- 저장: 창고 저장소 kv_set — `pub:m:<주소>:profile`(= data.js의 MEMBER와 같은 모양, routine·forms·diet 비어 있음) + `coach:roster`([{slug,name,sex,created}], 선생님 열쇠로만 읽기). 창고 재배포 필요 없음.
+- 회원 노트: 그 주소엔 폴더가 없으니 GitHub Pages가 **/404.html**을 보여 줌 → 주소에서 회원 주소를 읽고 창고 GET ?m=<주소> 의 kv profile로 window.MEMBER를 만든 뒤 /assets/app.js 로 그림(폰에 ptnote:<주소>:profile 로 기억해서 창고가 느려도 열림). 카톡 미리보기 그림(og)은 없음.
+- 선생님 페이지 LIST = members.js + coach:roster. 루틴은 선생님 폰 "✎ 새 루틴 만들기"로 바로 됨.
+- **Claude가 이런 회원에게 복습지·식단 등을 올릴 때**: 그 주소로 `m/<주소>/` 폴더(index.html·data.js·og.jpg)를 만들어 정식 노트로 옮김 — profile 내용을 data.js로 옮기고 members.js에도 추가(roster엔 남아 있어도 중복 안 됨). 폴더가 생기면 404.html 대신 폴더가 열림.
+- 아직 안 되는 것: PT 안내서(guide·intro)의 관리 현황 숫자, 다른 회원 루틴 가져오기 목록은 members.js 회원만 셈.
+
 ## 새 회원 PT 노트 만들기
 0. **PT 시작일을 꼭 받기** (트레이너이 말해줌, "10월"처럼 달만 주면 그 달 15일로). 안 알려주면 물어볼 것. → data.js journey.start
 1. 주소: `m/<이름 로마자>-<랜덤 소문자·숫자 6자>/` (예: jisu-k3x9qa). 추측하기 어렵게.
