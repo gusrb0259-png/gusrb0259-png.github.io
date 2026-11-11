@@ -1183,3 +1183,7 @@ body { overscroll-behavior-y: contain; }
   .view.v-in, .view.v-in-l, .view.v-in-r, .tabs a.tab-pop svg, .splash img, .splash b, .splash span { animation: none; }
   .tabs a:active, .btn:active, .card-link:active, .day-tile:active, .panel a:active, button:active, .fcard:active, .notice:active { transform: none; }
 }
+
+/* 회원 정보 고치기 버튼 (선생님 보기, 2026-11-12) */
+.infoedit button { width: 100%; font: inherit; font-size: 14.5px; font-weight: 800; color: var(--primary); background: var(--paper); border: 1.5px dashed var(--gold-line); border-radius: 14px; padding: 11px 14px; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 1px; }
+.infoedit small { font-size: 11.5px; font-weight: 600; color: var(--faint); }

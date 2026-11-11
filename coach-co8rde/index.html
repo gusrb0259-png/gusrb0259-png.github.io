@@ -576,6 +576,8 @@ section.folded .fsum:not(:empty) { display: inline; }
             if (j && j.ok && j.routine && j.routine.routine && j.routine.base === rtBase(r.M.routine)) { r.M.routine = j.routine.routine; r.M._rted = 1; }
             /* 불편하거나 아픈 곳 (2026-11-12) — 폰에서 고친 것(창고 pub:m:<주소>:care)이 있으면 그걸로 */
             if (j && j.ok && j.kv && typeof j.kv["pub:m:" + r.slug + ":care"] === "string") r.M.care = j.kv["pub:m:" + r.slug + ":care"];
+            var inf = j && j.ok && j.kv && j.kv["pub:m:" + r.slug + ":info"];   /* 폰에서 고친 목표·시작한 달 */
+            if (inf && typeof inf === "object") { if (inf.goal) r.M.goal = inf.goal; if (inf.start) { var jj = {}; for (var q in (r.M.journey || {})) jj[q] = r.M.journey[q]; jj.start = inf.start; r.M.journey = jj; } }
             return j && j.ok ? j.days : {};
           }).catch(function () { return {}; })
           .then(function (days) {

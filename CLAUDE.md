@@ -218,6 +218,11 @@ _tools/anatomy_v3.py  인체모형 v3 (자극 부위 그림). build(경로, 앞 
 - 번호 제목(.head)이 첫 줄인 모든 칸(section)에 오른쪽 위 ⌄ 버튼 — 제목줄을 눌러도 접힘/펼침. 기기마다 기억(localStorage ptnote:<주소>:fold, 키 = 화면:제목, #goal-badges 등은 goal로 묶음).
 - 주소로 찾아간 칸(#goal-badges)은 접혀 있어도 펼쳐 보여 줌. 월간 리포트는 제외. 배지 칸처럼 나중에 다시 그리는 칸은 다시 그린 뒤 setupFold() 다시 부름(이미 감싼 칸은 건너뜀). 코드 app.js setupFold, style.css .foldable·.fold-btn·.fbody(display:contents).
 
+## 회원 정보 고치기 — 선생님 폰 (2026-11-12 트레이너 "항목들 내가 수정할 수 있게")
+- 선생님 보기에서 목표 탭 맨 위 "✎ 회원 정보 고치기" → 목표·PT 시작한 달·다음 수업·불편하거나 아픈 곳 → 저장 = 창고 저장소 `pub:m:<주소>:info` {goal, start, next_class} + `pub:m:<주소>:care`. data.js 값 위에 덮어씀(빈 칸 = data.js 값 / next_class 빈 칸 = 숨김).
+- 회원 폰: ptnote:<주소>:info 에 기억해 두고 app.js 맨 처음(infoApply)에 적용 → 창고에서 바뀐 값이 오면 다시 그림, 시작일이 바뀌었으면 새로고침(PT 여정 계산이 처음에 정해져서). 선생님 페이지 카드도 목표·시작일 반영.
+- **Claude가 data.js로 goal·journey.start·next_class를 고칠 때**: 폰에서 고친 info가 있으면 그게 계속 이김 → 트레이너에게 폰에서 고친 게 있는지 먼저 물을 것(또는 info를 지우라고 안내). 다음 수업 칸은 홈 맨 위(제목 카드 바로 아래)로 옮김.
+
 ## 앱처럼 — 회원 노트 (2026-11-12 트레이너 "앱처럼 만들기 2번")
 - 화면 넘김: 아래 탭 순서 기준 오른쪽 탭으로 가면 오른쪽에서, 왼쪽이면 왼쪽에서 0.3초 미끄러져 들어옴(.view.v-in-r/-l), 고른 탭 아이콘 톡(.tab-pop).
 - 옆으로 밀기: 본문을 좌우로 70px 넘게 빠르게 밀면 옆 탭으로. 가로로 밀리는 칸(요일 타일 등)·입력칸·고치기 창·팝업 위에선 안 함(app.js blocked).

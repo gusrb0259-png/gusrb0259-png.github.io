@@ -3,6 +3,20 @@
   "use strict";
   var M = window.MEMBER;
   if (!M) return;
+  /* 선생님이 폰에서 고친 회원 정보 (2026-11-12 "항목들 내가 수정할 수 있게") — 창고 저장소 pub:m:<주소>:info {goal, start, next_class}
+     이 폰에 기억(ptnote:<주소>:info)해 두고 화면을 그리기 전에 data.js 위에 덮어씀. 창고에서 새 값이 오면 기억 바꾸고 다시 그림 */
+  var INFO_SLUG = window.ATT_SLUG || (location.pathname.match(/\/m\/([^\/]+)\//) || [, M.name])[1];
+  var INFO_LS = "ptnote:" + INFO_SLUG + ":info", INFO_ORIG = { goal: M.goal, journey: M.journey, next_class: M.next_class };
+  function infoApply(o) {
+    M.goal = INFO_ORIG.goal; M.journey = INFO_ORIG.journey; M.next_class = INFO_ORIG.next_class;
+    if (!o || typeof o !== "object") return;
+    if (typeof o.goal === "string" && o.goal) M.goal = o.goal;
+    if (typeof o.start === "string" && /^\d{4}-\d{2}-\d{2}$/.test(o.start)) {
+      var j = {}, src = INFO_ORIG.journey || {}; for (var k in src) j[k] = src[k]; j.start = o.start; M.journey = j;
+    }
+    if ("next_class" in o) M.next_class = o.next_class || null;
+  }
+  try { infoApply(JSON.parse(localStorage.getItem(INFO_LS) || "null")); } catch (e) {}
   var SCRIPT = document.currentScript;
   var BASE = SCRIPT ? SCRIPT.src.replace(/app\.js(\?.*)?$/, "") : "../../assets/";
   var THEME = M.sex === "F" ? "F" : "M";
@@ -563,7 +577,18 @@
     var v = null; try { v = localStorage.getItem(CARE_LS); } catch (e) {}
     return v !== null ? v : (M.care || "");
   }
+  function infoServer(kv) {
+    var v = kv && kv["pub:m:" + SLUG + ":info"], had = null, now = v && typeof v === "object" ? JSON.stringify(v) : null;
+    try { had = localStorage.getItem(INFO_LS); if (now) localStorage.setItem(INFO_LS, now); else localStorage.removeItem(INFO_LS); } catch (e) { return; }
+    if (had !== now) {
+      if (now) infoApply(v); else infoApply(null);
+      /* 시작일이 바뀌면 PT 여정 계산(단계·그래프)이 처음 열 때 정해져서 새로고침 */
+      var sOld = had ? (JSON.parse(had).start || "") : "", sNew = v && v.start || "";
+      if (sOld !== sNew) location.reload(); else route();
+    }
+  }
   function careServer(kv) {
+    infoServer(kv);
     var had, now;
     try { had = localStorage.getItem(CARE_LS); } catch (e) { return; }
     if (kv && typeof kv[CARE_K] === "string") { now = kv[CARE_K]; try { localStorage.setItem(CARE_LS, now); } catch (e) {} }
@@ -573,12 +598,42 @@
   function careSection() {
     if (DEMO) return "";
     var t = careText();
+    var ib = COACH_MODE ? '<div class="infoedit"><button type="button" id="infoEdit">✎ 회원 정보 고치기 <small>목표 · 시작한 달 · 다음 수업 · 아픈 곳</small></button></div>' : "";
     if (!t && !COACH_MODE) return "";
-    return '<section id="care"><div class="panel carebox' + (t ? '' : ' empty') + '"><div class="care-h"><b>⚠ 불편하거나 아픈 곳</b>' +
+    if (!t) return ib;
+    return ib + '<section id="care"><div class="panel carebox' + (t ? '' : ' empty') + '"><div class="care-h"><b>⚠ 불편하거나 아픈 곳</b>' +
       (COACH_MODE ? '<button type="button" class="care-ed" id="careEdit">✎ ' + (t ? '고치기' : '적기') + '</button>' : '') + '</div>' +
       (t ? '<p class="care-t">' + esc(t) + '</p><p class="care-s">선생님이 수업·루틴에 반영해요. 운동 중에 아프면 바로 말해 주세요!</p>'
          : '<p class="care-s">아직 없어요 — 회원님이 불편하거나 아픈 곳을 적어 두면 여기 나와요</p>') + '</div></section>';
   }
+  document.addEventListener("click", function (e) {
+    if (!e.target.closest || !e.target.closest("#infoEdit")) return;
+    var hasKey = !!rtKey(), st = M.journey && M.journey.start ? M.journey.start.slice(0, 7) : "";
+    var sh = rtSheet("회원 정보 고치기",
+      '<label>목표 <small>목표 탭 맨 위 큰 글씨</small><input id="ieGoal" maxlength="40" value="' + esc(M.goal || "") + '" autocomplete="off"></label>' +
+      '<label>PT 시작한 달 <small>PT 여정 단계·그래프가 여기서 계산돼요</small><input id="ieStart" type="month" value="' + esc(st) + '"></label>' +
+      '<label>다음 수업 <small>홈에 보여요 · 비우면 안 보여요</small><input id="ieNext" maxlength="40" placeholder="예: 11월 14일(금) 오후 8시" value="' + esc(M.next_class || "") + '" autocomplete="off"></label>' +
+      '<label>불편하거나 아픈 곳 <small>비우면 지워져요</small><textarea id="ieCare" rows="3" maxlength="300" placeholder="예: 오른쪽 무릎 계단 내려갈 때 통증">' + esc(careText()) + '</textarea></label>' +
+      '<label id="sKeyWrap"' + (hasKey ? ' hidden' : '') + '>선생님 열쇠 <small>처음 한 번만</small><input id="sKey" type="password" autocomplete="off"></label>',
+      function (s) {
+        var key = (s.querySelector("#sKey").value || "").trim() || rtKey();
+        if (!key) { s.querySelector("#sKeyWrap").hidden = false; return "선생님 열쇠를 넣어 주세요"; }
+        var g = s.querySelector("#ieGoal").value.trim(), m = s.querySelector("#ieStart").value, n = s.querySelector("#ieNext").value.trim(), c = s.querySelector("#ieCare").value.trim();
+        var info = { goal: g, start: m ? m + "-15" : "", next_class: n };
+        if (INFO_ORIG.journey && INFO_ORIG.journey.start && m && INFO_ORIG.journey.start.slice(0, 7) === m) info.start = INFO_ORIG.journey.start;   /* 같은 달이면 원래 날짜 그대로 */
+        var items = {}; items["pub:m:" + SLUG + ":info"] = info; items[CARE_K] = c;
+        s.msg("저장하는 중…");
+        rtPost({ a: "kv_set", key: key, items: items }).then(function (j) {
+          if (!j || !j.ok) { rtErr(j, s); return; }
+          var sOld = M.journey && M.journey.start || "";
+          try { localStorage.setItem("ptkey", key); localStorage.setItem(INFO_LS, JSON.stringify(info)); localStorage.setItem(CARE_LS, c); } catch (x) {}
+          infoApply(info); s.close();
+          if ((info.start || (INFO_ORIG.journey && INFO_ORIG.journey.start) || "") !== sOld) { location.reload(); return; }
+          route(); attToast("저장했어요 · 회원님 노트에 바로 보여요");
+        }).catch(function () { s.msg(rtNetMsg()); });
+        return true;
+      }, "저장 · 바로 반영");
+  });
   document.addEventListener("click", function (e) {
     if (!e.target.closest || !e.target.closest("#careEdit")) return;
     var hasKey = !!rtKey();
@@ -1471,6 +1526,10 @@
       '<div class="who"><span>' + esc(BRN) + ' · ' + esc(TRN) + ' 트레이너</span></div>' +
       '</div>' + attCheckStrip() + '</div></div></div>';
 
+    if (M.next_class) {
+      h += '<div class="panel next"><svg width="40" height="40" viewBox="0 0 40 40" aria-hidden="true"><rect x="4" y="7" width="32" height="29" rx="6" fill="var(--primary)"/><rect x="4" y="7" width="32" height="9" rx="4" fill="var(--side)"/><rect x="11" y="3" width="4" height="9" rx="2" fill="var(--key)"/><rect x="25" y="3" width="4" height="9" rx="2" fill="var(--key)"/></svg>' +
+        '<div><small style="font-size:12px;color:var(--faint);font-weight:700">다음 PT 수업</small><b>' + esc(M.next_class) + '</b></div></div>';
+    }
     h += reportHomeCard();
     h += journeyHome();
     if (IB_ON) h += ibHomeStrip() || '<span class="ibstrip-slot"></span>';
@@ -1496,10 +1555,6 @@
     }
     h += '</section>';
 
-    if (M.next_class) {
-      h += '<div class="panel next"><svg width="40" height="40" viewBox="0 0 40 40" aria-hidden="true"><rect x="4" y="7" width="32" height="29" rx="6" fill="var(--primary)"/><rect x="4" y="7" width="32" height="9" rx="4" fill="var(--side)"/><rect x="11" y="3" width="4" height="9" rx="2" fill="var(--key)"/><rect x="25" y="3" width="4" height="9" rx="2" fill="var(--key)"/></svg>' +
-        '<div><small style="font-size:12px;color:var(--faint);font-weight:700">다음 PT 수업</small><b>' + esc(M.next_class) + '</b></div></div>';
-    }
 
     if (M.notices && M.notices.length) {
       var n = M.notices[0];
