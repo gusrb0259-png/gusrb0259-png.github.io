@@ -76,6 +76,7 @@ _tools/anatomy_v3.py  인체모형 v3 (자극 부위 그림). build(경로, 앞 
 | 회원 | 주소 | 성별 |
 |---|---|---|
 | 홍길동 (샘플, 가상) | m/sample-k7d2qx/ | M |
+| 이다혜 | m/dahye-dfpttw/ | F |
 
 ## 새 회원 PT 노트 만들기
 0. **PT 시작일을 꼭 받기** (트레이너이 말해줌, "10월"처럼 달만 주면 그 달 15일로). 안 알려주면 물어볼 것. → data.js journey.start
