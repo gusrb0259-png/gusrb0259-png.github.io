@@ -1883,16 +1883,16 @@
       h += '<div class="rest-card"><b>쉬는 날</b>푹 쉬고 잘 먹기! 근육은 쉬는 동안 자라요</div>';
       if (ED && !ROT) h += '<button type="button" class="rtadd" data-rt="work">+ 이날 운동 넣기</button>';
     } else if (d.cardio_only) {
-      h += '<div class="ex-list"><div class="ex cardio"><div class="ex-top"><span class="ex-ic">' + img("treadmill") + '</span><div><h3>유산소만 ' + d.cardio_only + '분</h3>' +
+      h += '<div class="ex-list"><div class="ex cardio"' + (CAN_EDIT ? ' data-cardio="1"' : '') + '><div class="ex-top"><span class="ex-ic">' + img("treadmill") + '</span><div><h3>유산소만 ' + d.cardio_only + '분</h3>' +
         '<div class="tip">' + esc(R.cardio ? R.cardio.options : "") + '</div></div></div></div></div>' +
         '<p class="note">' + esc(d.note || "웨이트 없이 유산소만 하는 날이에요") + '</p>';
     } else if (d.pick) {
       h += '<p class="note" style="margin:0 0 12px">' + esc(d.note || "이번 주에 아쉬웠던 부위 하나를 골라 그 요일 루틴 그대로 해요") + '</p>' + pickList(d) +
-        (d.cardio && R.cardio ? '<div class="ex-list" style="margin-top:12px"><div class="ex cardio"><div class="ex-top"><span class="ex-ic">' + img("treadmill") + '</span><div><h3>마무리 유산소 ' + R.cardio.minutes + '분</h3><div class="tip">' + esc(R.cardio.options) + '</div></div></div></div></div>' : '');
+        (d.cardio && R.cardio ? '<div class="ex-list" style="margin-top:12px"><div class="ex cardio"' + (CAN_EDIT ? ' data-cardio="1"' : '') + '><div class="ex-top"><span class="ex-ic">' + img("treadmill") + '</span><div><h3>마무리 유산소 ' + R.cardio.minutes + '분</h3><div class="tip">' + esc(R.cardio.options) + '</div></div></div></div></div>' : '');
     } else {
       h += '<div class="flow"><div>' + img("foam_roller", "fl-ic") + '<small>STEP 01</small><b>스트레칭</b><i>폼롤러 10분</i></div><span>›</span>' +
         '<div>' + img("dumbbell", "fl-ic") + '<small>STEP 02</small><b>웨이트</b><i>' + d.items.length + '종목</i></div><span>›</span>' +
-        '<div>' + img("treadmill", "fl-ic") + '<small>STEP 03</small><b>유산소</b><i>' + (d.cardio && R.cardio ? R.cardio.minutes + '분' : '이날은 없음') + '</i></div></div>';
+        '<div' + (CAN_EDIT ? ' data-cardio="1"' : '') + '>' + img("treadmill", "fl-ic") + '<small>STEP 03</small><b>유산소</b><i>' + (d.cardio && R.cardio ? R.cardio.minutes + '분' : '이날은 없음') + '</i></div></div>';
       h += '<div class="ex-list">' + d.items.map(function (it, i) {
         var main = it.tag === "메인";
         var sets = it.sets.map(function (s, j) {
@@ -1908,7 +1908,7 @@
       }).join("");
       if (ED) h += '<button type="button" class="rtadd" data-rt="add">+ 종목 추가</button>';
       if (d.cardio && R.cardio) {
-        h += '<div class="ex cardio"><div class="ex-top"><span class="ex-ic">' + img("treadmill") + '</span><div><h3>마무리 유산소 ' + R.cardio.minutes + '분</h3>' +
+        h += '<div class="ex cardio"' + (CAN_EDIT ? ' data-cardio="1"' : '') + '><div class="ex-top"><span class="ex-ic">' + img("treadmill") + '</span><div><h3>마무리 유산소 ' + R.cardio.minutes + '분</h3>' +
           '<div class="tip">' + esc(R.cardio.options) + '</div></div></div></div>';
       }
       h += '</div>' + (R.note ? '<p class="note">' + esc(R.note) + '</p>' : '');
@@ -2079,6 +2079,32 @@
     return m ? (+m[1]) + "/" + (+m[2]) + " " + m[3] : "";
   }
   function rtDirty() { if (RT_EDIT) RT_EDIT.dirty++; rerender(); }
+  /* 유산소 고치기 (2026-11-12 트레이너 "유산소도 수정 가능하게") — 유산소 카드·STEP 03을 누르면 */
+  function rtCardioSheet(dk) {
+    var d = dk && dayByKey(dk), R = M.routine, C = R.cardio || { minutes: 15, options: "" };
+    if (d && d.cardio_only) {
+      rtSheet(dayName(dk) + " · 유산소만 하는 날",
+        '<label>유산소 시간 <small>분</small><input id="cMin" inputmode="numeric" value="' + esc(d.cardio_only) + '"></label>' +
+        '<label>종류·메모 <small>없어도 돼요</small><input id="cNote" maxlength="60" placeholder="예: 천국의 계단 · 사이클 중 택1" value="' + esc(d.note || "") + '" autocomplete="off"></label>',
+        function (sh) {
+          var m = sh.querySelector("#cMin").value.trim(); if (!/^\d+$/.test(m) || +m < 1) return "시간은 분 숫자로 넣어 주세요";
+          d.cardio_only = +m; d.note = sh.querySelector("#cNote").value.trim(); if (!d.note) delete d.note; rtDirty();
+        });
+      return;
+    }
+    rtSheet("유산소 고치기",
+      (d ? '<label class="rts-ck"><input type="checkbox" id="cOn"' + (d.cardio ? ' checked' : '') + '> ' + esc(dayName(dk)) + '에 마무리 유산소 하기</label>' : '') +
+      '<label>유산소 시간 <small>분 · 유산소 하는 모든 요일에 같이 적용돼요</small><input id="cMin" inputmode="numeric" value="' + esc(C.minutes) + '"></label>' +
+      '<label>종류 <small>예: 경사 걷기 · 천국의 계단 · 사이클 중 택1</small><input id="cOpt" maxlength="60" value="' + esc(C.options || "") + '" autocomplete="off"></label>' +
+      '<p class="rts-l" style="margin:0"><small>시간을 비우면 모든 요일에서 유산소 줄이 없어져요</small></p>',
+      function (sh) {
+        var m = sh.querySelector("#cMin").value.trim();
+        if (m && (!/^\d+$/.test(m) || +m < 1)) return "시간은 분 숫자로 넣어 주세요";
+        R.cardio = m ? { minutes: +m, options: sh.querySelector("#cOpt").value.trim() } : null;
+        var on = sh.querySelector("#cOn"); if (on && d) d.cardio = on.checked;
+        rtDirty();
+      });
+  }
   function rtVerUp(v) { var m = String(v || "v0").match(/^(\D*)(\d+)(.*)$/); return m ? m[1] + (+m[2] + 1) + m[3] : "v2"; }
   function rtNewRoutine() {
     return { version: "v1", updated: rtToday(), title: "주간 루틴", plan: [], key_point: "", note: "",
@@ -2717,11 +2743,13 @@
     if (tab === "routine" && M.routine) {
       if (e.target.closest("a, button, [data-rt], input, select, textarea")) return;
       var ex = e.target.closest(".ex[data-exi]"), dk = view.getAttribute("data-day");
-      var hero = !ex && e.target.closest("#view > .hero");
-      if (!ex && !hero) return;
+      var cd = !ex && e.target.closest("[data-cardio]");
+      var hero = !ex && !cd && e.target.closest("#view > .hero");
+      if (!ex && !hero && !cd) return;
       var auto = !RT_EDIT;
       if (auto) { RT_EDIT = { saved: clone(M.routine), dirty: 0 }; rerender(); }
       if (ex && dk) rtItemSheet(dk, +ex.getAttribute("data-exi"));
+      else if (cd) rtCardioSheet(dk);
       else if (hero) rtInfoSheet();
       if (auto && window.MutationObserver) {   /* 눌러서 열었는데 아무것도 안 고치고 닫으면 고치기 모드도 같이 끝냄 */
         var mo = new MutationObserver(function () {
