@@ -129,7 +129,7 @@ def main():
         p = os.path.join(ROOT, k + ".png")
         fn(p)
         Image.open(p).resize((SIZE, SIZE), Image.LANCZOS).save(p, optimize=True)
-    for sex, col in (("M", "#1C1C1E"), ("F", "#8E6A2E")):
+    for sex, col in (("M", "#1C1C1E"), ("F", "#D35C14")):
         os.makedirs(os.path.join(ROOT, sex), exist_ok=True)
         for k, fn in MEALS.items():
             fn(os.path.join(ROOT, sex, "ic_" + k + ".png"), col)

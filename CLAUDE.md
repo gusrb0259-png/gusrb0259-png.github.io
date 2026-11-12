@@ -22,7 +22,7 @@
 8. 끝나면 커밋·푸시, 사이트 열어서 확인, 이 '처음 세팅' 체크 표시.
 
 ### 처음 세팅 진행 (2026-11-11~12)
-- [x] 1 정보: 박현규 · GYMTOS 도당점 · 테마 블랙+골드 (남 #1C1C1E+금 #C9A227 / 여 브론즈 #8E6A2E). 가격표 그대로. **연락처·자격·경력은 나중에 받기로 함(트레이너 요청) — guide.html·intro.html 빈칸 남아 있음**
+- [x] 1 정보: 박현규 · GYMTOS 도당점 · 테마 블랙+골드 (남 #1C1C1E+금 #C9A227 / 여 2026-11-12부터 "에르메스 대표색 느낌" 오렌지 #D35C14 + 브라운 #4A2A17 — style.css F 변수·exicons F·icons/F·food/F·coach .F·여성 회원 index theme-color·og.jpg(오렌지 배경+브라운 띠). PT 안내서 guide·intro 색은 그대로. 화면에 브랜드 이름은 안 씀). 가격표 그대로. **연락처·자격·경력은 나중에 받기로 함(트레이너 요청) — guide.html·intro.html 빈칸 남아 있음**
 - [x] 2 GitHub: gusrb0259-png/gusrb0259-png.github.io, Pages main /(root) 켬. 선생님 페이지 coach-co8rde/
 - [x] 3 출석 창고: 구글 시트 "PT노트 출석"(id 18po4y_uM6DBckDWfApIqwXTuUhIlMuy9_-p9Pcy1oXk) + 독립 Apps Script 프로젝트(1AJEhpYyWzXEGr07jgRd8WwWJe4ZbdJO5nqMHEeOsACfoQhUuaSOl04qn, Drive API 추가). 시트에 붙은 스크립트가 아니라서 붙여넣을 때 book_()의 `p.getProperty('SS')` 뒤에 `|| '<시트 id>'` 를 붙여서 넣음 — 재배포 때도 똑같이. 웹 앱 주소는 assets/site.js att_api.
 - [ ] 4 선생님 폰 연결 (열쇠는 대화로 전달함)

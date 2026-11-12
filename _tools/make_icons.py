@@ -13,7 +13,7 @@ def mix(c1, c2, t):
     return tuple(int(round(a * (1 - t) + b * t)) for a, b in zip(c1, c2))
 
 
-THEME = hex2rgb(sys.argv[2] if len(sys.argv) > 2 else "#8E6A2E")
+THEME = hex2rgb(sys.argv[2] if len(sys.argv) > 2 else "#D35C14")
 TILE = mix(THEME, WHITE, 0.89)
 BODY = THEME
 FAR = mix(THEME, WHITE, 0.50)

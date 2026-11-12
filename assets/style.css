@@ -11,9 +11,9 @@
   --font: "Noto Sans KR", "Noto Sans CJK KR", "Malgun Gothic", "맑은 고딕", "Apple SD Gothic Neo", system-ui, sans-serif;
   color-scheme: light;
 }
-:root[data-sex="F"] {
-  --primary: #8E6A2E; --side: #74551F; --key: #1C1C1E; --tint: #F7F0E1; --tint2: #EFE2C6;
-  --muted: #F3E3BC; --dot: #FFFFFF; --rule: #E6DCC6;
+:root[data-sex="F"] {   /* 여성 테마 2026-11-12 "에르메스 대표색 느낌" — 오렌지 박스 + 브라운 */
+  --primary: #D35C14; --side: #A8460C; --key: #4A2A17; --tint: #FDF0E6; --tint2: #F8DFCB;
+  --muted: #FFF0E4; --dot: #FFFFFF; --rule: #F0D9C8;
 }
 * { box-sizing: border-box; }
 html { -webkit-text-size-adjust: 100%; }
