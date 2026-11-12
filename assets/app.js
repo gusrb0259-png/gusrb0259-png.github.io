@@ -2772,6 +2772,39 @@
 
   /* ---------------- 복습지 사진·영상 올리기 (선생님 보기) */
   function fmSaveKv(items, key) { return rtPost({ a: "kv_set", key: key, items: items }); }
+  /* 영상 자동으로 줄이기 (2026-11-12 "영상 올리면 알아서 크기 맞추고") — 폰 브라우저에서 영상을 한 번 재생하면서 긴 쪽 960px · 초당 30장 · 소리 없이 다시 녹화(MediaRecorder).
+     줄인 게 더 크거나 이 브라우저가 못 하면 원본 그대로. 시간 = 영상 길이만큼. 결과: mp4(아이폰·최신 크롬) 또는 webm */
+  function fmShrink(file, prog) {
+    return new Promise(function (ok, bad) {
+      var cand = ["video/mp4;codecs=avc1", "video/mp4", "video/webm;codecs=vp9", "video/webm;codecs=vp8", "video/webm"], mt = "";
+      if (!window.MediaRecorder || !HTMLCanvasElement.prototype.captureStream) return bad("nosupport");
+      for (var i = 0; i < cand.length; i++) if (MediaRecorder.isTypeSupported && MediaRecorder.isTypeSupported(cand[i])) { mt = cand[i]; break; }
+      if (!mt) return bad("nosupport");
+      var v = document.createElement("video"), url = URL.createObjectURL(file);
+      v.muted = true; v.playsInline = true; v.setAttribute("playsinline", ""); v.setAttribute("webkit-playsinline", ""); v.preload = "auto";
+      v.style.cssText = "position:fixed;left:0;bottom:0;width:2px;height:2px;opacity:.01;pointer-events:none;z-index:-1";
+      document.body.appendChild(v);
+      function clean() { try { v.pause(); } catch (e) {} v.remove(); URL.revokeObjectURL(url); }
+      v.onerror = function () { clean(); bad("open"); };
+      v.onloadedmetadata = function () {
+        if (!v.videoWidth || !isFinite(v.duration)) { clean(); return bad("open"); }
+        if (v.duration > 120) { clean(); return bad("long"); }
+        var k = Math.min(1, 960 / Math.max(v.videoWidth, v.videoHeight)), c = document.createElement("canvas");
+        c.width = Math.round(v.videoWidth * k / 2) * 2; c.height = Math.round(v.videoHeight * k / 2) * 2;
+        var g = c.getContext("2d"), st = c.captureStream(30), chunks = [], rec;
+        try { rec = new MediaRecorder(st, { mimeType: mt, videoBitsPerSecond: 1600000 }); } catch (e) { clean(); return bad("nosupport"); }
+        rec.ondataavailable = function (e) { if (e.data && e.data.size) chunks.push(e.data); };
+        rec.onstop = function () { clean(); var b = new Blob(chunks, { type: mt.split(";")[0] }); b.size > 1000 ? ok(b) : bad("empty"); };
+        var raf = window.requestVideoFrameCallback ? function (f) { v.requestVideoFrameCallback(f); } : function (f) { requestAnimationFrame(f); };
+        function draw() { if (v.ended || rec.state !== "recording") return; g.drawImage(v, 0, 0, c.width, c.height); prog && prog(v.currentTime, v.duration); raf(draw); }
+        v.onended = function () { g.drawImage(v, 0, 0, c.width, c.height); setTimeout(function () { if (rec.state === "recording") rec.stop(); }, 150); };
+        v.currentTime = 0;
+        var p = v.play();
+        (p && p.then ? p : Promise.resolve()).then(function () { rec.start(500); raf(draw); }).catch(function () { clean(); bad("play"); });
+      };
+      v.src = url;
+    });
+  }
   function fmB64(file, cb, err) {
     if (/^image\//.test(file.type) && !/gif$/.test(file.type)) {   /* 사진은 긴 쪽 1600px JPEG로 줄여서 */
       var img = new Image(), url = URL.createObjectURL(file);
@@ -2847,18 +2880,40 @@
       return;
     }
     rtSheet("사진 · 영상 올리기",
-      '<label class="fmpick"><input type="file" id="fmFile" accept="image/*,video/*"><span>📷 사진 · 영상 고르기 <small>찍거나 앨범에서 · 영상은 30초 이하 추천(최대 35MB)</small></span></label>' +
+      '<label class="fmpick"><input type="file" id="fmFile" accept="image/*,video/*"><span>📷 사진 · 영상 고르기 <small>찍거나 앨범에서 · 큰 영상은 자동으로 줄여서 올려요 (2분 이하)</small></span></label>' +
       '<p class="fmname" id="fmName"></p>' +
       '<label>설명 <small>없어도 돼요 · 사진 아래 작은 글씨</small><input id="fmCap" maxlength="80" placeholder="예: 내려갈 때 무릎 방향 체크" autocomplete="off"></label>' + KEYF(),
       function (sh) {
         var f = sh.querySelector("#fmFile").files[0];
         if (!f) return "사진이나 영상을 골라 주세요";
         if (!/^(image|video)\//.test(f.type)) return "사진이나 영상만 올릴 수 있어요";
-        if (/^video\//.test(f.type) && f.size > 35 * 1024 * 1024) return "영상이 너무 커요 (" + Math.round(f.size / 1048576) + "MB) — 30초 이하로 잘라서 올려 주세요";
+        if (/^video\//.test(f.type) && f.size > 600 * 1024 * 1024) return "영상이 너무 커요 (" + Math.round(f.size / 1048576) + "MB) — 2분 이하로 잘라서 올려 주세요";
         var key = (sh.querySelector("#sKey").value || "").trim() || rtKey(); if (!key) { sh.querySelector("#sKeyWrap").hidden = false; return "선생님 열쇠를 넣어 주세요"; }
         var cap = sh.querySelector("#fmCap").value.trim(), isV = /^video\//.test(f.type);
-        sh.msg(isV ? "영상 올리는 중… (크기에 따라 30초~1분)" : "사진 올리는 중…");
         sh.querySelector("[data-ok]").disabled = true;
+        var LIM = 35 * 1024 * 1024;
+        function go(file) {
+          sh.msg(isV ? "영상 올리는 중… (" + (file.size / 1048576).toFixed(1) + "MB · 30초~1분)" : "사진 올리는 중…");
+          upload(file);
+        }
+        if (isV && (f.size > 6 * 1024 * 1024)) {
+          sh.msg("영상 크기 맞추는 중… 화면을 켜 둔 채 기다려 주세요");
+          fmShrink(f, function (t, d) { sh.msg("영상 크기 맞추는 중… " + Math.floor(t) + " / " + Math.round(d) + "초 (화면을 켜 둔 채 기다려 주세요)"); })
+            .then(function (b) {
+              var use = b.size < f.size ? b : f;
+              if (use.size > LIM) { sh.querySelector("[data-ok]").disabled = false; return sh.msg("줄여도 너무 커요 (" + Math.round(use.size / 1048576) + "MB) — 영상을 짧게 잘라서 올려 주세요"); }
+              go(use === f ? f : new File([b], "form." + (b.type.indexOf("mp4") > -1 ? "mp4" : "webm"), { type: b.type }));
+            })
+            .catch(function (why) {
+              if (why === "long") { sh.querySelector("[data-ok]").disabled = false; return sh.msg("2분이 넘는 영상은 잘라서 올려 주세요"); }
+              if (f.size > LIM) { sh.querySelector("[data-ok]").disabled = false; return sh.msg("이 브라우저에선 영상을 줄일 수 없어요 (" + Math.round(f.size / 1048576) + "MB) — 30초 이하로 잘라 올리거나, Claude에게 영상을 보내 주세요"); }
+              go(f);
+            });
+          return true;
+        }
+        go(f);
+        return true;
+        function upload(f) {
         fmB64(f, function (b64, mime) {
           fetch(ATT_API, { method: "POST", body: JSON.stringify({ a: "media_add", m: SLUG, key: key, data: b64, mime: mime, name: f.name }) })
             .then(function (r) { return r.json(); }).then(function (j) {
@@ -2877,7 +2932,7 @@
               });
             }).catch(function () { sh.querySelector("[data-ok]").disabled = false; sh.msg(rtNetMsg()); });
         }, function (m) { sh.querySelector("[data-ok]").disabled = false; sh.msg(m); });
-        return true;
+        }
       }, "올리기");
     var fi = document.getElementById("fmFile");
     if (fi) fi.addEventListener("change", function () { var f = fi.files[0]; document.getElementById("fmName").textContent = f ? "고른 파일: " + f.name + " (" + (f.size / 1048576).toFixed(1) + "MB)" : ""; });
