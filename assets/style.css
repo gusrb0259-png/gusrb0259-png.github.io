@@ -129,6 +129,10 @@ section { display: flex; flex-direction: column; gap: 14px; }
 
 /* 복습지 목록 */
 .flist { display: grid; grid-template-columns: 1fr; gap: 12px; }
+.fday + .fday { margin-top: 20px; }
+.fday > h3 { display: flex; align-items: baseline; gap: 8px; margin: 0 0 10px; font-size: 15px; font-weight: 800; color: var(--key); }
+.fday > h3::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--primary); align-self: center; }
+.fday > h3 small { font-size: 12px; font-weight: 700; color: var(--faint, #8A8F99); }
 @media (min-width: 540px) { .flist { grid-template-columns: 1fr 1fr; } }
 .card-link { display: grid; grid-template-columns: 96px 1fr; gap: 14px; align-items: center; text-decoration: none; background: var(--paper); border-radius: 14px; padding: 10px; box-shadow: 0 1px 2px rgba(30, 35, 48, .06); }
 .card-link .thumb { position: relative; width: 96px; aspect-ratio: 3 / 4; border-radius: 10px; overflow: hidden; background: #0A0A0B; }

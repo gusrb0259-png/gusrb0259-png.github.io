@@ -305,6 +305,9 @@ _tools/anatomy_v3.py  인체모형 v3 (자극 부위 그림). build(경로, 앞 
 - 상담 손님에게 보이는 화면이라 회원 이름은 가운데 글자를 O로 가림(공지 제목 속 이름도). 비포애프터 사진은 옛 소개 PPT에 쓰던 것만(새 사진은 동의받은 회원만).
 - "✎ 고치기": 담당 회원 수(비우면 자동), 등록 혜택, 연락처 — 그 휴대폰 localStorage(ptsales)에만 저장. 혜택·연락처가 비어 있으면 그 줄이 안 보임.
 
+## 복습지 목록 날짜별 (2026-11-12 트레이너 "날짜별 ㄱ")
+- 회원 노트 복습지 탭(#forms)은 복습지 date(“2026. 11. 12” 꼴, 숫자 3개만 읽음)로 묶어서 "11월 12일 (목) · 3개" 제목 아래 보여 줌. 최신 날짜가 위, 같은 날은 forms 순서 그대로, 올해가 아니면 "2025년 …". 홈 '최근 자세 복습지'는 그대로 2개. 코드 app.js formKey·formDays, style.css .fday. → **복습지 date는 수업한 날짜로** 넣을 것.
+
 ## 자세 복습지 미디어 만들기 (영상 1개 기준)
 - 웹 영상 (2026-11-12 트레이너 "영상 다 깨지는 거야?" → 540px·crf27에서 올림): `ffmpeg -i in.mov -an -vf "scale=1080:-2,fps=30" -c:v libx264 -preset medium -crf 22 -profile:v high -pix_fmt yuv420p -movflags +faststart form.mp4` (12초 4K 원본 → 약 5MB). poster.jpg도 1080px.
 - 카톡 대비 움직이는 그림: `-vf "scale=324:-2,fps=10" -c:v libwebp_anim -loop 0 -quality 40 form.webp`

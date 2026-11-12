@@ -1721,10 +1721,23 @@
     return '<a class="card-link" href="#form-' + esc(f.id) + '"><div class="thumb">' + (f.simple ? fmThumb(f) : '<img src="' + esc(f.dir) + 'poster.jpg" alt="" loading="lazy">') + '</div>' +
       '<div>' + (f.part ? '<span class="tagc">' + esc(f.part) + '</span>' : '') + (formNew(f) ? '<span class="fnew">NEW</span>' : '') + '<h3>' + esc(f.exercise) + '</h3><p>' + (f.simple ? '사진·영상 ' + (FMEDIA[f.id] || []).length + '개' : esc(f.exercise_en)) + ' · ' + esc(f.date) + '</p></div></a>';
   }
+  /* 복습지 날짜별로 묶기 (2026-11-12 트레이너 "날짜별 ㄱ") — "11월 12일 (목) · 3개" 제목 아래 그날 복습지. 최신 날짜가 위, 같은 날은 원래 순서 */
+  function formKey(d) { var m = String(d || "").match(/(\d{4})\D+(\d{1,2})\D+(\d{1,2})/); return m ? m[1] + "-" + ("0" + m[2]).slice(-2) + "-" + ("0" + m[3]).slice(-2) : ""; }
+  function formDays() {
+    var G = {}, order = [];
+    M.forms.forEach(function (f) { var k = formKey(f.date); if (!G[k]) { G[k] = []; order.push(k); } G[k].push(f); });
+    order.sort(function (a, b) { return a < b ? 1 : a > b ? -1 : 0; });
+    var yNow = String(new Date().getFullYear()), DW = ["일", "월", "화", "수", "목", "금", "토"];
+    return order.map(function (k) {
+      var lab = "날짜 없음";
+      if (k) { var p = k.split("-"), d = new Date(+p[0], +p[1] - 1, +p[2]); lab = (p[0] !== yNow ? p[0] + "년 " : "") + (+p[1]) + "월 " + (+p[2]) + "일 (" + DW[d.getDay()] + ")"; }
+      return '<div class="fday"><h3>' + esc(lab) + '<small>' + G[k].length + '개</small></h3><div class="flist">' + G[k].map(formCard).join("") + '</div></div>';
+    }).join("");
+  }
   function renderForms() {
     var h = (CAN_EDIT ? '<button type="button" class="fxnew" data-fx="new">＋ 사진·영상 복습지 만들기<small>운동 이름만 넣고 사진·영상을 바로 올려요</small></button>' : '') +
       '<section>' + head("", "자세 복습지", "수업에서 배운 자세를 영상으로 다시 봐요");
-    h += M.forms.length ? '<div class="flist">' + M.forms.map(formCard).join("") + '</div>' :
+    h += M.forms.length ? formDays() :
       '<div class="panel empty"><h3>아직 복습지가 없어요</h3><p>수업에서 배운 자세가 여기에 쌓여요</p></div>';
     return h + '</section>' + remember();
   }
