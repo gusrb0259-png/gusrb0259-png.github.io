@@ -108,11 +108,18 @@ function rtSheet_(name, head) {
 function rtMain_() { return rtSheet_(RT_SHEET, ['회원주소', '이름', '기준', '루틴(JSON)', '기록시각']); }
 function rtLog_() { return rtSheet_(RT_LOG, ['회원주소', '이름', '기록시각', '할일', '루틴(JSON)']); }
 
+function keyHex_(k) {
+  const b = Utilities.computeDigest(Utilities.DigestAlgorithm.SHA_256, String(k), Utilities.Charset.UTF_8);
+  return b.map(function (x) { return ('0' + ((x + 256) % 256).toString(16)).slice(-2); }).join('');
+}
+/* 관리자(팀장) 열쇠 = RT_KEY_HASH. 선생님 열쇠 = 창고 저장소 coach:trainers [{id, name, h(지문), off?}] 에 있는 것 (2026-11-12 "선생님 7명 한 사이트") */
+function isAdmin_(k) { return !!k && keyHex_(k) === RT_KEY_HASH; }
 function keyOk_(k) {
   if (!k) return false;
-  const b = Utilities.computeDigest(Utilities.DigestAlgorithm.SHA_256, String(k), Utilities.Charset.UTF_8);
-  const hex = b.map(function (x) { return ('0' + ((x + 256) % 256).toString(16)).slice(-2); }).join('');
-  return hex === RT_KEY_HASH;
+  const hex = keyHex_(k);
+  if (hex === RT_KEY_HASH) return true;
+  const tr = kvAll_()['coach:trainers'];
+  return Array.isArray(tr) && tr.some(function (t) { return t && t.h === hex && !t.off; });
 }
 
 function rtGet_(m) {
@@ -277,15 +284,22 @@ function doPost(e) {
     if (!keyOk_(b.key)) return json_({ ok: false, error: 'key' });
     const all = kvAll_(), pre = String(b.prefix || ''), o = {};
     Object.keys(all).forEach(function (k) { if (k.indexOf(pre) === 0) o[k] = all[k]; });
-    return json_({ ok: true, kv: o });
+    let who = { admin: true };   // 누가 열었는지 (팀장 / 선생님 id·이름)
+    if (!isAdmin_(b.key)) {
+      const hex = keyHex_(b.key), tr = Array.isArray(all['coach:trainers']) ? all['coach:trainers'] : [];
+      const t = tr.filter(function (x) { return x && x.h === hex; })[0] || {};
+      who = { admin: false, id: t.id || '', name: t.name || '' };
+    }
+    return json_({ ok: true, kv: o, who: who });
   }
   if (b.a === 'kv_set') {   // {k, v} 또는 {items:{k:v,…}} — v가 null이면 지움
     const items = b.items && typeof b.items === 'object' ? b.items : (function () { const o = {}; o[String(b.k || '')] = b.v === undefined ? null : b.v; return o; })();
     const ks = Object.keys(items);
     if (!ks.length || ks.length > 50) return json_({ ok: false, error: 'items' });
-    const coach = keyOk_(b.key);
+    const coach = keyOk_(b.key), admin = isAdmin_(b.key);
     for (let i = 0; i < ks.length; i++) {
       const k = ks[i];
+      if (k === 'coach:trainers' && !admin) return json_({ ok: false, error: 'admin' });   // 선생님 목록은 팀장만 고침
       if (!/^[a-z0-9:_\-.]{3,120}$/i.test(k)) return json_({ ok: false, error: 'name' });
       if (JSON.stringify(items[k]).length > 40000) return json_({ ok: false, error: 'size' });
       const memberW = k.indexOf('mw:' + m + ':') === 0 && JSON.stringify(items[k]).length <= 4000;
@@ -302,7 +316,7 @@ function doPost(e) {
     }
   }
   if (b.a === 'bn_add' || b.a === 'bn_del') {
-    if (!keyOk_(b.key)) return json_({ ok: false, error: 'key' });
+    if (!isAdmin_(b.key)) return json_({ ok: false, error: keyOk_(b.key) ? 'admin' : 'key' });   // 전체 공지는 팀장만
     const lock = LockService.getScriptLock();
     lock.waitLock(25000);
     try {

@@ -44,7 +44,10 @@
   var THEME = M.sex === "F" ? "F" : "M";
   /* 사이트 기본 정보 (assets/site.js — 없으면 아래 기본값) */
   var SITE = window.SITE || {};
-  var TRN = SITE.trainer || "OOO", BRAND = SITE.brand || "GYMTOS", BRANCH = SITE.branch || "도당점", BRN = BRAND + (BRANCH ? " " + BRANCH : "");
+  /* 담당 선생님 이름 (2026-11-12 선생님 여러 명) — data.js trainer / 창고 pub:m:<주소>:trainer(팀장이 담당 바꾸면) / 없으면 site.js 트레이너 */
+  var TRN_LS = "ptnote:" + INFO_SLUG + ":trainer";
+  try { var trnC = localStorage.getItem(TRN_LS); if (trnC) M.trainer = trnC; } catch (e) {}
+  var TRN = M.trainer || SITE.trainer || "OOO", BRAND = SITE.brand || "GYMTOS", BRANCH = SITE.branch || "도당점", BRN = BRAND + (BRANCH ? " " + BRANCH : "");
   /* 루틴 고치기 (2026-11-10): 선생님이 폰에서 고친 루틴은 출석 창고(시트 "루틴")에 저장되고,
      회원 휴대폰에는 ptnote:<주소>:routine 으로 기억해 둠 → 열자마자 고친 루틴으로 보임.
      기준(base) = data.js 루틴의 version|updated. data.js 루틴이 새로 올라오면(기준이 달라지면) data.js가 이김 */
@@ -628,6 +631,8 @@
   }
   function careServer(kv) {
     infoServer(kv); dietServer(kv); mediaServer(kv);
+    var tv = kv && kv["pub:m:" + SLUG + ":trainer"];
+    if (typeof tv === "string" && tv && tv !== TRN) { M.trainer = tv; TRN = tv; try { localStorage.setItem(TRN_LS, tv); } catch (e) {} route(); }
     var had, now;
     try { had = localStorage.getItem(CARE_LS); } catch (e) { return; }
     if (kv && typeof kv[CARE_K] === "string") { now = kv[CARE_K]; try { localStorage.setItem(CARE_LS, now); } catch (e) {} }
