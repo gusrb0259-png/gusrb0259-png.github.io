@@ -23,7 +23,7 @@ BODY      = "#FFFFFF"
 PRIMARY   = "#C9A227"
 PRIMARY_E = "#8A6D10"
 SECOND    = "#EAD58F"
-SECOND_E  = "#C97FA4"
+SECOND_E  = "#B89A4A"
 LABELBG   = "#6E6A64"
 
 # 외곽선(오른쪽 절반, 남성 기준). HEAD = 정수리→귀→턱각→목 (Catmull-Rom 촘촘한 점으로 그림)
