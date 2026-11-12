@@ -1197,3 +1197,25 @@ body { overscroll-behavior-y: contain; }
 [data-tab="diet"] .dtbar ~ * :is(h1,h2,h3,b,p,span,small,i,em,li,strong) { cursor: pointer; }
 .ex[data-exi] { cursor: pointer; }
 .ex[data-exi]::after { content: "✎ 눌러서 고치기"; display: block; margin-top: 6px; font-size: 11.5px; font-weight: 800; color: var(--gold); text-align: right; }
+
+/* 복습지 사진·영상 (2026-11-12) */
+.fmgrid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.fmgrid:empty { display: none; }
+.fmd { margin: 0; position: relative; display: flex; flex-direction: column; gap: 4px; }
+.fmd-img { display: block; border-radius: 12px; overflow: hidden; background: var(--tint); aspect-ratio: 3 / 4; }
+.fmd-img img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.fmd-vid { grid-column: 1 / -1; border-radius: 12px; overflow: hidden; background: #000; aspect-ratio: 9 / 16; max-height: 70vh; }
+.fmd:has(.fmd-vid) { grid-column: 1 / -1; }
+.fmd-vid iframe { width: 100%; height: 100%; border: 0; display: block; }
+.fmd figcaption { font-size: 12.5px; color: var(--sub); line-height: 1.4; }
+.fmd-del { position: absolute; top: 6px; right: 6px; font: inherit; font-size: 12px; font-weight: 800; color: #fff; background: rgba(0,0,0,.55); border: 0; border-radius: 99px; padding: 4px 10px; cursor: pointer; }
+.fmd-del.sure { background: var(--bad); }
+.fmadd, .fxnew { width: 100%; font: inherit; font-size: 15px; font-weight: 800; color: var(--primary); background: var(--gold-bg); border: 1.5px dashed var(--gold-line); border-radius: 14px; padding: 13px; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 2px; }
+.fxnew small { font-size: 12px; font-weight: 600; color: var(--sub); }
+.fmd-ph { width: 100%; height: 100%; display: grid; place-items: center; font-size: 26px; color: var(--primary); background: var(--tint); }
+.fxctl { display: flex; gap: 8px; } .fxctl button { flex: 1; font: inherit; font-size: 14px; font-weight: 800; border-radius: 12px; padding: 11px; border: 1.5px solid var(--primary); background: var(--paper); color: var(--primary); cursor: pointer; }
+.fxctl button.del { border-color: var(--bad); color: var(--bad); } .fxctl button.sure { background: var(--bad); color: #fff; }
+.fmpick { position: relative; } .fmpick input { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+.fmpick span { display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 18px 12px; border: 1.5px dashed var(--gold-line); border-radius: 12px; background: var(--gold-bg); color: var(--ink); font-size: 15px; font-weight: 800; text-align: center; }
+.fmpick small { font-size: 11.5px; font-weight: 600; color: var(--sub); }
+.fmname { margin: 0; font-size: 13px; color: var(--primary); font-weight: 700; } .fmname:empty { display: none; }

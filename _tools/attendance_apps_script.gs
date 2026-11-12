@@ -16,6 +16,7 @@ const KV_SHEET = '저장소';
 const RT_KEY_HASH = 'd1d291ea3b82199faf98e99e0a43c5bb5a6e0e887cc60d5fd00653a752a076c3';
 const IB_SHEET = '인바디';
 const IB_FOLDER = 'PT노트 인바디 사진';
+const FM_FOLDER = 'PT노트 복습지 사진·영상';   // 2026-11-12 선생님이 폰으로 올리는 복습지 사진·영상
 
 function book_() {
   const act = SpreadsheetApp.getActiveSpreadsheet();
@@ -252,6 +253,14 @@ function ocr_(b64) {
     try { DriveApp.getFileById(id).setTrashed(true); } catch (e) {}
   }
 }
+function fmFolder_() {
+  const p = PropertiesService.getScriptProperties();
+  const id = p.getProperty('FMF');
+  if (id) { try { return DriveApp.getFolderById(id); } catch (e) {} }
+  const f = DriveApp.createFolder(FM_FOLDER);
+  p.setProperty('FMF', f.getId());
+  return f;
+}
 
 /* ---------------- POST: 인바디 올리기 · 결과지 읽기 (본문 = JSON 글자) */
 function doPost(e) {
@@ -333,6 +342,23 @@ function doPost(e) {
     } finally {
       lock.releaseLock();
     }
+  }
+  /* 복습지 사진·영상 (2026-11-12 트레이너 "복습지에 내가 직접 사진이나 영상 추가") — 선생님 열쇠. 드라이브 폴더에 저장 + 링크가 있는 사람 보기 허용(회원 노트에서 보이게).
+     목록(어느 복습지에 무엇)은 창고 저장소 pub:m:<회원>:fmedia 에 회원 노트가 따로 저장 */
+  if (b.a === 'media_add') {
+    if (!keyOk_(b.key)) return json_({ ok: false, error: 'key' });
+    const mime = String(b.mime || '');
+    if (!/^(image|video)\//.test(mime)) return json_({ ok: false, error: 'type' });
+    if (!b.data || String(b.data).length > 48000000) return json_({ ok: false, error: 'size' });
+    const blob = Utilities.newBlob(Utilities.base64Decode(String(b.data)), mime, m + '_' + Date.now() + '_' + String(b.name || 'media').replace(/[^\w.\-가-힣]/g, '').slice(-40));
+    const file = fmFolder_().createFile(blob);
+    try { file.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW); } catch (err) {}
+    return json_({ ok: true, id: file.getId() });
+  }
+  if (b.a === 'media_del') {
+    if (!keyOk_(b.key)) return json_({ ok: false, error: 'key' });
+    try { DriveApp.getFileById(String(b.id || '')).setTrashed(true); } catch (err) {}
+    return json_({ ok: true });
   }
   if (b.a !== 'inbody_add') return json_({ ok: false, error: 'action' });
   const d = String(b.d || '');

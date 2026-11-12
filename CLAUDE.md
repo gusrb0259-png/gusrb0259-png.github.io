@@ -230,6 +230,14 @@ _tools/anatomy_v3.py  인체모형 v3 (자극 부위 그림). build(경로, 앞 
 - base = data.js 식단 기준(dietBase: 표면 "o|updated", 글이면 앞 60자). **Claude가 data.js 식단을 새로 올리면 폰에서 고친 식단은 꺼짐** → 루틴처럼 먼저 트레이너에게 폰에서 고친 게 있는지 물을 것(시트 "저장소" 탭의 pub:m:<주소>:diet).
 - 코드 app.js dietApply·dietServer·dietBar·dPaths + "터치해서 고치기" 클릭 핸들러, style.css .dtbar.
 
+## 복습지 사진·영상 — 선생님 폰에서 올리기 (2026-11-12 트레이너 "복습지에 내가 직접 사진이나 영상 추가")
+- 선생님 보기에서: 모든 복습지에 "선생님이 올린 사진 · 영상" 칸(+ 올리기 / 사진마다 삭제 두 번), 복습지 탭 맨 위 "＋ 사진·영상 복습지 만들기"(운동 이름·부위·메모만 → 간단 복습지, 이름·메모 고치기·복습지 지우기).
+- 파일: 창고 POST media_add {m, key, data(base64), mime, name} → 드라이브 "PT노트 복습지 사진·영상" 폴더, 링크가 있는 사람 보기 허용 → 파일 id. media_del {id} = 휴지통. 사진은 폰에서 긴 쪽 1600px JPEG로 줄여 올림, 영상은 35MB까지(30초 이하 추천).
+- 목록: 창고 저장소 `pub:m:<주소>:fmedia` {복습지id: [{id, t:"img"|"vid", cap, at}]} / 간단 복습지 `pub:m:<주소>:fx` [{id:"x…", exercise, part, note, date}] → app.js가 M.forms 맨 앞에 simple:true로 끼움(renderSimpleForm). 회원 폰은 ptnote:<주소>:fm / :fx 에 기억.
+- 보여 주기: 사진 = https://lh3.googleusercontent.com/d/<id>=w1200 (안 되면 drive thumbnail), 영상 = drive.google.com/file/d/<id>/preview iframe(올린 뒤 몇 분은 "처리 중").
+- **창고 코드 바뀜(media_add·media_del) → Apps Script 새 버전 배포해야 올리기가 됨** (옛 버전이면 "창고를 새 버전으로 다시 배포해야" 안내).
+- 클래스 이름은 .fmd*(식단 .fm 과 겹치지 않게).
+
 ## 앱처럼 — 회원 노트 (2026-11-12 트레이너 "앱처럼 만들기 2번")
 - 화면 넘김: 아래 탭 순서 기준 오른쪽 탭으로 가면 오른쪽에서, 왼쪽이면 왼쪽에서 0.3초 미끄러져 들어옴(.view.v-in-r/-l), 고른 탭 아이콘 톡(.tab-pop).
 - 옆으로 밀기: 본문을 좌우로 70px 넘게 빠르게 밀면 옆 탭으로. 가로로 밀리는 칸(요일 타일 등)·입력칸·고치기 창·팝업 위에선 안 함(app.js blocked).

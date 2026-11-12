@@ -31,6 +31,14 @@
   }
   var DIET_REC = null;
   try { DIET_REC = JSON.parse(localStorage.getItem(DIET_LS) || "null"); if (!dietApply(DIET_REC)) DIET_REC = null; } catch (e) {}
+  /* 선생님이 폰으로 올린 복습지 사진·영상 (2026-11-12) — 창고 pub:m:<주소>:fmedia {복습지id: [{id, t:"img"|"vid", cap, at}]}
+     + 사진·영상만으로 만든 간단 복습지 pub:m:<주소>:fx [{id, exercise, part, note, date}] → M.forms 맨 앞에 끼움(simple) */
+  var FM_LS = "ptnote:" + INFO_SLUG + ":fm", FX_LS = "ptnote:" + INFO_SLUG + ":fx", FORMS_ORIG = (M.forms || []).slice(), FMEDIA = {}, FX = [];
+  function fxApply(fx) {
+    FX = Array.isArray(fx) ? fx : [];
+    M.forms = FX.map(function (x) { var o = {}; for (var k in x) o[k] = x[k]; o.simple = true; o.targets = []; return o; }).concat(FORMS_ORIG);
+  }
+  try { FMEDIA = JSON.parse(localStorage.getItem(FM_LS) || "{}") || {}; fxApply(JSON.parse(localStorage.getItem(FX_LS) || "null")); } catch (e) { fxApply(null); }
   var SCRIPT = document.currentScript;
   var BASE = SCRIPT ? SCRIPT.src.replace(/app\.js(\?.*)?$/, "") : "../../assets/";
   var THEME = M.sex === "F" ? "F" : "M";
@@ -606,8 +614,20 @@
     try { had = localStorage.getItem(DIET_LS); if (now) localStorage.setItem(DIET_LS, now); else localStorage.removeItem(DIET_LS); } catch (e) { return; }
     if (had !== now) { DIET_REC = dietApply(v) ? v : null; if (view.getAttribute("data-tab") === "diet" || view.getAttribute("data-tab") === "home") rerender(); litApply(view.getAttribute("data-tab")); }
   }
+  function mediaServer(kv) {
+    if (!kv) return;
+    var fm = kv["pub:m:" + SLUG + ":fmedia"], fx = kv["pub:m:" + SLUG + ":fx"];
+    var a = JSON.stringify(fm && typeof fm === "object" ? fm : {}), b = JSON.stringify(Array.isArray(fx) ? fx : []);
+    var ha = null, hb = null;
+    try { ha = localStorage.getItem(FM_LS) || "{}"; hb = localStorage.getItem(FX_LS) || "[]"; localStorage.setItem(FM_LS, a); localStorage.setItem(FX_LS, b); } catch (e) {}
+    if (ha !== a || hb !== b) {
+      FMEDIA = JSON.parse(a); fxApply(JSON.parse(b));
+      var t = view.getAttribute("data-tab"); if (t === "forms" || t === "home") rerender();
+      litApply(t);
+    }
+  }
   function careServer(kv) {
-    infoServer(kv); dietServer(kv);
+    infoServer(kv); dietServer(kv); mediaServer(kv);
     var had, now;
     try { had = localStorage.getItem(CARE_LS); } catch (e) { return; }
     if (kv && typeof kv[CARE_K] === "string") { now = kv[CARE_K]; try { localStorage.setItem(CARE_LS, now); } catch (e) {} }
@@ -1685,19 +1705,53 @@
     });
   }
 
+  function fmImg(id, w) { return "https://lh3.googleusercontent.com/d/" + encodeURIComponent(id) + "=w" + (w || 1200); }
+  function fmThumb(f) {
+    var L = FMEDIA[f.id] || [], im = null;
+    for (var i = 0; i < L.length; i++) if (L[i].t === "img") { im = L[i]; break; }
+    if (im) return '<img src="' + esc(fmImg(im.id, 320)) + '" alt="" loading="lazy">';
+    return '<span class="fmd-ph">' + (L.length ? "▶" : "📷") + '</span>';
+  }
   function formCard(f) {
-    return '<a class="card-link" href="#form-' + esc(f.id) + '"><div class="thumb"><img src="' + esc(f.dir) + 'poster.jpg" alt="" loading="lazy"></div>' +
-      '<div><span class="tagc">' + esc(f.part) + '</span>' + (formNew(f) ? '<span class="fnew">NEW</span>' : '') + '<h3>' + esc(f.exercise) + '</h3><p>' + esc(f.exercise_en) + ' · ' + esc(f.date) + '</p></div></a>';
+    return '<a class="card-link" href="#form-' + esc(f.id) + '"><div class="thumb">' + (f.simple ? fmThumb(f) : '<img src="' + esc(f.dir) + 'poster.jpg" alt="" loading="lazy">') + '</div>' +
+      '<div>' + (f.part ? '<span class="tagc">' + esc(f.part) + '</span>' : '') + (formNew(f) ? '<span class="fnew">NEW</span>' : '') + '<h3>' + esc(f.exercise) + '</h3><p>' + (f.simple ? '사진·영상 ' + (FMEDIA[f.id] || []).length + '개' : esc(f.exercise_en)) + ' · ' + esc(f.date) + '</p></div></a>';
   }
   function renderForms() {
-    var h = '<section>' + head("", "자세 복습지", "수업에서 배운 자세를 영상으로 다시 봐요");
+    var h = (CAN_EDIT ? '<button type="button" class="fxnew" data-fx="new">＋ 사진·영상 복습지 만들기<small>운동 이름만 넣고 사진·영상을 바로 올려요</small></button>' : '') +
+      '<section>' + head("", "자세 복습지", "수업에서 배운 자세를 영상으로 다시 봐요");
     h += M.forms.length ? '<div class="flist">' + M.forms.map(formCard).join("") + '</div>' :
       '<div class="panel empty"><h3>아직 복습지가 없어요</h3><p>수업에서 배운 자세가 여기에 쌓여요</p></div>';
     return h + '</section>' + remember();
   }
 
   /* ---------------- 복습지 상세 */
+  function mediaSection(f) {
+    var L = FMEDIA[f.id] || [];
+    if (!L.length && !CAN_EDIT) return "";
+    var h = '<section id="fmedia">' + head("", f.simple ? "사진 · 영상" : "선생님이 올린 사진 · 영상", L.length ? L.length + "개" : "") + '<div class="fmgrid">';
+    h += L.map(function (x, i) {
+      var m = x.t === "vid"
+        ? '<div class="fmd-vid"><iframe src="https://drive.google.com/file/d/' + esc(encodeURIComponent(x.id)) + '/preview" allow="autoplay; fullscreen" allowfullscreen loading="lazy" title="수업 영상"></iframe></div>'
+        : '<a class="fmd-img" href="' + esc(fmImg(x.id, 2000)) + '" target="_blank" rel="noopener"><img src="' + esc(fmImg(x.id)) + '" alt="' + esc(x.cap || "수업 사진") + '" loading="lazy" onerror="this.onerror=null;this.src=\'https://drive.google.com/thumbnail?id=' + esc(encodeURIComponent(x.id)) + '&sz=w1200\'"></a>';
+      return '<figure class="fmd">' + m + (x.cap ? '<figcaption>' + esc(x.cap) + '</figcaption>' : '') +
+        (CAN_EDIT ? '<button type="button" class="fmd-del" data-fmdel="' + i + '">삭제</button>' : '') + '</figure>';
+    }).join("");
+    h += '</div>' + (CAN_EDIT ? '<button type="button" class="fmadd" data-fmadd="' + esc(f.id) + '">＋ 사진 · 영상 올리기</button>' : '') +
+      (L.some(function (x) { return x.t === "vid"; }) ? '<p class="hint">영상은 올린 뒤 몇 분 동안 "처리 중"으로 보일 수 있어요</p>' : '') + '</section>';
+    return h;
+  }
+  function renderSimpleForm(f) {
+    var h = '<a class="back" href="#forms">← 복습지 목록</a>';
+    h += '<div class="hero"><div class="hero-main"><div class="hero-l"><div class="eyebrow">MY FORM NOTE <b>· 자세 복습지</b></div><h1>' + esc(f.exercise) + '</h1>' +
+      (f.part ? '<div class="en">' + esc(f.part) + '</div>' : '') +
+      '<div class="who"><strong>' + esc(M.name) + ' 회원님</strong><span>' + esc(f.date) + '</span></div></div></div>' +
+      (f.note ? '<div class="keypoint"><small>KEY POINT</small><p style="white-space:pre-line">' + esc(f.note) + '</p></div>' : '') + '</div>';
+    h += mediaSection(f);
+    if (CAN_EDIT) h += '<div class="fxctl"><button type="button" data-fx="edit" data-id="' + esc(f.id) + '">✎ 이름 · 메모 고치기</button><button type="button" class="del" data-fx="del" data-id="' + esc(f.id) + '">복습지 지우기</button></div>';
+    return h + remember();
+  }
   function renderForm(f) {
+    if (f.simple) return renderSimpleForm(f);
     var D = f.dir;
     var h = '<a class="back" href="#forms">← 복습지 목록</a>';
     h += '<div class="hero"><div class="hero-main split"><div class="hero-l">' +
@@ -1719,6 +1773,7 @@
       '<button class="btn" type="button" data-rate="1" aria-pressed="true">보통 속도</button></div>' +
       '<p class="hint" id="hint">영상을 누르면 멈추고, 다시 누르면 재생돼요</p></section>';
 
+    h += mediaSection(f);
     h += '<section>' + head("02", "오늘 잘한 점", "이대로만 하면 돼요") + '<div class="cards3">' +
       f.good_points.map(function (g, i) {
         return '<div class="good"><div class="tag">' + CHECK + 'POINT ' + (i + 1) + '</div><h3>' + esc(g.title) + '</h3><p>' + esc(g.desc) + '</p></div>';
@@ -2713,6 +2768,119 @@
         dietSave({ base: DIET_BASE, diet: nd, at: Date.now() }, sh); return true;
       }, "저장 · 바로 반영");
     var ta = document.getElementById("dtIn"); if (ta) { ta.focus(); ta.select(); }
+  });
+
+  /* ---------------- 복습지 사진·영상 올리기 (선생님 보기) */
+  function fmSaveKv(items, key) { return rtPost({ a: "kv_set", key: key, items: items }); }
+  function fmB64(file, cb, err) {
+    if (/^image\//.test(file.type) && !/gif$/.test(file.type)) {   /* 사진은 긴 쪽 1600px JPEG로 줄여서 */
+      var img = new Image(), url = URL.createObjectURL(file);
+      img.onload = function () {
+        var k = Math.min(1, 1600 / Math.max(img.width, img.height)), c = document.createElement("canvas");
+        c.width = Math.round(img.width * k); c.height = Math.round(img.height * k);
+        c.getContext("2d").drawImage(img, 0, 0, c.width, c.height); URL.revokeObjectURL(url);
+        cb(c.toDataURL("image/jpeg", 0.85).split(",")[1], "image/jpeg");
+      };
+      img.onerror = function () { err("사진을 열 수 없어요"); }; img.src = url; return;
+    }
+    var r = new FileReader();
+    r.onload = function () { cb(String(r.result).split(",")[1], file.type || "video/mp4"); };
+    r.onerror = function () { err("파일을 읽을 수 없어요"); };
+    r.readAsDataURL(file);
+  }
+  document.addEventListener("click", function (e) {
+    if (!CAN_EDIT || !e.target.closest) return;
+    var fx = e.target.closest("[data-fx]"), add = e.target.closest("[data-fmadd]"), del = e.target.closest("[data-fmdel]");
+    if (!fx && !add && !del) return;
+    if (fx) {
+      var act = fx.getAttribute("data-fx"), id = fx.getAttribute("data-id"), cur = null;
+      FX.forEach(function (x) { if (x.id === id) cur = x; });
+      if (act === "del") {
+        if (!fx.classList.contains("sure")) { fx.classList.add("sure"); fx.textContent = "한 번 더 누르면 지워져요"; return; }
+        var nfx = FX.filter(function (x) { return x.id !== id; }), nfm = clone(FMEDIA); var gone = nfm[id] || []; delete nfm[id];
+        var it = {}; it["pub:m:" + SLUG + ":fx"] = nfx; it["pub:m:" + SLUG + ":fmedia"] = nfm;
+        fmSaveKv(it, rtKey()).then(function (j) {
+          if (!j || !j.ok) { attToast("저장이 안 됐어요 — 선생님 열쇠·인터넷을 확인해 주세요"); return; }
+          gone.forEach(function (x) { rtPost({ a: "media_del", key: rtKey(), id: x.id }).catch(function () {}); });
+          try { localStorage.setItem(FX_LS, JSON.stringify(nfx)); localStorage.setItem(FM_LS, JSON.stringify(nfm)); } catch (x) {}
+          FMEDIA = nfm; fxApply(nfx); location.hash = "#forms"; attToast("지웠어요");
+        }).catch(function () { attToast(rtNetMsg()); });
+        return;
+      }
+      rtSheet(cur ? "복습지 이름 · 메모" : "사진·영상 복습지 만들기",
+        '<label>운동 이름<input id="fxN" maxlength="40" placeholder="예: 스미스 스쿼트" value="' + esc(cur ? cur.exercise : "") + '" autocomplete="off"></label>' +
+        '<label>부위 <small>없어도 돼요</small><input id="fxP" maxlength="20" placeholder="예: 하체" value="' + esc(cur ? cur.part || "" : "") + '" autocomplete="off"></label>' +
+        '<label>메모 <small>KEY POINT 칸에 보여요 · 없어도 돼요</small><textarea id="fxM" rows="3" maxlength="400" placeholder="예: 무릎이 발끝 방향으로, 내려갈 때 3초">' + esc(cur ? cur.note || "" : "") + '</textarea></label>' + KEYF(),
+        function (sh) {
+          var n = sh.querySelector("#fxN").value.trim(); if (!n) return "운동 이름을 넣어 주세요";
+          var key = (sh.querySelector("#sKey").value || "").trim() || rtKey(); if (!key) { sh.querySelector("#sKeyWrap").hidden = false; return "선생님 열쇠를 넣어 주세요"; }
+          var nfx = FX.map(function (x) { return x; }), rec;
+          if (cur) { rec = {}; for (var k in cur) rec[k] = cur[k]; nfx = nfx.map(function (x) { return x.id === cur.id ? rec : x; }); }
+          else { rec = { id: "x" + Date.now().toString(36), date: dToday() }; nfx.unshift(rec); }
+          rec.exercise = n; rec.part = sh.querySelector("#fxP").value.trim(); rec.note = sh.querySelector("#fxM").value.trim();
+          var it = {}; it["pub:m:" + SLUG + ":fx"] = nfx;
+          sh.msg("저장하는 중…");
+          fmSaveKv(it, key).then(function (j) {
+            if (!j || !j.ok) { rtErr(j, sh); return; }
+            try { localStorage.setItem("ptkey", key); localStorage.setItem(FX_LS, JSON.stringify(nfx)); } catch (x) {}
+            fxApply(nfx); sh.close();
+            if (location.hash === "#form-" + rec.id) rerender(); else location.hash = "#form-" + rec.id;
+            if (!cur) attToast("복습지를 만들었어요 · 이제 사진·영상을 올려요");
+          }).catch(function () { sh.msg(rtNetMsg()); });
+          return true;
+        }, cur ? "저장" : "만들기");
+      return;
+    }
+    var fidEl = add || del, fid = add ? add.getAttribute("data-fmadd") : (location.hash.match(/^#form-(.+)$/) || [])[1];
+    if (!fid) return;
+    if (del) {
+      if (!del.classList.contains("sure")) { del.classList.add("sure"); del.textContent = "한 번 더"; return; }
+      var i = +del.getAttribute("data-fmdel"), nfm2 = clone(FMEDIA), L = (nfm2[fid] || []).slice(), x = L.splice(i, 1)[0];
+      nfm2[fid] = L; if (!L.length) delete nfm2[fid];
+      var it2 = {}; it2["pub:m:" + SLUG + ":fmedia"] = nfm2;
+      fmSaveKv(it2, rtKey()).then(function (j) {
+        if (!j || !j.ok) { attToast("저장이 안 됐어요 — 선생님 열쇠·인터넷을 확인해 주세요"); return; }
+        if (x) rtPost({ a: "media_del", key: rtKey(), id: x.id }).catch(function () {});
+        try { localStorage.setItem(FM_LS, JSON.stringify(nfm2)); } catch (y) {}
+        FMEDIA = nfm2; rerender(); attToast("지웠어요");
+      }).catch(function () { attToast(rtNetMsg()); });
+      return;
+    }
+    rtSheet("사진 · 영상 올리기",
+      '<label class="fmpick"><input type="file" id="fmFile" accept="image/*,video/*"><span>📷 사진 · 영상 고르기 <small>찍거나 앨범에서 · 영상은 30초 이하 추천(최대 35MB)</small></span></label>' +
+      '<p class="fmname" id="fmName"></p>' +
+      '<label>설명 <small>없어도 돼요 · 사진 아래 작은 글씨</small><input id="fmCap" maxlength="80" placeholder="예: 내려갈 때 무릎 방향 체크" autocomplete="off"></label>' + KEYF(),
+      function (sh) {
+        var f = sh.querySelector("#fmFile").files[0];
+        if (!f) return "사진이나 영상을 골라 주세요";
+        if (!/^(image|video)\//.test(f.type)) return "사진이나 영상만 올릴 수 있어요";
+        if (/^video\//.test(f.type) && f.size > 35 * 1024 * 1024) return "영상이 너무 커요 (" + Math.round(f.size / 1048576) + "MB) — 30초 이하로 잘라서 올려 주세요";
+        var key = (sh.querySelector("#sKey").value || "").trim() || rtKey(); if (!key) { sh.querySelector("#sKeyWrap").hidden = false; return "선생님 열쇠를 넣어 주세요"; }
+        var cap = sh.querySelector("#fmCap").value.trim(), isV = /^video\//.test(f.type);
+        sh.msg(isV ? "영상 올리는 중… (크기에 따라 30초~1분)" : "사진 올리는 중…");
+        sh.querySelector("[data-ok]").disabled = true;
+        fmB64(f, function (b64, mime) {
+          fetch(ATT_API, { method: "POST", body: JSON.stringify({ a: "media_add", m: SLUG, key: key, data: b64, mime: mime, name: f.name }) })
+            .then(function (r) { return r.json(); }).then(function (j) {
+              if (!j || !j.ok) {
+                sh.querySelector("[data-ok]").disabled = false;
+                if (j && j.error === "action") return sh.msg("창고(Apps Script)를 새 버전으로 다시 배포해야 올릴 수 있어요 — Claude에게 '창고 배포해줘'라고 말해 주세요");
+                return rtErr(j, sh);
+              }
+              var nfm = clone(FMEDIA); (nfm[fid] = nfm[fid] || []).push({ id: j.id, t: isV ? "vid" : "img", cap: cap, at: Date.now() });
+              var it = {}; it["pub:m:" + SLUG + ":fmedia"] = nfm;
+              return fmSaveKv(it, key).then(function (j2) {
+                sh.querySelector("[data-ok]").disabled = false;
+                if (!j2 || !j2.ok) return rtErr(j2, sh);
+                try { localStorage.setItem("ptkey", key); localStorage.setItem(FM_LS, JSON.stringify(nfm)); } catch (y) {}
+                FMEDIA = nfm; sh.close(); rerender(); attToast(isV ? "영상을 올렸어요 · 몇 분 뒤부터 재생돼요" : "사진을 올렸어요");
+              });
+            }).catch(function () { sh.querySelector("[data-ok]").disabled = false; sh.msg(rtNetMsg()); });
+        }, function (m) { sh.querySelector("[data-ok]").disabled = false; sh.msg(m); });
+        return true;
+      }, "올리기");
+    var fi = document.getElementById("fmFile");
+    if (fi) fi.addEventListener("change", function () { var f = fi.files[0]; document.getElementById("fmName").textContent = f ? "고른 파일: " + f.name + " (" + (f.size / 1048576).toFixed(1) + "MB)" : ""; });
   });
 
   /* ---------------- 앱처럼 (2026-11-12 트레이너 "앱처럼 — 2번") — 화면 넘김 애니메이션 · 옆으로 밀어 탭 이동 · 당겨서 새로고침 · 시작 화면 · 눌림 효과(style.css)
