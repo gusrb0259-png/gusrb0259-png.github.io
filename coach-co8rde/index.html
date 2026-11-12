@@ -828,10 +828,21 @@ section.folded .fsum:not(:empty) { display: inline; }
       w.onmessage = function (e) {
         clearTimeout(tm); w.terminate();
         var d = e.data || {}; if (d.err || !d.api) { ok([]); return; }
-        ok((d.members || []).map(function (m) {
-          var M = m.M || {}; M._base = t.ext.site + "/m/" + m.slug + "/"; M._api = d.api; M._tid = t.id; if (!M.name) M.name = m.slug;
-          return { slug: m.slug, M: M, ext: 1 };
-        }));
+        function row(slug, M) { M._base = t.ext.site + "/m/" + slug + "/"; M._api = d.api; M._tid = t.id; if (!M.name) M.name = slug; return { slug: slug, M: M, ext: 1 }; }
+        var rows = (d.members || []).map(function (m) { return row(m.slug, m.M || {}); }), have = rows.map(function (r) { return r.slug; });
+        /* 그 사이트에서 폰으로 만든 회원: 그 사이트 창고의 공개 목록 pub:m:roster-list:members (그 사이트 선생님 페이지가 저장) → 회원마다 pub:m:<주소>:member|profile */
+        var gj = function (m) { return fetch(d.api + "?m=" + encodeURIComponent(m), { cache: "no-store" }).then(function (r) { return r.json(); }).catch(function () { return null; }); };
+        gj("roster-list").then(function (j) {
+          var L = j && j.kv && j.kv["pub:m:roster-list:members"];
+          L = Array.isArray(L) ? L.filter(function (x) { return x && /^[a-z0-9-]{3,40}$/.test(x.slug || "") && have.indexOf(x.slug) < 0; }) : [];
+          return Promise.all(L.map(function (x) {
+            return gj(x.slug).then(function (k) {
+              var M = k && k.kv && (k.kv["pub:m:" + x.slug + ":member"] || k.kv["pub:m:" + x.slug + ":profile"]);
+              M = M && typeof M === "object" ? M : { name: x.name, sex: x.sex, goal: x.goal || "", journey: x.start ? { start: x.start } : null, routine: null, forms: [] };
+              return row(x.slug, M);
+            });
+          }));
+        }).then(function (more) { ok(rows.concat(more)); }).catch(function () { ok(rows); });
       };
       w.onerror = function () { clearTimeout(tm); ok([]); };
       w.postMessage({ site: t.ext.site, coach: t.ext.coach });
