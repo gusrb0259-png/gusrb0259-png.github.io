@@ -65,13 +65,34 @@
 .tchips button { white-space: nowrap; flex: none; }
 .tasg { display: inline-flex; align-items: center; gap: 4px; } .tasg select { font: inherit; font-size: 12.5px; font-weight: 800; color: var(--ink); border: 1.5px solid var(--rule); border-radius: 8px; padding: 2px 4px; background: var(--paper); }
 .xtag { font-size: 11.5px; font-weight: 800; color: var(--primary); border: 1.5px solid var(--rule); border-radius: 99px; padding: 1px 8px; }
+.bar-r { display: flex; align-items: center; gap: 10px; }
+.tmenu { display: inline-flex; align-items: center; gap: 6px; font: inherit; font-size: 13px; font-weight: 800; color: var(--ink); background: var(--paper); border: 1.5px solid var(--rule); border-radius: 99px; padding: 6px 12px 6px 9px; cursor: pointer; max-width: 150px; }
+.tmenu svg { width: 18px; height: 18px; flex: none; } .tmenu b { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.tmenu.on { background: var(--primary); border-color: var(--primary); color: #fff; }
+.tdraw { position: fixed; inset: 0; z-index: 60; }
+.tdbg { position: absolute; inset: 0; background: rgba(20, 22, 28, .45); animation: tdf .2s ease; }
+.tdpanel { position: absolute; top: 0; right: 0; bottom: 0; width: min(340px, 86vw); background: var(--paper, #fff); box-shadow: -8px 0 28px rgba(0,0,0,.18); display: flex; flex-direction: column; padding: calc(14px + env(safe-area-inset-top, 0px)) 16px calc(16px + env(safe-area-inset-bottom, 0px)); overflow-y: auto; animation: tdi .25s ease; }
+@keyframes tdi { from { transform: translateX(100%); } } @keyframes tdf { from { opacity: 0; } }
+@media (prefers-reduced-motion: reduce) { .tdpanel, .tdbg { animation: none; } }
+.tdh { display: flex; align-items: center; justify-content: space-between; } .tdh b { font-size: 18px; }
+.tdh button { font: inherit; font-size: 18px; border: 0; background: none; cursor: pointer; padding: 6px 8px; color: var(--sub); }
+.tds { margin: 4px 0 14px; font-size: 12.5px; color: var(--sub); }
+#tdList { display: flex; flex-direction: column; gap: 8px; }
+.tdi { display: flex; align-items: center; gap: 12px; width: 100%; text-align: left; font: inherit; color: var(--ink); background: var(--paper); border: 1.5px solid var(--rule); border-radius: 14px; padding: 11px 12px; cursor: pointer; }
+.tdi[aria-current="true"] { border-color: var(--primary); box-shadow: inset 0 0 0 1.5px var(--primary); }
+.tdi .tav { width: 38px; height: 38px; border-radius: 50%; background: var(--primary); color: #fff; display: grid; place-items: center; font-weight: 800; flex: none; }
+.tdi.all .tav { background: #C9A227; } .tdi.off { opacity: .55; }
+.tdi .tt { flex: 1; min-width: 0; } .tdi .tt b { display: block; font-size: 15.5px; } .tdi .tt small { font-size: 12px; color: var(--sub); }
+.tdi .tn { font-size: 20px; font-weight: 800; font-variant-numeric: tabular-nums; } .tdi .tn small { font-size: 12px; font-weight: 700; color: var(--sub); margin-left: 1px; }
+.tdi .ok { color: var(--good); font-weight: 800; } .tdi .no { color: var(--bad); font-weight: 800; }
+.tdmg { margin-top: 16px; font: inherit; font-size: 13.5px; font-weight: 700; color: var(--sub); background: none; border: 1.5px dashed var(--rule); border-radius: 12px; padding: 11px; cursor: pointer; }
 .trbox { display: flex; flex-direction: column; gap: 10px; }
 .trl { display: flex; flex-direction: column; gap: 8px; }
-.tri { display: flex; align-items: center; gap: 10px; border: 1.5px solid var(--rule); border-radius: 12px; padding: 10px 12px; }
+.tri { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px; border: 1.5px solid var(--rule); border-radius: 12px; padding: 10px 12px; }
 .tri.off { opacity: .55; }
 .tri .tav { width: 34px; height: 34px; border-radius: 50%; background: var(--primary); color: #fff; display: grid; place-items: center; font-weight: 800; flex: none; }
 .tri .tt { flex: 1; min-width: 0; } .tri .tt b { display: block; font-size: 15px; } .tri .tt small { font-size: 12px; color: var(--sub); }
-.tri .tb { display: flex; gap: 4px; flex-wrap: wrap; justify-content: flex-end; }
+.tri .tb { display: flex; gap: 4px; flex-wrap: wrap; flex-basis: 100%; padding-left: 44px; }
 .tri .tb button { font: inherit; font-size: 12px; font-weight: 700; padding: 5px 9px; border-radius: 99px; border: 1.5px solid var(--rule); background: var(--paper); color: var(--sub); cursor: pointer; }
 .tri .tb button.sure { background: var(--bad); border-color: var(--bad); color: #fff; }
 .trf { display: flex; gap: 8px; } .trf input { flex: 1; min-width: 0; font: inherit; font-size: 15px; padding: 10px 12px; border: 1.5px solid var(--rule); border-radius: 12px; }
@@ -186,7 +207,12 @@ section.folded .fsum:not(:empty) { display: inline; }
 </style>
 </head>
 <body>
-<header class="bar"><div class="bar-in"><img src="/assets/logo.png" alt="GYMTOS"><span>선생님 페이지</span></div></header>
+<header class="bar"><div class="bar-in"><img src="/assets/logo.png" alt="GYMTOS"><div class="bar-r"><span>선생님 페이지</span>
+  <button type="button" class="tmenu" id="tmenu" hidden aria-label="선생님별로 보기" aria-haspopup="dialog"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg><b id="tmenuLab">전체</b></button></div></div></header>
+<div class="tdraw" id="tdraw" hidden><div class="tdbg" id="tdbg"></div>
+  <nav class="tdpanel" role="dialog" aria-modal="true" aria-label="선생님별로 보기"><div class="tdh"><b>선생님별로 보기</b><button type="button" id="tdClose" aria-label="닫기">✕</button></div>
+  <p class="tds">누르면 그 선생님 회원만 보여요 · 오늘 한눈에·출석왕도 같이 바뀌어요</p><div id="tdList"></div>
+  <button type="button" class="tdmg" id="tdMg">⚙ 선생님 관리 (추가 · 링크 · 개인 사이트)</button></nav></div>
 <main class="wrap">
   <div class="hero"><div class="hero-main"><div class="hero-l">
     <div class="eyebrow">MY MEMBERS <b>· 담당 회원 PT 노트</b></div>
@@ -626,12 +652,7 @@ section.folded .fsum:not(:empty) { display: inline; }
             var el = box.children[i]; if (el) el.outerHTML = card(r.slug, r.M, days);
             paneMark();
             applyFilter();
-            if (days[today] != null) onN++; else if (isRestToday(r.M)) restN++;
-            done++;
-            document.getElementById("sOn").textContent = onN;
-            document.getElementById("sWait").textContent = done === rows.length ? (rows.length - onN - restN) : "…";
-            if (done === rows.length) fsum("today", "출석 " + onN + " · 미출석 " + (rows.length - onN - restN));
-            if (done === rows.length) renderRank(rows);
+            sumDraw(); if (TRAINERS.length && ME.admin) tdDraw();
           });
       });
     });
@@ -768,21 +789,74 @@ section.folded .fsum:not(:empty) { display: inline; }
   }
   function tChips() {
     var box = document.getElementById("tchips");
-    if (!ME.admin || !TRAINERS.length) { box.hidden = true; TF = "all"; return; }
+    if (!ME.admin || !TRAINERS.length) { box.hidden = true; TF = "all"; document.getElementById("tmenu").hidden = true; return; }
     var cnt = { all: ROWS.length };
     ROWS.forEach(function (r) { var t = tidOf(r.slug, r.M); cnt[t] = (cnt[t] || 0) + 1; });
     var ids = ["all", "admin"].concat(TRAINERS.map(function (t) { return t.id; }));
+    if (!tChips.done) { tChips.done = 1; try { TF = sessionStorage.getItem("ptcoach:tf") || TF; } catch (e) {} }
     if (ids.indexOf(TF) < 0) TF = "all";
     box.innerHTML = ids.map(function (id) {
       return '<button type="button" data-tf="' + esc(id) + '" aria-pressed="' + (TF === id) + '">' + esc(id === "all" ? "모든 선생님" : tName(id)) + ' <b>' + (cnt[id] || 0) + '</b></button>';
     }).join("");
     box.hidden = false;
+    var mb = document.getElementById("tmenu"); mb.hidden = false; mb.classList.toggle("on", TF !== "all");
+    document.getElementById("tmenuLab").textContent = TF === "all" ? "전체" : tName(TF);
   }
+  /* ---- ☰ 선생님별로 보기 (2026-11-12 팀장 "선생님들 내가 편하게 볼 수 있게 카테고리로, 세 줄 아이콘으로")
+     고르면 회원 목록·오늘 한눈에·출석왕이 그 선생님 회원만으로 바뀜(TF). 이 폰에 기억(sessionStorage ptcoach:tf) */
+  function tStat(id) {
+    var rs = ROWS.filter(function (r) { return id === "all" || tidOf(r.slug, r.M) === id; }), on = 0, rest = 0, done = 0;
+    rs.forEach(function (r) { if (!r.days) return; done++; if (r.days[today] != null) on++; else if (isRestToday(r.M)) rest++; });
+    return { rows: rs, n: rs.length, on: on, off: rs.length - on - rest, done: done === rs.length };
+  }
+  function sumDraw() {
+    var st = tStat(TF);
+    document.getElementById("sAll").textContent = st.n;
+    document.getElementById("sOn").textContent = st.on;
+    document.getElementById("sWait").textContent = st.done ? st.off : "…";
+    document.getElementById("sub").textContent = BRN + " · " + (TF === "all" ? "담당 회원 " : tName(TF) + " 선생님 회원 ") + st.n + "명";
+    if (st.done) { fsum("today", "출석 " + st.on + " · 미출석 " + st.off); renderRank(st.rows); }
+  }
+  function setTF(id) {
+    TF = id || "all";
+    try { sessionStorage.setItem("ptcoach:tf", TF); } catch (e) {}
+    Array.prototype.forEach.call(document.querySelectorAll("#tchips button"), function (o) { o.setAttribute("aria-pressed", String(o.getAttribute("data-tf") === TF)); });
+    var mb = document.getElementById("tmenu"); mb.classList.toggle("on", TF !== "all");
+    document.getElementById("tmenuLab").textContent = TF === "all" ? "전체" : tName(TF);
+    applyFilter(); sumDraw(); tdDraw();
+  }
+  function tdDraw() {
+    var box = document.getElementById("tdList"); if (!box) return;
+    var ids = ["all", "admin"].concat(TRAINERS.map(function (t) { return t.id; }));
+    box.innerHTML = ids.map(function (id) {
+      var st = tStat(id), t = TRAINERS.filter(function (x) { return x.id === id; })[0], nm = id === "all" ? "모든 선생님" : tName(id);
+      var sub = id === "all" ? "선생님 " + (TRAINERS.length + 1) + "명 전체" : id === "admin" ? "팀장" : (t && t.ext ? "개인 사이트 연결" : "") + (t && t.off ? " · 꺼짐" : "");
+      return '<button type="button" class="tdi' + (id === "all" ? " all" : "") + (t && t.off ? " off" : "") + '" data-tf="' + esc(id) + '" aria-current="' + (TF === id) + '">' +
+        '<span class="tav">' + (id === "all" ? "全" : esc(nm.charAt(0))) + '</span><span class="tt"><b>' + esc(nm) + '</b><small>' +
+        (st.n ? '오늘 출석 <span class="ok">' + st.on + '</span> · 미출석 <span class="no">' + (st.done ? st.off : "…") + '</span>' : '아직 회원 없음') + (sub ? ' · ' + esc(sub) : '') + '</small></span>' +
+        '<span class="tn">' + st.n + '<small>명</small></span></button>';
+    }).join("");
+  }
+  function tdOpen() { tdDraw(); document.getElementById("tdraw").hidden = false; document.body.style.overflow = "hidden"; }
+  function tdClose() { document.getElementById("tdraw").hidden = true; document.body.style.overflow = ""; }
+  document.getElementById("tmenu").addEventListener("click", tdOpen);
+  document.getElementById("tdClose").addEventListener("click", tdClose);
+  document.getElementById("tdbg").addEventListener("click", tdClose);
+  document.addEventListener("keydown", function (e) { if (e.key === "Escape" && !document.getElementById("tdraw").hidden) tdClose(); });
+  document.getElementById("tdList").addEventListener("click", function (e) {
+    var b = e.target.closest("button[data-tf]"); if (!b) return;
+    setTF(b.getAttribute("data-tf")); tdClose();
+    var sec = document.querySelector('section[data-fold="list"]'); if (sec) sec.scrollIntoView({ behavior: "smooth", block: "start" });
+  });
+  document.getElementById("tdMg").addEventListener("click", function () {
+    tdClose(); var sec = document.getElementById("trSec");
+    if (sec.classList.contains("folded")) { var h = sec.querySelector(".head h2"); if (h) h.click(); }
+    sec.scrollIntoView({ behavior: "smooth", block: "start" });
+  });
   document.getElementById("tchips").addEventListener("click", function (e) {
     var b = e.target.closest("button[data-tf]"); if (!b) return;
     TF = b.getAttribute("data-tf");
-    Array.prototype.forEach.call(this.querySelectorAll("button"), function (o) { o.setAttribute("aria-pressed", String(o === b)); });
-    applyFilter();
+    setTF(b.getAttribute("data-tf"));
   });
   /* 회원 카드의 담당 바꾸기 (팀장만) → coach:assign + 회원 노트에 보이는 담당 이름 pub:m:<주소>:trainer */
   document.getElementById("list").addEventListener("change", function (e) {
