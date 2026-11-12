@@ -64,6 +64,7 @@
 .tchips { overflow-x: auto; scrollbar-width: none; margin-bottom: 6px; padding-bottom: 2px; } .tchips::-webkit-scrollbar { display: none; }
 .tchips button { white-space: nowrap; flex: none; }
 .tasg { display: inline-flex; align-items: center; gap: 4px; } .tasg select { font: inherit; font-size: 12.5px; font-weight: 800; color: var(--ink); border: 1.5px solid var(--rule); border-radius: 8px; padding: 2px 4px; background: var(--paper); }
+.xtag { font-size: 11.5px; font-weight: 800; color: var(--primary); border: 1.5px solid var(--rule); border-radius: 99px; padding: 1px 8px; }
 .trbox { display: flex; flex-direction: column; gap: 10px; }
 .trl { display: flex; flex-direction: column; gap: 8px; }
 .tri { display: flex; align-items: center; gap: 10px; border: 1.5px solid var(--rule); border-radius: 12px; padding: 10px 12px; }
@@ -361,7 +362,7 @@ section.folded .fsum:not(:empty) { display: inline; }
     return false;
   }
   function card(slug, M, days) {
-    var sex = M.sex === "F" ? "F" : "M", base = "/m/" + slug + "/";
+    var sex = M.sex === "F" ? "F" : "M", base = M._base || "/m/" + slug + "/", xa = M._base ? ' target="_blank" rel="noopener"' : '';
     var on = days && days[today] != null, rest = isRestToday(M);
     var st = !days ? '<span class="st wait"><i class="led"></i><b>확인 중</b></span>'
       : on ? '<span class="st on"><i class="led"></i><b>출석</b>' + (days[today] ? '<small>' + esc(days[today]) + '</small>' : '') + '</span>'
@@ -376,16 +377,17 @@ section.folded .fsum:not(:empty) { display: inline; }
     var R = M.routine || {};
     info += '<span>루틴 <b>' + esc(R.version || "–") + (M._rted ? ' ✎' : '') + '</b></span><span>복습지 <b>' + (M.forms || []).length + '개</b></span>';
     var tid = tidOf(slug, M);
-    if (ME.admin && TRAINERS.length) {
+    if (M._base) info += '<span class="xtag">' + esc(tName(tid)) + ' 선생님 개인 사이트</span>';
+    else if (ME.admin && TRAINERS.length) {
       info += '<label class="tasg">담당 <select data-asg="' + esc(slug) + '" aria-label="담당 선생님">' + tOpts(tid) + '</select></label>';
     }
     var jt = journeyText(M);
     var stKey = !days ? "wait" : on ? "on" : rest ? "rest" : "off";
-    return '<div class="mcard ' + sex + '" data-name="' + esc(M.name) + '" data-cho="' + esc(cho(M.name)) + '" data-st="' + stKey + '" data-t="' + esc(tid) + '"><a class="mtop" href="' + base + '#home"><span class="av ' + sex + '">' + esc(M.name.charAt(0)) + '</span>' +
+    return '<div class="mcard ' + sex + '" data-name="' + esc(M.name) + '" data-cho="' + esc(cho(M.name)) + '" data-st="' + stKey + '" data-t="' + esc(tid) + '"><a class="mtop" href="' + base + '#home"' + xa + '><span class="av ' + sex + '">' + esc(M.name.charAt(0)) + '</span>' +
       '<div><h3>' + esc(M.name) + ' 회원님</h3><p>' + esc(M.goal || "") + (jt ? ' · ' + jt : '') + '</p>' + (M.care ? '<p class="mcare">⚠ ' + esc(String(M.care).replace(/\s*\n\s*/g, " · ")) + '</p>' : '') + '</div>' + st + '</a>' +
       '<div class="mrow2">' + info + '</div>' +
-      '<div class="qlinks"><a class="' + sex + '" href="' + base + '#home">홈</a><a class="' + sex + '" href="' + base + '#goal">출석·목표</a>' +
-      '<a class="' + sex + '" href="' + base + '#routine">루틴</a><a class="' + sex + '" href="' + base + '#forms">복습지</a></div></div>';
+      '<div class="qlinks"><a class="' + sex + '" href="' + base + '#home"' + xa + '>홈</a><a class="' + sex + '" href="' + base + '#goal"' + xa + '>출석·목표</a>' +
+      '<a class="' + sex + '" href="' + base + '#routine"' + xa + '>루틴</a><a class="' + sex + '" href="' + base + '#forms"' + xa + '>복습지</a></div></div>';
   }
   /* 초성 검색: "OO" → "ㅊㅈㅎ" */
   var CHO = "ㄱㄲㄴㄷㄸㄹㅁㅂㅃㅅㅆㅇㅈㅉㅊㅋㅌㅍㅎ";
@@ -506,7 +508,7 @@ section.folded .fsum:not(:empty) { display: inline; }
       if (x.c !== prev) { rank = i + 1; prev = x.c; }
       var M = x.r.M, sex = M.sex === "F" ? "F" : "M", d = x.c - x.p;
       var dl = d > 0 ? '<small class="up">▲' + d + ' (' + x.p + ')</small>' : d < 0 ? '<small class="dn">▼' + (-d) + ' (' + x.p + ')</small>' : '<small>– (' + x.p + ')</small>';
-      return '<a class="rk ' + sex + (rank <= 3 && x.c ? ' r' + rank : '') + (i >= 5 ? ' rkhide' : '') + '" href="/m/' + x.r.slug + '/#goal">' +
+      return '<a class="rk ' + sex + (rank <= 3 && x.c ? ' r' + rank : '') + (i >= 5 ? ' rkhide' : '') + '" href="' + (x.r.M._base || '/m/' + x.r.slug + '/') + '#goal"' + (x.r.M._base ? ' target="_blank" rel="noopener"' : '') + '>' +
         '<span class="no">' + rank + '</span><span class="av ' + sex + '">' + esc(M.name.charAt(0)) + '</span>' +
         '<span class="nm"><b>' + esc(M.name) + '</b><span class="bar"><i style="width:' + Math.round(x.c / max * 100) + '%"></i></span></span>' +
         '<span class="cnt"><b>' + x.c + '회</b>' + dl + '</span></a>';
@@ -596,11 +598,11 @@ section.folded .fsum:not(:empty) { display: inline; }
 
   function render() {
     var box = document.getElementById("list");
-    Promise.all(LIST.map(function (slug) {
+    Promise.all([Promise.all(LIST.map(function (slug) {
       return loadMember(slug).then(function (M) { return { slug: slug, M: M }; }).catch(function () { return null; });
-    })).then(function (rows) {
-      rows = rows.filter(Boolean).filter(function (r) { return ME.admin || tidOf(r.slug, r.M) === ME.id; });
-      ROWS = rows; setCount(rows.length); tChips();
+    })), extAll()]).then(function (two) {
+      var rows = two[0].filter(Boolean).concat(two[1]).filter(function (r) { return ME.admin || tidOf(r.slug, r.M) === ME.id; });
+      ROWS = rows; setCount(rows.length); tChips(); if (ME.admin) trDraw();
       if (!rows.length) box.innerHTML = ME.admin ? "" : '<div class="panel lockmsg"><b>아직 담당 회원이 없어요</b><p>위 "＋ 새 회원 노트 만들기"로 시작하거나, 팀장님께 담당을 넘겨 달라고 하세요</p></div>';
       else box.innerHTML = rows.map(function (r) { return card(r.slug, r.M, null); }).join("");
       fsum("list", rows.length + "명");
@@ -609,7 +611,7 @@ section.folded .fsum:not(:empty) { display: inline; }
       applyFilter();
       var done = 0, onN = 0, restN = 0;
       rows.forEach(function (r, i) {
-        fetch(API + "?m=" + encodeURIComponent(r.slug), { cache: "no-store" }).then(function (x) { return x.json(); })
+        fetch((r.M._api || API) + "?m=" + encodeURIComponent(r.slug), { cache: "no-store" }).then(function (x) { return x.json(); })
           .then(function (j) {
             /* 선생님이 폰에서 고친 루틴(창고)이 있으면 그걸로 — 쉬는 날·버전도 그대로 맞춤 */
             if (j && j.ok && j.routine && j.routine.routine && j.routine.base === rtBase(r.M.routine)) { r.M.routine = j.routine.routine; r.M._rted = 1; }
@@ -733,6 +735,7 @@ section.folded .fsum:not(:empty) { display: inline; }
     return SITE.trainer || "팀장";
   }
   function tidOf(slug, M) {
+    if (M && M._tid) return M._tid;
     var t = ASSIGN[slug] || (M && M.tid) || ROSTER_T[slug] || "admin";
     if (t === "admin") return t;
     for (var i = 0; i < TRAINERS.length; i++) if (TRAINERS[i].id === t) return t;
@@ -810,6 +813,38 @@ section.folded .fsum:not(:empty) { display: inline; }
       TRAINERS = list; trDraw(); tChips(); reCards();
     });
   }
+  /* ---- 선생님 개인 사이트 연결 (2026-11-12 팀장 "그 선생님 거 그대로 건들지 말고 그대로 쓸 수 있게 한 다음 내 거 연동")
+     선생님이 따로 가진 PT 노트 사이트(같은 키트)의 members.js·data.js·출석 창고를 읽어서 이 목록에 같이 보여 줌(보기만).
+     그 사이트 파일은 Worker 안에서 읽음 — 남의 사이트 코드가 이 페이지(열쇠가 든 localStorage)에 닿지 않게. */
+  var XW = "self.window=self;onmessage=function(e){var d=e.data,t='?t='+Date.now(),o={api:'',members:[]};" +
+    "try{importScripts(d.site+'/assets/site.js'+t);o.api=(self.SITE||{}).att_api||'';}catch(x){}" +
+    "try{importScripts(d.site+'/'+d.coach+'/members.js'+t);}catch(x){postMessage({err:1});return;}" +
+    "(self.COACH_MEMBERS||[]).forEach(function(s){if(!/^[a-z0-9-]+$/.test(s))return;self.MEMBER=null;try{importScripts(d.site+'/m/'+s+'/data.js'+t);}catch(x){}" +
+    "if(self.MEMBER){try{o.members.push({slug:s,M:JSON.parse(JSON.stringify(self.MEMBER))});}catch(x){}}});postMessage(o);};";
+  function extLoad(t) {
+    return new Promise(function (ok) {
+      var w; try { w = new Worker(URL.createObjectURL(new Blob([XW], { type: "text/javascript" }))); } catch (e) { ok([]); return; }
+      var tm = setTimeout(function () { w.terminate(); ok([]); }, 25000);
+      w.onmessage = function (e) {
+        clearTimeout(tm); w.terminate();
+        var d = e.data || {}; if (d.err || !d.api) { ok([]); return; }
+        ok((d.members || []).map(function (m) {
+          var M = m.M || {}; M._base = t.ext.site + "/m/" + m.slug + "/"; M._api = d.api; M._tid = t.id; if (!M.name) M.name = m.slug;
+          return { slug: m.slug, M: M, ext: 1 };
+        }));
+      };
+      w.onerror = function () { clearTimeout(tm); ok([]); };
+      w.postMessage({ site: t.ext.site, coach: t.ext.coach });
+    });
+  }
+  function extAll() {
+    var ts = TRAINERS.filter(function (t) { return t.ext && t.ext.site && !t.off && (ME.admin || t.id === ME.id); });
+    return Promise.all(ts.map(extLoad)).then(function (a) { return [].concat.apply([], a); });
+  }
+  function extParse(u) {   /* 선생님 페이지 주소 https://<아이디>.github.io/coach-xxxxxx/… → {site, coach} */
+    var m = String(u || "").trim().match(/^https:\/\/([a-z0-9-]+\.github\.io)\/(coach-[a-z0-9]+)\/?/i);
+    return m ? { site: "https://" + m[1].toLowerCase(), coach: m[2] } : null;
+  }
   function reCards() {   /* 선생님이 바뀌면 카드의 담당 칸 다시 그림 */
     if (!ROWS.length) return;
     document.getElementById("list").innerHTML = ROWS.map(function (r) { return card(r.slug, r.M, r.days || null); }).join("");
@@ -831,8 +866,8 @@ section.folded .fsum:not(:empty) { display: inline; }
     var cnt = {}; ROWS.forEach(function (r) { var t = tidOf(r.slug, r.M); cnt[t] = (cnt[t] || 0) + 1; });
     var head = '<div class="tri"><span class="tav">' + esc((SITE.trainer || "팀").charAt(0)) + '</span><div class="tt"><b>' + esc(SITE.trainer || "팀장") + ' <small>· 팀장(관리자)</small></b><small>담당 회원 ' + (cnt.admin || 0) + '명 · 모든 회원 보기·고치기</small></div></div>';
     box.innerHTML = head + TRAINERS.map(function (t) {
-      return '<div class="tri' + (t.off ? " off" : "") + '" data-tid="' + esc(t.id) + '"><span class="tav">' + esc(t.name.charAt(0)) + '</span><div class="tt"><b>' + esc(t.name) + '</b><small>담당 회원 ' + (cnt[t.id] || 0) + '명' + (t.off ? ' · 꺼짐(못 들어와요)' : '') + '</small></div>' +
-        '<div class="tb"><button type="button" data-act="key">새 링크</button><button type="button" data-act="off">' + (t.off ? "켜기" : "끄기") + '</button><button type="button" data-act="del">삭제</button></div></div>';
+      return '<div class="tri' + (t.off ? " off" : "") + '" data-tid="' + esc(t.id) + '"><span class="tav">' + esc(t.name.charAt(0)) + '</span><div class="tt"><b>' + esc(t.name) + '</b><small>담당 회원 ' + (cnt[t.id] || 0) + '명' + (t.ext ? ' · 개인 사이트 ' + esc(t.ext.site.replace("https://", "")) + ' 연결' : '') + (t.off ? ' · 꺼짐(못 들어와요)' : '') + '</small></div>' +
+        '<div class="tb"><button type="button" data-act="ext">' + (t.ext ? "개인 사이트 ✓" : "개인 사이트") + '</button><button type="button" data-act="key">새 링크</button><button type="button" data-act="off">' + (t.off ? "켜기" : "끄기") + '</button><button type="button" data-act="del">삭제</button></div></div>';
     }).join("");
     fsum("trainers", "선생님 " + (TRAINERS.length + 1) + "명");
   }
@@ -854,6 +889,17 @@ section.folded .fsum:not(:empty) { display: inline; }
     var b = e.target.closest("button[data-act]"); if (!b || b.disabled) return;
     var id = b.closest(".tri").getAttribute("data-tid"), act = b.getAttribute("data-act"), msg = document.getElementById("trMsg");
     var t = TRAINERS.filter(function (x) { return x.id === id; })[0]; if (!t) return;
+    if (act === "ext") {
+      var u = prompt(t.name + " 선생님 개인 PT 노트 사이트의 선생님 페이지 주소를 넣어 주세요 (예: https://아이디.github.io/coach-abc123/)\n#key= 뒤는 빼고 넣어요. 비우면 연결을 끊어요.", t.ext ? t.ext.site + "/" + t.ext.coach + "/" : "");
+      if (u === null) return;
+      var ex = u.trim() ? extParse(u) : null;
+      if (u.trim() && !ex) { msg.textContent = "주소 모양이 달라요 — https://아이디.github.io/coach-…/ 처럼 넣어 주세요"; return; }
+      b.disabled = true;
+      trSave(TRAINERS.map(function (x) { if (x.id !== id) return x; var y = {}; for (var q in x) y[q] = x[q]; if (ex) y.ext = ex; else delete y.ext; return y; }))
+        .then(function () { bnToast(ex ? t.name + " 선생님 개인 사이트를 연결했어요 · 회원 불러오는 중" : "개인 사이트 연결을 끊었어요"); render(); })
+        .catch(function (err) { msg.textContent = err && err.msg || "저장이 안 됐어요"; trDraw(); });
+      return;
+    }
     if ((act === "del" || act === "key") && !b.classList.contains("sure")) {
       b.classList.add("sure"); b.textContent = act === "del" ? "한 번 더 (담당 회원은 팀장에게)" : "한 번 더 (예전 링크는 막혀요)";
       clearTimeout(trTimer); trTimer = setTimeout(function () { trDraw(); }, 3000);

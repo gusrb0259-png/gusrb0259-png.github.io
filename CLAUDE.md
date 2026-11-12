@@ -270,6 +270,8 @@ _tools/anatomy_v3.py  인체모형 v3 (자극 부위 그림). build(경로, 앞 
 - 회원 노트의 "담당 OOO 트레이너" = 창고 `pub:m:<주소>:trainer`(팀장이 담당 바꿀 때 같이 저장) > data.js `trainer` > site.js trainer. 폰에서 만든 회원은 profile.trainer.
 - 창고: kv_get 응답에 who {admin:true} 또는 {admin:false,id,name}. bn_add·bn_del·`coach:trainers` 쓰기는 팀장 열쇠만(error "admin"). 다른 기능은 선생님 열쇠도 됨.
 - 한계: 같은 팀이라 숨김은 화면에서만 — 선생님 열쇠로도 창고의 다른 회원 기록을 읽고 고칠 수는 있음(주소를 알면). 선생님 7명 이상 열쇠는 Claude가 알 필요 없음(팀장 폰에서 만듦, 저장소에 열쇠 없음).
+- **선생님 개인 사이트 연결** (2026-11-12 "그 선생님 거 그대로 건들지 말고 그대로 쓸 수 있게 한 다음 내 거 연동"): 같은 키트로 자기 사이트를 따로 가진 선생님 → coach:trainers 항목에 `ext: {site:"https://<아이디>.github.io", coach:"coach-xxxxxx"}`(팀장 화면 선생님 관리의 "개인 사이트" 버튼, 그 선생님 페이지 주소를 넣음). 팀장 페이지가 그 사이트의 site.js(att_api)·coach/members.js·m/<주소>/data.js를 **Web Worker 안에서** 읽어(남의 코드가 열쇠 든 localStorage에 못 닿게) 그 선생님 담당 회원으로 목록·출석·출석왕에 같이 보여 줌. 카드엔 "OOO 선생님 개인 사이트" 꼬리표, 누르면 그 사이트 회원 노트를 새 창으로(그 사이트에선 회원 보기라 **출석 상자를 누르면 출석이 찍힘** — 팀장에게 안내함). 담당 바꾸기·고치기는 안 됨(그 선생님이 자기 사이트에서). 그 사이트에서 폰으로 만든 회원(roster)은 열쇠가 없어 안 보임.
+  - 연결된 사이트: 장동욱 = https://gymtos-dodang.github.io (coach-tqqnlh, 회원 14명, GitHub gymtos-dodang — 팀장 저장소에 협업자로도 초대됨).
 - **Claude가 다른 선생님 회원의 정식 노트(data.js)를 만들 때**: data.js에 `tid`(선생님 id — 창고 coach:trainers에서)·`trainer`(이름) 넣고, og.jpg 띠의 "담당 OOO 트레이너"도 그 선생님 이름으로.
 
 ## 새 공지 팝업 (2026-11-05 트레이너 요청)
