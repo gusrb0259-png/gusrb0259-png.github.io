@@ -91,7 +91,7 @@ _tools/anatomy_v3.py  인체모형 v3 (자극 부위 그림). build(경로, 앞 
 | 이다혜 | m/dahye-dfpttw/ | F |
 | 홍지현 | m/jihyeon-d1xp2n/ | F |
 | 백옥규 | m/okgyu-s4os2w/ | M |
-| 송채원 | m/chaewon-ryfvmy/ | F |
+| 채와와 (본명 송채원) | m/chaewon-ryfvmy/ | F |
 
 ## 폰에서 새 회원 노트 만들기 (2026-11-12 트레이너 "클로드 말고 PT 노트 안에서 이름만 넣으면 자동으로")
 - 선생님 페이지 회원 목록 위 "＋ 새 회원 노트 만들기" → 이름·성별·PT 시작한 달·목표(선택) → 주소 `<이름 로마자>-<랜덤6>` 자동(성 빼고 이름만 로마자, coach index.html roman()) → 링크 복사·노트 열기.
