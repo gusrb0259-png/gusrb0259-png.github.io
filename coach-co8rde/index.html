@@ -905,18 +905,33 @@ section.folded .fsum:not(:empty) { display: inline; }
   /* ---- 선생님 개인 사이트 연결 (2026-11-12 팀장 "그 선생님 거 그대로 건들지 말고 그대로 쓸 수 있게 한 다음 내 거 연동")
      선생님이 따로 가진 PT 노트 사이트(같은 키트)의 members.js·data.js·출석 창고를 읽어서 이 목록에 같이 보여 줌(보기만).
      그 사이트 파일은 Worker 안에서 읽음 — 남의 사이트 코드가 이 페이지(열쇠가 든 localStorage)에 닿지 않게. */
-  var XW = "self.window=self;onmessage=function(e){var d=e.data,t='?t='+Date.now(),o={api:'',members:[]};" +
-    "try{importScripts(d.site+'/assets/site.js'+t);o.api=(self.SITE||{}).att_api||'';}catch(x){}" +
-    "try{importScripts(d.site+'/'+d.coach+'/members.js'+t);}catch(x){postMessage({err:1});return;}" +
-    "(self.COACH_MEMBERS||[]).forEach(function(s){if(!/^[a-z0-9-]+$/.test(s))return;self.MEMBER=null;try{importScripts(d.site+'/m/'+s+'/data.js'+t);}catch(x){}" +
-    "if(self.MEMBER){try{o.members.push({slug:s,M:JSON.parse(JSON.stringify(self.MEMBER))});}catch(x){}}});postMessage(o);};";
+  /* 그 사이트 스크립트는 sandbox iframe(다른 출처 취급 — 이 페이지 localStorage·열쇠에 못 닿음)에서 실행하고 결과만 글자(JSON)로 받음.
+     2026-11-12 처음엔 Web Worker였는데 아이폰 사파리에서 동욱쌤 회원이 안 보여서 iframe으로 바꿈 */
+  var XF = '<!doctype html><meta charset="utf-8"><script>(function(){var d=__D__,t="?t="+Date.now(),o={api:"",members:[]};' +
+    'function ld(u){return new Promise(function(ok){var s=document.createElement("script");s.src=u;s.onload=s.onerror=function(){ok()};document.head.appendChild(s);});}' +
+    'ld(d.site+"/assets/site.js"+t).then(function(){o.api=(window.SITE||{}).att_api||"";return ld(d.site+"/"+d.coach+"/members.js"+t);}).then(function(){' +
+    'var L=(window.COACH_MEMBERS||[]).filter(function(x){return /^[a-z0-9-]{3,40}$/.test(x)}),i=0;' +
+    'function nx(){if(i>=L.length){parent.postMessage(JSON.stringify({xpt:d.id,o:o}),"*");return;}var sl=L[i++];window.MEMBER=null;' +
+    'ld(d.site+"/m/"+sl+"/data.js"+t).then(function(){if(window.MEMBER){try{o.members.push({slug:sl,M:JSON.parse(JSON.stringify(window.MEMBER))});}catch(e){}}nx();});}nx();});})();<\/script>';
   function extLoad(t) {
     return new Promise(function (ok) {
-      var w; try { w = new Worker(URL.createObjectURL(new Blob([XW], { type: "text/javascript" }))); } catch (e) { ok([]); return; }
-      var tm = setTimeout(function () { w.terminate(); ok([]); }, 25000);
-      w.onmessage = function (e) {
-        clearTimeout(tm); w.terminate();
-        var d = e.data || {}; if (d.err || !d.api) { ok([]); return; }
+      var f = document.createElement("iframe"), done = false;
+      f.setAttribute("sandbox", "allow-scripts"); f.setAttribute("aria-hidden", "true"); f.tabIndex = -1;
+      f.style.cssText = "position:absolute;width:0;height:0;border:0;visibility:hidden";
+      function fin(rows) { if (done) return; done = true; window.removeEventListener("message", on); clearTimeout(tm); f.remove(); ok(rows); }
+      var tm = setTimeout(function () { fin([]); }, 30000);
+      function on(e) {
+        if (e.source !== f.contentWindow || typeof e.data !== "string") return;
+        var m; try { m = JSON.parse(e.data); } catch (x) { return; }
+        if (!m || m.xpt !== t.id) return;
+        var d = m.o || {}; if (!d.api) { fin([]); return; }
+        got(d);
+      }
+      window.addEventListener("message", on);
+      f.srcdoc = XF.replace("__D__", JSON.stringify({ site: t.ext.site, coach: t.ext.coach, id: t.id }).replace(/</g, "\\u003c"));
+      document.body.appendChild(f);
+      function got(d) {
+        var ok = fin;
         function row(slug, M) { M._base = t.ext.site + "/m/" + slug + "/"; M._api = d.api; M._tid = t.id; if (!M.name) M.name = slug; return { slug: slug, M: M, ext: 1 }; }
         var rows = (d.members || []).map(function (m) { return row(m.slug, m.M || {}); }), have = rows.map(function (r) { return r.slug; });
         /* 그 사이트에서 폰으로 만든 회원: 그 사이트 창고의 공개 목록 pub:m:roster-list:members (그 사이트 선생님 페이지가 저장) → 회원마다 pub:m:<주소>:member|profile */
@@ -932,9 +947,7 @@ section.folded .fsum:not(:empty) { display: inline; }
             });
           }));
         }).then(function (more) { ok(rows.concat(more)); }).catch(function () { ok(rows); });
-      };
-      w.onerror = function () { clearTimeout(tm); ok([]); };
-      w.postMessage({ site: t.ext.site, coach: t.ext.coach });
+      }
     });
   }
   function extAll() {
