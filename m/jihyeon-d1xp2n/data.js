@@ -10,6 +10,12 @@ window.MEMBER = {
   "notices": [
     {
       "date": "2026. 11. 12",
+      "title": "아웃타이 자세 복습지가 올라왔어요",
+      "body": "상체를 살짝 숙이고 무릎으로 패드를 바깥으로! 엉덩이 옆이 뜨거우면 제대로 하고 있는 거예요.",
+      "link": "form-outer-thigh"
+    },
+    {
+      "date": "2026. 11. 12",
       "title": "원레그 데드리프트 자세 복습지가 올라왔어요",
       "body": "오늘 배운 원레그 데드리프트 영상과 포인트를 정리했어요. 엉덩이를 뒤로 빼면서 상체와 뒷다리를 한 줄로!",
       "link": "form-oneleg-dl"
@@ -22,6 +28,36 @@ window.MEMBER = {
   ],
   "next_class": null,
   "forms": [
+    {
+      "id": "outer-thigh",
+      "dir": "media/form-outer-thigh/",
+      "date": "2026. 11. 12",
+      "exercise": "아웃타이",
+      "exercise_en": "Hip Abduction Machine",
+      "part": "엉덩이 옆",
+      "targets": ["엉덩이 옆(중둔근)", "엉덩이 위쪽 라인"],
+      "benefit": "엉덩이 옆을 채워 골반 라인을 넓고 둥글게 만들어 줘요",
+      "key_point": "상체를 살짝 숙이고, 무릎으로 패드를 바깥으로 밀어요!",
+      "good_points": [
+        {"title": "상체 살짝 숙이기", "desc": "손잡이를 잡고 상체를 앞으로 숙여 엉덩이에 자극이 잘 들어갔어요"},
+        {"title": "끝까지 벌리기", "desc": "다리를 끝까지 벌려서 엉덩이 옆을 꽉 쥐어 줬어요"},
+        {"title": "천천히 모으기", "desc": "모을 때 무게를 툭 놓지 않고 버티면서 돌아왔어요"}
+      ],
+      "primary_muscles": [
+        {"name": "중둔근", "where": "엉덩이 옆 · 골반 위쪽"},
+        {"name": "대퇴근막장근", "where": "골반 앞쪽 옆"}
+      ],
+      "secondary_muscles": "대둔근 위쪽 · 엉덩이 속 근육(이상근)",
+      "feel_good": "엉덩이 옆과 위쪽이 뜨겁게 타는 느낌이면 성공",
+      "feel_stop": "허리가 아프거나 무릎 바깥이 찌릿하면 바로 멈추기",
+      "steps": [
+        {"title": "자리 잡기", "desc": "패드에 무릎 바깥을 대고 손잡이를 잡은 뒤 상체를 살짝 앞으로 숙여요", "chip": "숨 들이마시기", "media": "step1.jpg"},
+        {"title": "바깥으로 밀기", "desc": "무릎으로 패드를 끝까지 밀어 벌리고, 엉덩이 옆을 꽉 쥐어요", "chip": "숨 내쉬기", "media": "step2.webp", "loop": true},
+        {"title": "천천히 모으기", "desc": "무게에 끌려가지 않게 2~3초 버티며 처음 자리로 돌아와요", "chip": "숨 들이마시기", "media": "step3.webp", "loop": true}
+      ],
+      "do": ["엉덩이는 의자 뒤에 붙이기", "무릎으로 밀기(발끝 X)", "모을 때 무게판 안 부딪히게"],
+      "dont": ["반동으로 다리 튕기기", "허리를 둥글게 말기", "모을 때 툭 떨어뜨리기"]
+    },
     {
       "id": "oneleg-dl",
       "dir": "media/form-oneleg-dl/",
