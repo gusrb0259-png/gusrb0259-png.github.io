@@ -17,6 +17,20 @@
     if ("next_class" in o) M.next_class = o.next_class || null;
   }
   try { infoApply(JSON.parse(localStorage.getItem(INFO_LS) || "null")); } catch (e) {}
+  /* 선생님이 폰에서 고친 식단 (2026-11-12 "식단도 터치해서 고치기") — 창고 pub:m:<주소>:diet {base, diet?, text?}
+     base = data.js 식단의 기준(updated 또는 글 앞부분). data.js 식단이 새로 올라오면 기준이 달라져서 폰에서 고친 식단은 꺼지고 data.js가 이김(루틴과 같은 규칙) */
+  var DIET_ORIG = M.diet, DIET_LS = "ptnote:" + INFO_SLUG + ":diet";
+  function dietBase(d) { return d && typeof d === "object" ? "o|" + (d.updated || "") : "s|" + String(d || "").slice(0, 60); }
+  var DIET_BASE = dietBase(DIET_ORIG);
+  function dietApply(o) {
+    M.diet = DIET_ORIG;
+    if (!o || typeof o !== "object" || o.base !== DIET_BASE) return false;
+    if (o.diet && typeof o.diet === "object") M.diet = o.diet;
+    else if (typeof o.text === "string") M.diet = o.text ? '<div class="panel" style="white-space:pre-line;font-size:15px;line-height:1.7">' + String(o.text).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }) + '</div>' : null;
+    return true;
+  }
+  var DIET_REC = null;
+  try { DIET_REC = JSON.parse(localStorage.getItem(DIET_LS) || "null"); if (!dietApply(DIET_REC)) DIET_REC = null; } catch (e) {}
   var SCRIPT = document.currentScript;
   var BASE = SCRIPT ? SCRIPT.src.replace(/app\.js(\?.*)?$/, "") : "../../assets/";
   var THEME = M.sex === "F" ? "F" : "M";
@@ -587,8 +601,13 @@
       if (sOld !== sNew) location.reload(); else route();
     }
   }
+  function dietServer(kv) {
+    var v = kv && kv["pub:m:" + SLUG + ":diet"], had = null, now = v && typeof v === "object" ? JSON.stringify(v) : null;
+    try { had = localStorage.getItem(DIET_LS); if (now) localStorage.setItem(DIET_LS, now); else localStorage.removeItem(DIET_LS); } catch (e) { return; }
+    if (had !== now) { DIET_REC = dietApply(v) ? v : null; if (view.getAttribute("data-tab") === "diet" || view.getAttribute("data-tab") === "home") rerender(); litApply(view.getAttribute("data-tab")); }
+  }
   function careServer(kv) {
-    infoServer(kv);
+    infoServer(kv); dietServer(kv);
     var had, now;
     try { had = localStorage.getItem(CARE_LS); } catch (e) { return; }
     if (kv && typeof kv[CARE_K] === "string") { now = kv[CARE_K]; try { localStorage.setItem(CARE_LS, now); } catch (e) {} }
@@ -1651,7 +1670,7 @@
     var o = { routine: [], forms: [], diet: [] }, R = M.routine, D = M.diet, at = RT_REC && RT_REC.at;
     if (R && dRecent(at || R.updated)) o.routine.push("r|" + rtBase(R) + "|" + (at || ""));
     (M.forms || []).forEach(function (f) { if (dRecent(f.date)) o.forms.push("f|" + f.id); });
-    if (D && typeof D === "object" && dRecent(D.updated)) o.diet.push("d|" + (D.updated || ""));
+    if (D && typeof D === "object" && dRecent(D.updated)) o.diet.push("d|" + (D.updated || "") + "|" + (D._at || ""));
     return o;
   }
   function formNew(f) { return !DEMO && dRecent(f.date) && lsArr(FOPEN_KEY).indexOf(f.id) < 0; }
@@ -1826,7 +1845,7 @@
           var kg = s[1] == null ? '맨몸' : s[1] + 'kg';                              /* null = 맨몸 */
           return '<div class="set"><small>' + (j + 1) + '세트</small><b>' + reps + '</b><i>' + kg + '</i></div>';
         }).join("");
-        return '<div class="ex' + (main ? ' main' : '') + '"><div class="ex-top"><span class="ex-ic">' + img(iconOf(it)) + '<span class="ex-no">' + (i + 1) + '</span>' +
+        return '<div class="ex' + (main ? ' main' : '') + '"' + (CAN_EDIT ? ' data-exi="' + i + '"' : '') + '><div class="ex-top"><span class="ex-ic">' + img(iconOf(it)) + '<span class="ex-no">' + (i + 1) + '</span>' +
           (main ? '<span class="main-badge">메인</span>' : '') + '</span><div>' +
           '<h3>' + esc(it.name) + '</h3><div class="meta">' + esc(it.en) + ' ' + tagChip(it.tag) + '</div>' +
           '<div class="tip">' + esc(it.tip) + '</div></div></div><div class="sets">' + sets + '</div>' +
@@ -1850,7 +1869,20 @@
     var src = /^ic_/.test(key) ? BASE + "food/" + THEME + "/" + key + ".png" : BASE + "food/" + key + ".png";
     return '<img class="' + (cls || "fd-img") + '" src="' + src + '" alt="" loading="lazy">';
   }
+  function dietBar() {
+    if (!CAN_EDIT) return "";
+    var D = M.diet, obj = D && typeof D === "object";
+    return '<div class="dtbar">' + (obj ? '<b>✎ 고치고 싶은 글자를 눌러 보세요</b><small>누르면 그 부분만 고치는 창이 떠요' + (DIET_REC ? ' · 폰에서 고친 식단 사용 중' : '') + '</small>'
+      : '<b>식단 ' + (D ? '고치기' : '쓰기') + '</b><small>글로 간단히 써서 올릴 수 있어요 (표 식단은 Claude에게)</small>') +
+      '<div class="dtbtns">' + (obj ? '' : '<button type="button" data-dt="text">✎ ' + (D ? '글 고치기' : '식단 글로 쓰기') + '</button>') +
+      (DIET_REC ? '<button type="button" data-dt="reset">처음 식단으로</button>' : '') + '</div></div>';
+  }
   function renderDiet() {
+    var D = M.diet;
+    if (CAN_EDIT) return dietBar() + renderDiet0();
+    return renderDiet0();
+  }
+  function renderDiet0() {
     var D = M.diet;
     if (!D || typeof D === "string") {
       var h = '<section>' + head("", "식단표", "");
@@ -2597,6 +2629,91 @@
       });
     });
   }
+
+  /* ---------------- 터치해서 고치기 (2026-11-12 트레이너 "루틴이랑 식단도 그 항목 터치해서 그 부분 고치는 식으로") — 선생님 보기(CAN_EDIT)에서만
+     루틴: 종목 카드를 누르면 고치기 모드로 들어가며 그 종목 고치기 창 / 제목 카드를 누르면 제목·계획 창 → 저장은 아래 "저장 · 바로 반영"(기존 그대로).
+     식단: 표 식단은 보이는 글자를 누르면 식단 데이터에서 같은 글자를 찾아 그 칸만 고침(dPaths) → 창고 pub:m:<주소>:diet 에 바로 저장. 글 식단은 통째로 쓰기. */
+  function dPaths(o, pre, out) {
+    out = out || [];
+    if (typeof o === "string" || typeof o === "number") out.push({ p: pre, v: String(o) });
+    else if (o && typeof o === "object") Object.keys(o).forEach(function (k) { if (k !== "updated" && k !== "_at" && k !== "icon") dPaths(o[k], pre.concat(k), out); });
+    return out;
+  }
+  function dSet(o, p, v) { for (var i = 0; i < p.length - 1; i++) o = o[p[i]]; o[p[p.length - 1]] = typeof o[p[p.length - 1]] === "number" && v !== "" && !isNaN(+v) ? +v : v; }
+  function dToday() { var t = new Date(); return t.getFullYear() + ". " + (t.getMonth() + 1) + ". " + t.getDate(); }
+  function dietSave(rec, sh, okMsg) {
+    var key = (sh.querySelector("#sKey") && sh.querySelector("#sKey").value || "").trim() || rtKey();
+    if (!key) { var w = sh.querySelector("#sKeyWrap"); if (w) w.hidden = false; return sh.msg("선생님 열쇠를 넣어 주세요"); }
+    sh.msg("저장하는 중…");
+    var items = {}; items["pub:m:" + SLUG + ":diet"] = rec;
+    rtPost({ a: "kv_set", key: key, items: items }).then(function (j) {
+      if (!j || !j.ok) { rtErr(j, sh); return; }
+      try { localStorage.setItem("ptkey", key); if (rec) localStorage.setItem(DIET_LS, JSON.stringify(rec)); else localStorage.removeItem(DIET_LS); } catch (x) {}
+      DIET_REC = rec && dietApply(rec) ? rec : (dietApply(null), null);
+      sh.close(); rerender(); attToast(okMsg || "저장했어요 · 회원님 노트에 바로 보여요");
+    }).catch(function () { sh.msg(rtNetMsg()); });
+  }
+  var KEYF = function () { return '<label id="sKeyWrap"' + (rtKey() ? ' hidden' : '') + '>선생님 열쇠 <small>처음 한 번만</small><input id="sKey" type="password" autocomplete="off"></label>'; };
+  document.addEventListener("click", function (e) {
+    if (!CAN_EDIT || !e.target.closest) return;
+    var tab = view.getAttribute("data-tab");
+    if (e.target.closest(".rtsheet, .rtsheet-bg, .tabs, .bar")) return;
+    /* 루틴 */
+    if (tab === "routine" && M.routine) {
+      if (e.target.closest("a, button, [data-rt], input, select, textarea")) return;
+      var ex = e.target.closest(".ex[data-exi]"), dk = view.getAttribute("data-day");
+      var hero = !ex && e.target.closest("#view > .hero");
+      if (!ex && !hero) return;
+      var auto = !RT_EDIT;
+      if (auto) { RT_EDIT = { saved: clone(M.routine), dirty: 0 }; rerender(); }
+      if (ex && dk) rtItemSheet(dk, +ex.getAttribute("data-exi"));
+      else if (hero) rtInfoSheet();
+      if (auto && window.MutationObserver) {   /* 눌러서 열었는데 아무것도 안 고치고 닫으면 고치기 모드도 같이 끝냄 */
+        var mo = new MutationObserver(function () {
+          if (document.querySelector(".rtsheet-bg")) return;
+          mo.disconnect();
+          if (RT_EDIT && !RT_EDIT.dirty) { RT_EDIT = null; rerender(); }
+        });
+        mo.observe(document.body, { childList: true });
+      }
+      return;
+    }
+    /* 식단 */
+    if (tab !== "diet") return;
+    var dt = e.target.closest("[data-dt]");
+    if (dt) {
+      var act = dt.getAttribute("data-dt");
+      if (act === "reset") {
+        var sr = rtSheet("처음 식단으로", '<p style="margin:0">폰에서 고친 식단을 지우고 처음(Claude가 올린) 식단으로 돌릴까요?</p>' + KEYF(), function (sh) { dietSave(null, sh, "처음 식단으로 돌렸어요"); return true; }, "돌리기");
+        return;
+      }
+      var cur = DIET_REC && typeof DIET_REC.text === "string" ? DIET_REC.text : (typeof DIET_ORIG === "string" ? DIET_ORIG.replace(/<br\s*\/?>/gi, "\n").replace(/<[^>]+>/g, "") : "");
+      rtSheet("식단 글로 쓰기", '<label>회원님 식단 탭에 그대로 보여요 <small>줄바꿈 그대로</small><textarea id="dtIn" rows="10" maxlength="3000" placeholder="예)\n아침: 오트밀 50g + 프로틴\n점심: 일반식 (밥 반 공기)\n저녁: 닭가슴살 150g + 고구마 1개\n물 2L 이상">' + esc(cur) + '</textarea></label>' + KEYF(),
+        function (sh) { dietSave({ base: DIET_BASE, text: sh.querySelector("#dtIn").value.trim(), at: Date.now() }, sh); return true; }, "저장 · 바로 반영");
+      return;
+    }
+    var D = M.diet;
+    if (!D || typeof D !== "object" || e.target.closest("a, button, input, .dtbar")) return;
+    var all = dPaths(D, []), hit = null, el = e.target;
+    for (var up = 0; up < 4 && el && el !== view && !hit; up++, el = el.parentElement) {
+      var t = (el.textContent || "").replace(/\s+/g, " ").trim();
+      if (!t || t.length > 400) continue;
+      for (var q = 0; q < all.length; q++) if (all[q].v.replace(/\s+/g, " ").trim() === t) { hit = all[q]; break; }
+    }
+    if (!hit) { attToast("이 부분은 여기서 못 고쳐요 · Claude에게 말해 주세요"); return; }
+    var same = all.filter(function (x) { return x.v === hit.v; }).length;
+    var lab = { title: "제목", title_en: "영어 제목", key_point: "KEY POINT", name: "이름", amount: "양", line1: "첫 줄", line2: "둘째 줄", line3: "셋째 줄", desc: "설명", label: "항목", value: "숫자", unit: "단위", sub: "작은 글씨", tag: "꼬리표", chip: "꼬리표", safety: "주의", no: "끼니", note: "메모" }[hit.p[hit.p.length - 1]] || "내용";
+    rtSheet("식단 고치기 · " + lab,
+      '<label>' + esc(lab) + (same > 1 ? ' <small>같은 글자 ' + same + '곳이 한꺼번에 바뀌어요</small>' : '') + '<textarea id="dtIn" rows="' + (hit.v.length > 40 ? 4 : 2) + '" maxlength="600">' + esc(hit.v) + '</textarea></label>' + KEYF(),
+      function (sh) {
+        var v = sh.querySelector("#dtIn").value.trim();
+        var nd = clone(M.diet);
+        dPaths(nd, []).forEach(function (x) { if (x.v === hit.v) dSet(nd, x.p, v); });
+        nd.updated = dToday(); nd._at = Date.now();
+        dietSave({ base: DIET_BASE, diet: nd, at: Date.now() }, sh); return true;
+      }, "저장 · 바로 반영");
+    var ta = document.getElementById("dtIn"); if (ta) { ta.focus(); ta.select(); }
+  });
 
   /* ---------------- 앱처럼 (2026-11-12 트레이너 "앱처럼 — 2번") — 화면 넘김 애니메이션 · 옆으로 밀어 탭 이동 · 당겨서 새로고침 · 시작 화면 · 눌림 효과(style.css)
      휴대폰 '동작 줄이기'면 애니메이션 없음. 고치기 창(.rtsheet)·팝업이 떠 있을 때와 가로로 밀리는 칸 안에서는 밀기·당기기 안 함. */
