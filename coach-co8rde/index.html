@@ -622,6 +622,19 @@ section.folded .fsum:not(:empty) { display: inline; }
   }
   bnLoad();
 
+  /* 창고에 한꺼번에 너무 많이 물으면(회원 15명+) Apps Script가 일부를 거절함 → 한 번에 4개씩, 실패하면 1.5초 뒤 한 번 더 (2026-11-12) */
+  var QN = 0, QW = [];
+  function qget(url) {
+    return new Promise(function (ok, no) { QW.push({ url: url, ok: ok, no: no, n: 0 }); qrun(); });
+  }
+  function qrun() {
+    while (QN < 4 && QW.length) (function (t) {
+      QN++;
+      fetch(t.url, { cache: "no-store" }).then(function (x) { if (!x.ok) throw 0; return x.json(); })
+        .then(function (j) { QN--; t.ok(j); qrun(); })
+        .catch(function () { QN--; if (t.n++ < 1) setTimeout(function () { QW.push(t); qrun(); }, 1500); else t.no(); qrun(); });
+    })(QW.shift());
+  }
   function render() {
     var box = document.getElementById("list");
     Promise.all([Promise.all(LIST.map(function (slug) {
@@ -637,7 +650,7 @@ section.folded .fsum:not(:empty) { display: inline; }
       applyFilter();
       var done = 0, onN = 0, restN = 0;
       rows.forEach(function (r, i) {
-        fetch((r.M._api || API) + "?m=" + encodeURIComponent(r.slug), { cache: "no-store" }).then(function (x) { return x.json(); })
+        qget((r.M._api || API) + "?m=" + encodeURIComponent(r.slug))
           .then(function (j) {
             /* 선생님이 폰에서 고친 루틴(창고)이 있으면 그걸로 — 쉬는 날·버전도 그대로 맞춤 */
             if (j && j.ok && j.routine && j.routine.routine && j.routine.base === rtBase(r.M.routine)) { r.M.routine = j.routine.routine; r.M._rted = 1; }
