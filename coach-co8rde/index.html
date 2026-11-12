@@ -25,7 +25,19 @@
 .sum b { display: block; font-size: 24px; font-weight: 900; color: var(--primary); font-variant-numeric: tabular-nums; line-height: 1.2; }
 .sum b.ok { color: var(--good); }
 .sum small { font-size: 12px; color: var(--faint); font-weight: 700; }
-.mlist { display: flex; flex-direction: column; gap: 10px; }
+.mlist { display: flex; flex-direction: column; gap: 10px; position: relative; }
+.mcard { position: relative; z-index: 1; touch-action: pan-y; }
+.mcard.sw { transition: none; } .mcard.back { transition: transform .22s ease; }
+.mdelbg { position: absolute; left: 0; right: 0; z-index: 0; border-radius: 16px; background: #E5484D; color: #fff; display: flex; align-items: center; padding-left: 20px; font-weight: 800; font-size: 15px; gap: 8px; opacity: .55; transition: opacity .15s; }
+.mdelbg.go { opacity: 1; }
+.mdelbg svg { width: 22px; height: 22px; }
+.cfm { position: fixed; inset: 0; z-index: 70; display: grid; place-items: center; padding: 16px; background: rgba(20, 22, 28, .5); }
+.cfm .box { background: var(--paper, #fff); border-radius: 18px; padding: 20px 18px 16px; width: min(360px, 100%); box-shadow: 0 12px 40px rgba(0,0,0,.25); }
+.cfm b { display: block; font-size: 17px; margin-bottom: 6px; } .cfm p { margin: 0 0 16px; font-size: 13.5px; color: var(--sub); line-height: 1.5; }
+.cfm .row { display: flex; gap: 8px; } .cfm button { flex: 1; font: inherit; font-size: 15px; font-weight: 800; border-radius: 12px; padding: 12px; cursor: pointer; border: 1.5px solid var(--rule); background: var(--paper); color: var(--ink); }
+.cfm button.del { background: #E5484D; border-color: #E5484D; color: #fff; }
+.utoast { position: fixed; left: 50%; bottom: 28px; transform: translateX(-50%); z-index: 72; background: #1E2330; color: #fff; font-size: 13.5px; font-weight: 700; padding: 8px 8px 8px 16px; border-radius: 99px; box-shadow: 0 4px 16px rgba(0,0,0,.2); display: flex; align-items: center; gap: 10px; max-width: calc(100% - 32px); }
+.utoast button { font: inherit; font-size: 13px; font-weight: 800; color: #1E2330; background: #F5D76E; border: 0; border-radius: 99px; padding: 6px 12px; cursor: pointer; flex: none; }
 .mcard { background: var(--paper); border-radius: 16px; padding: 14px; box-shadow: 0 1px 2px rgba(30, 35, 48, .06); display: flex; flex-direction: column; gap: 12px; }
 .mtop { display: flex; align-items: center; gap: 12px; text-decoration: none; color: inherit; }
 .av { width: 48px; height: 48px; border-radius: 50%; display: grid; place-items: center; color: #fff; font-size: 20px; font-weight: 900; flex: none; }
@@ -409,7 +421,7 @@ section.folded .fsum:not(:empty) { display: inline; }
     }
     var jt = journeyText(M);
     var stKey = !days ? "wait" : on ? "on" : rest ? "rest" : "off";
-    return '<div class="mcard ' + sex + '" data-name="' + esc(M.name) + '" data-cho="' + esc(cho(M.name)) + '" data-st="' + stKey + '" data-t="' + esc(tid) + '"><a class="mtop" href="' + base + '#home"' + xa + '><span class="av ' + sex + '">' + esc(M.name.charAt(0)) + '</span>' +
+    return '<div class="mcard ' + sex + '" data-name="' + esc(M.name) + '" data-cho="' + esc(cho(M.name)) + '" data-st="' + stKey + '" data-t="' + esc(tid) + '" data-slug="' + esc(slug) + '"' + (M._base ? ' data-x="1"' : '') + '><a class="mtop" href="' + base + '#home"' + xa + '><span class="av ' + sex + '">' + esc(M.name.charAt(0)) + '</span>' +
       '<div><h3>' + esc(M.name) + ' 회원님</h3><p>' + esc(M.goal || "") + (jt ? ' · ' + jt : '') + '</p>' + (M.care ? '<p class="mcare">⚠ ' + esc(String(M.care).replace(/\s*\n\s*/g, " · ")) + '</p>' : '') + '</div>' + st + '</a>' +
       '<div class="mrow2">' + info + '</div>' +
       '<div class="qlinks"><a class="' + sex + '" href="' + base + '#home"' + xa + '>홈</a><a class="' + sex + '" href="' + base + '#goal"' + xa + '>출석·목표</a>' +
@@ -640,7 +652,7 @@ section.folded .fsum:not(:empty) { display: inline; }
     Promise.all([Promise.all(LIST.map(function (slug) {
       return loadMember(slug).then(function (M) { return { slug: slug, M: M }; }).catch(function () { return null; });
     })), extAll()]).then(function (two) {
-      var rows = two[0].filter(Boolean).concat(two[1]).filter(function (r) { return ME.admin || tidOf(r.slug, r.M) === ME.id; });
+      var rows = two[0].filter(Boolean).concat(two[1]).filter(function (r) { return (ME.admin || tidOf(r.slug, r.M) === ME.id) && (r.ext || HIDDEN.indexOf(r.slug) < 0); });
       ROWS = rows; setCount(rows.length); tChips(); if (ME.admin) trDraw();
       if (!rows.length) box.innerHTML = ME.admin ? "" : '<div class="panel lockmsg"><b>아직 담당 회원이 없어요</b><p>위 "＋ 새 회원 노트 만들기"로 시작하거나, 팀장님께 담당을 넘겨 달라고 하세요</p></div>';
       else box.innerHTML = rows.map(function (r) { return card(r.slug, r.M, null); }).join("");
@@ -787,6 +799,7 @@ section.folded .fsum:not(:empty) { display: inline; }
       var kv = j && j.ok && j.kv || {};
       TRAINERS = Array.isArray(kv["coach:trainers"]) ? kv["coach:trainers"] : [];
       ASSIGN = kv["coach:assign"] && typeof kv["coach:assign"] === "object" ? kv["coach:assign"] : {};
+      HIDDEN = Array.isArray(kv["coach:hidden"]) ? kv["coach:hidden"] : [];
       if (j && j.who && j.who.admin === false) ME = { admin: false, id: j.who.id || "none", name: j.who.name || "" };
       else if (j && j.who && j.who.admin && j.who.id) ME = { admin: true, id: j.who.id, name: j.who.name || "", sub: 1 };   /* 관리자 선생님 */
       return { roster: Array.isArray(kv["coach:roster"]) ? kv["coach:roster"] : [] };
@@ -957,6 +970,103 @@ section.folded .fsum:not(:empty) { display: inline; }
   function extParse(u) {   /* 선생님 페이지 주소 https://<아이디>.github.io/coach-xxxxxx/… → {site, coach} */
     var m = String(u || "").trim().match(/^https:\/\/([a-z0-9-]+\.github\.io)\/(coach-[a-z0-9]+)\/?/i);
     return m ? { site: "https://" + m[1].toLowerCase(), coach: m[2] } : null;
+  }
+  /* ---- 회원 카드 오른쪽으로 밀어서 삭제 (2026-11-12 팀장 "오른쪽으로 슬라이드하면 삭제, 바로 삭제 말고 한 번 더 물어보게")
+     폰에서 만든 회원 = 창고 coach:roster에서 빼고 노트 정보(pub:m:<주소>:profile) 지움 → 그 링크는 "노트를 찾을 수 없어요".
+     Claude가 만든 정식 노트(members.js) = 파일은 그대로 두고 선생님 페이지 목록에서만 뺌(coach:hidden) — 파일 삭제는 Claude에게.
+     연결된 다른 선생님 사이트 회원은 밀리지 않음. 지운 뒤 8초 동안 "되돌리기". 출석 기록은 시트에 그대로 남음. */
+  var HIDDEN = [];
+  (function () {
+    var list = document.getElementById("list"), st = null, bg = null, eat = false, TH = 96;
+    function reset(c) {
+      c.classList.remove("sw"); c.classList.add("back"); c.style.transform = "";
+      setTimeout(function () { c.classList.remove("back"); if (bg) { bg.remove(); bg = null; } }, 230);
+    }
+    list.addEventListener("pointerdown", function (e) {
+      if (e.pointerType === "mouse" && e.button !== 0) return;
+      var c = e.target.closest(".mcard"); if (!c || c.getAttribute("data-x") || e.target.closest("select,button,input,label")) return;
+      st = { c: c, x: e.clientX, y: e.clientY, dx: 0, on: false, id: e.pointerId };
+    });
+    list.addEventListener("pointermove", function (e) {
+      if (!st || e.pointerId !== st.id) return;
+      var dx = e.clientX - st.x, dy = e.clientY - st.y;
+      if (!st.on) {
+        if (Math.abs(dy) > 10 && Math.abs(dy) > Math.abs(dx)) { st = null; return; }
+        if (!(dx > 14 && dx > Math.abs(dy) * 1.5)) return;
+        st.on = true; st.c.classList.add("sw");
+        try { st.c.setPointerCapture(e.pointerId); } catch (x) {}
+        bg = document.createElement("div"); bg.className = "mdelbg";
+        bg.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/></svg>삭제';
+        bg.style.top = st.c.offsetTop + "px"; bg.style.height = st.c.offsetHeight + "px";
+        list.insertBefore(bg, st.c);
+      }
+      e.preventDefault();
+      st.dx = Math.max(0, Math.min(dx, st.c.offsetWidth * 0.75));
+      st.c.style.transform = "translateX(" + st.dx + "px)";
+      bg.classList.toggle("go", st.dx >= TH);
+    });
+    function end(e) {
+      if (!st || (e && e.pointerId !== st.id)) return;
+      var s0 = st; st = null; if (!s0.on) return;
+      eat = true; setTimeout(function () { eat = false; }, 350);
+      reset(s0.c);
+      if (s0.dx >= TH) mAsk(s0.c.getAttribute("data-slug"));
+    }
+    list.addEventListener("pointerup", end); list.addEventListener("pointercancel", end);
+    list.addEventListener("click", function (e) { if (eat) { e.preventDefault(); e.stopPropagation(); } }, true);
+  })();
+  function mRow(slug) { for (var i = 0; i < ROWS.length; i++) if (ROWS[i].slug === slug && !ROWS[i].ext) return ROWS[i]; return null; }
+  function mAsk(slug) {
+    var r = mRow(slug); if (!r) return;
+    var file = (window.COACH_MEMBERS || []).indexOf(slug) >= 0;
+    var o = document.createElement("div"); o.className = "cfm"; o.setAttribute("role", "dialog"); o.setAttribute("aria-modal", "true");
+    o.innerHTML = '<div class="box"><b>' + esc(r.M.name) + ' 회원님을 삭제할까요?</b><p>' +
+      (file ? 'Claude가 만든 정식 노트라 이 목록에서만 빠져요. 회원님 노트 링크는 그대로 열려요. 노트 파일까지 지우려면 Claude에게 말해 주세요.'
+            : '회원님 노트가 지워져서 그 링크로 들어가면 "노트를 찾을 수 없어요"가 떠요. 출석 기록은 시트에 남아요.') +
+      '<br>지운 뒤 8초 안에는 되돌릴 수 있어요.</p><div class="row"><button type="button" data-k="no">취소</button><button type="button" class="del" data-k="yes">삭제</button></div></div>';
+    document.body.appendChild(o);
+    o.querySelector('[data-k="no"]').focus();
+    o.addEventListener("click", function (e) {
+      var k = e.target.closest("button") ? e.target.closest("button").getAttribute("data-k") : (e.target === o ? "no" : "");
+      if (k === "no") o.remove();
+      if (k === "yes") { o.remove(); mDel(slug, file, r); }
+    });
+  }
+  function mSave(items) { return kvPost({ a: "kv_set", items: items }, bnKey()).then(function (j) { if (!j || !j.ok) throw j || {}; return j; }); }
+  function mDel(slug, file, r) {
+    var undo;
+    var p = file ? (function () {
+      var h = HIDDEN.concat([slug]); undo = { "coach:hidden": HIDDEN.slice() };
+      return mSave({ "coach:hidden": h }).then(function () { HIDDEN = h; });
+    })() : rosterLoad().then(function (ro) {
+      var prof = ROSTER_M[slug] || r.M, items = { "coach:roster": ro.filter(function (x) { return x.slug !== slug; }) };
+      items["pub:m:" + slug + ":profile"] = null;
+      undo = { "coach:roster": ro }; undo["pub:m:" + slug + ":profile"] = prof;
+      return mSave(items);
+    });
+    p.then(function () {
+      LIST = LIST.filter(function (x) { return x !== slug; });
+      ROWS = ROWS.filter(function (x) { return x !== r; });
+      var c = document.querySelector('.mcard[data-slug="' + slug + '"]:not([data-x])'); if (c) c.remove();
+      setCount(ROWS.length); tChips(); sumDraw(); if (ME.admin) trDraw(); applyFilter();
+      uToast(r.M.name + " 회원님을 삭제했어요", function () {
+        mSave(undo).then(function () {
+          if (file) HIDDEN = undo["coach:hidden"]; else ROSTER_M[slug] = undo["pub:m:" + slug + ":profile"];
+          if (LIST.indexOf(slug) < 0) LIST.push(slug);
+          bnToast("되돌렸어요"); render();
+        }).catch(function () { bnToast("되돌리지 못했어요 — 다시 해 주세요"); });
+      });
+    }).catch(function (j) {
+      bnToast(j && j.error === "key" ? "열쇠가 맞지 않아서 못 지웠어요" : "삭제하지 못했어요 — 인터넷 연결을 확인해 주세요");
+    });
+  }
+  function uToast(msg, onUndo) {
+    var old = document.querySelector(".utoast"); if (old) old.remove();
+    var t = document.createElement("div"); t.className = "utoast"; t.setAttribute("role", "status");
+    t.innerHTML = '<span>' + esc(msg) + '</span><button type="button">되돌리기</button>';
+    document.body.appendChild(t);
+    var tm = setTimeout(function () { t.remove(); }, 8000);
+    t.querySelector("button").addEventListener("click", function () { clearTimeout(tm); t.remove(); onUndo(); });
   }
   function reCards() {   /* 선생님이 바뀌면 카드의 담당 칸 다시 그림 */
     if (!ROWS.length) return;
