@@ -10,6 +10,12 @@ window.MEMBER = {
   "notices": [
     {
       "date": "2026. 11. 12",
+      "title": "시티드 레그프레스 자세 복습지가 올라왔어요",
+      "body": "발바닥 전체로 밀고, 다 펴도 무릎은 잠그지 않기! 영상으로 다시 확인해 보세요.",
+      "link": "form-leg-press"
+    },
+    {
+      "date": "2026. 11. 12",
       "title": "아웃타이 자세 복습지가 올라왔어요",
       "body": "상체를 살짝 숙이고 무릎으로 패드를 바깥으로! 엉덩이 옆이 뜨거우면 제대로 하고 있는 거예요.",
       "link": "form-outer-thigh"
@@ -28,6 +34,36 @@ window.MEMBER = {
   ],
   "next_class": null,
   "forms": [
+    {
+      "id": "leg-press",
+      "dir": "media/form-leg-press/",
+      "date": "2026. 11. 12",
+      "exercise": "시티드 레그프레스",
+      "exercise_en": "Seated Leg Press",
+      "part": "하체",
+      "targets": ["허벅지 앞(대퇴사두근)", "엉덩이(대둔근)"],
+      "benefit": "허리 부담 없이 하체 전체를 탄탄하게 만들어 줘요",
+      "key_point": "발바닥 전체로 밀고, 다 펴도 무릎은 잠그지 않기!",
+      "good_points": [
+        {"title": "등·엉덩이 의자에 밀착", "desc": "밀 때도 엉덩이가 뜨지 않고 의자에 잘 붙어 있었어요"},
+        {"title": "손잡이 잡고 고정", "desc": "옆 손잡이를 잡아 상체가 흔들리지 않았어요"},
+        {"title": "일정한 속도", "desc": "밀고 돌아올 때 속도가 일정해서 하체에 힘이 계속 들어갔어요"}
+      ],
+      "primary_muscles": [
+        {"name": "대퇴사두근", "where": "허벅지 앞"},
+        {"name": "대둔근", "where": "엉덩이"}
+      ],
+      "secondary_muscles": "햄스트링(허벅지 뒤) · 내전근(허벅지 안쪽)",
+      "feel_good": "허벅지 앞과 엉덩이가 묵직하게 차오르면 성공",
+      "feel_stop": "무릎이 찌릿하거나 허리가 의자에서 들리면 바로 멈추기",
+      "steps": [
+        {"title": "자리 잡기", "desc": "발판에 발을 골반 너비로 올리고 등·엉덩이를 의자에 붙인 뒤 손잡이를 잡아요", "chip": "숨 들이마시기", "media": "step1.jpg"},
+        {"title": "발판 밀기", "desc": "발바닥 전체(뒤꿈치 쪽)로 밀어 다리를 펴요. 끝에서 무릎은 살짝 남기기", "chip": "숨 내쉬기", "media": "step2.webp", "loop": true},
+        {"title": "천천히 돌아오기", "desc": "무게를 버티며 2~3초 동안 무릎을 굽혀 처음 자리로 와요", "chip": "숨 들이마시기", "media": "step3.webp", "loop": true}
+      ],
+      "do": ["무릎은 발끝 방향으로", "뒤꿈치까지 발바닥 전체로 밀기", "엉덩이·허리는 의자에 붙이기"],
+      "dont": ["다 펴서 무릎 잠그기", "무릎이 안쪽으로 모이기", "돌아올 때 툭 떨어뜨리기"]
+    },
     {
       "id": "outer-thigh",
       "dir": "media/form-outer-thigh/",
