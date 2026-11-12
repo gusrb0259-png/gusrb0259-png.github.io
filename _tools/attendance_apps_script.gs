@@ -113,7 +113,13 @@ function keyHex_(k) {
   return b.map(function (x) { return ('0' + ((x + 256) % 256).toString(16)).slice(-2); }).join('');
 }
 /* 관리자(팀장) 열쇠 = RT_KEY_HASH. 선생님 열쇠 = 창고 저장소 coach:trainers [{id, name, h(지문), off?}] 에 있는 것 (2026-11-12 "선생님 7명 한 사이트") */
-function isAdmin_(k) { return !!k && keyHex_(k) === RT_KEY_HASH; }
+function isAdmin_(k) {   // 팀장 열쇠 또는 coach:trainers 에서 admin 표시된 선생님(2026-11-12 "관리자 한 명 더")
+  if (!k) return false;
+  const hex = keyHex_(k);
+  if (hex === RT_KEY_HASH) return true;
+  const tr = kvAll_()['coach:trainers'];
+  return Array.isArray(tr) && tr.some(function (t) { return t && t.h === hex && t.admin && !t.off; });
+}
 function keyOk_(k) {
   if (!k) return false;
   const hex = keyHex_(k);
@@ -284,11 +290,12 @@ function doPost(e) {
     if (!keyOk_(b.key)) return json_({ ok: false, error: 'key' });
     const all = kvAll_(), pre = String(b.prefix || ''), o = {};
     Object.keys(all).forEach(function (k) { if (k.indexOf(pre) === 0) o[k] = all[k]; });
-    let who = { admin: true };   // 누가 열었는지 (팀장 / 선생님 id·이름)
-    if (!isAdmin_(b.key)) {
-      const hex = keyHex_(b.key), tr = Array.isArray(all['coach:trainers']) ? all['coach:trainers'] : [];
+    let who = { admin: true };   // 누가 열었는지 (팀장 / 선생님 id·이름, 관리자 선생님은 admin:true + id·이름)
+    const hex = keyHex_(b.key);
+    if (hex !== RT_KEY_HASH) {
+      const tr = Array.isArray(all['coach:trainers']) ? all['coach:trainers'] : [];
       const t = tr.filter(function (x) { return x && x.h === hex; })[0] || {};
-      who = { admin: false, id: t.id || '', name: t.name || '' };
+      who = { admin: !!(t.admin && !t.off), id: t.id || '', name: t.name || '' };
     }
     return json_({ ok: true, kv: o, who: who });
   }
