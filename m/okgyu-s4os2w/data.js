@@ -10,6 +10,12 @@ window.MEMBER = {
   "notices": [
     {
       "date": "2026. 11. 12",
+      "title": "인클라인 프레스 머신 자세 복습지가 올라왔어요",
+      "body": "손잡이는 가슴 위쪽에서 출발, 등은 등받이에 붙이고 비스듬히 위로! 내릴 때는 원판이 쿵 닿지 않게 천천히.",
+      "link": "form-incline-machine"
+    },
+    {
+      "date": "2026. 11. 12",
       "title": "인클라인 덤벨 벤치프레스 자세 복습지가 올라왔어요",
       "body": "가슴 들고 견갑 모으기, 덤벨은 가슴 옆까지 천천히! 윗가슴 자극 느낌 영상으로 다시 확인해 보세요.",
       "link": "form-incline-db"
@@ -28,6 +34,35 @@ window.MEMBER = {
   ],
   "next_class": null,
   "forms": [
+    {
+      "id": "incline-machine",
+      "dir": "media/form-incline-machine/",
+      "date": "2026. 11. 12",
+      "exercise": "인클라인 프레스 머신",
+      "exercise_en": "Incline Chest Press Machine",
+      "part": "윗가슴",
+      "targets": ["윗가슴(대흉근 위쪽)", "어깨 앞(전면 삼각근)"],
+      "benefit": "궤도가 정해져 있어서 덤벨보다 무겁게, 안전하게 윗가슴을 키워 줘요",
+      "key_point": "등·머리는 등받이에 붙이고, 손잡이를 가슴 위에서 출발해 비스듬히 위로 밀기!",
+      "good_points": [
+        {"title": "손잡이 높이 맞춤", "desc": "손잡이가 가슴 위쪽에서 출발하게 자리를 잘 잡아서 윗가슴에 힘이 들어갔어요"},
+        {"title": "등받이에 밀착", "desc": "밀 때도 등과 머리가 등받이에서 떨어지지 않았어요"},
+        {"title": "끝까지 조절", "desc": "내릴 때 원판이 쿵 닿지 않게 끝까지 버티며 내려왔어요"}
+      ],
+      "primary_muscles": [
+        {"name": "대흉근 위쪽(쇄골 쪽)", "where": "윗가슴"}
+      ],
+      "secondary_muscles": "대흉근 아래쪽 · 전면 삼각근(어깨 앞) · 삼두근(팔 뒤)",
+      "feel_good": "쇄골 아래 윗가슴이 꽉 조이면서 밀리면 성공",
+      "feel_stop": "어깨 앞이 찌릿하거나 손목이 꺾여 아프면 바로 멈추고 무게 낮추기",
+      "steps": [
+        {"title": "자리 잡기", "desc": "의자 높이를 맞춰 손잡이가 가슴 위쪽에 오게 해요. 등·머리를 붙이고 가슴을 펴요", "chip": "숨 들이마시기", "media": "step1.jpg"},
+        {"title": "비스듬히 밀기", "desc": "윗가슴에 힘 주고 손잡이를 위로 밀어요. 끝에서 팔꿈치는 살짝 남기기", "chip": "숨 내쉬기", "media": "step2.webp", "loop": true},
+        {"title": "천천히 내리기", "desc": "무게를 버티며 2~3초 동안 가슴 옆까지 내려와요. 원판이 쿵 닿지 않게", "chip": "숨 들이마시기", "media": "step3.webp", "loop": true}
+      ],
+      "do": ["견갑 모으고 가슴 펴기", "손목은 손잡이 바로 뒤로 세우기", "발은 바닥에 단단히"],
+      "dont": ["어깨가 앞으로 말리기", "엉덩이 들고 밀기", "끝에서 팔꿈치 쾅 잠그기"]
+    },
     {
       "id": "incline-db",
       "dir": "media/form-incline-db/",
