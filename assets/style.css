@@ -130,6 +130,16 @@ section { display: flex; flex-direction: column; gap: 14px; }
 /* 복습지 목록 */
 .flist { display: grid; grid-template-columns: 1fr; gap: 12px; }
 .fday + .fday { margin-top: 20px; }
+.xd { margin-top: 10px; display: flex; flex-direction: column; gap: 8px; }
+.xdh { font-size: 13px; font-weight: 800; color: var(--sub, #6B7080); padding-left: 2px; } .xdh small { font-weight: 700; margin-left: 4px; }
+.xdi { display: flex; align-items: center; gap: 12px; background: var(--paper, #fff); border: 1.5px dashed var(--rule, #E3E5EA); border-radius: 14px; padding: 10px 12px; }
+.xdi .xdic { width: 44px; height: 44px; flex: none; }
+.xdi > div { flex: 1; min-width: 0; } .xdi b { display: block; font-size: 15px; } .xdi span { font-size: 13px; color: var(--primary); font-weight: 700; } .xdi p { margin: 2px 0 0; font-size: 12.5px; color: var(--sub, #6B7080); }
+.xddel { font: inherit; font-size: 12px; font-weight: 700; color: var(--sub, #6B7080); background: none; border: 1.5px solid var(--rule, #E3E5EA); border-radius: 99px; padding: 5px 10px; cursor: pointer; flex: none; }
+.xddel.sure { background: #E5484D; border-color: #E5484D; color: #fff; }
+.xdadd { font: inherit; font-size: 14px; font-weight: 800; color: var(--primary); background: var(--tint, #FDF0E6); border: 1.5px dashed var(--primary); border-radius: 14px; padding: 11px; cursor: pointer; width: 100%; }
+.xdadd.today { margin-bottom: 16px; display: flex; flex-direction: column; align-items: center; gap: 2px; } .xdadd.today small { font-size: 12px; font-weight: 600; color: var(--sub, #6B7080); }
+.xdrow { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
 .fday > h3 { display: flex; align-items: baseline; gap: 8px; margin: 0 0 10px; font-size: 15px; font-weight: 800; color: var(--key); }
 .fday > h3::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--primary); align-self: center; }
 .fday > h3 small { font-size: 12px; font-weight: 700; color: var(--faint, #8A8F99); }

@@ -630,7 +630,7 @@
     }
   }
   function careServer(kv) {
-    infoServer(kv); dietServer(kv); mediaServer(kv);
+    infoServer(kv); dietServer(kv); mediaServer(kv); xdServer(kv);
     var tv = kv && kv["pub:m:" + SLUG + ":trainer"];
     if (typeof tv === "string" && tv && tv !== TRN) { M.trainer = tv; TRN = tv; try { localStorage.setItem(TRN_LS, tv); } catch (e) {} route(); }
     var had, now;
@@ -1721,19 +1721,88 @@
     return '<a class="card-link" href="#form-' + esc(f.id) + '"><div class="thumb">' + (f.simple ? fmThumb(f) : '<img src="' + esc(f.dir) + 'poster.jpg" alt="" loading="lazy">') + '</div>' +
       '<div>' + (f.part ? '<span class="tagc">' + esc(f.part) + '</span>' : '') + (formNew(f) ? '<span class="fnew">NEW</span>' : '') + '<h3>' + esc(f.exercise) + '</h3><p>' + (f.simple ? '사진·영상 ' + (FMEDIA[f.id] || []).length + '개' : esc(f.exercise_en)) + ' · ' + esc(f.date) + '</p></div></a>';
   }
-  /* 복습지 날짜별로 묶기 (2026-11-12 트레이너 "날짜별 ㄱ") — "11월 12일 (목) · 3개" 제목 아래 그날 복습지. 최신 날짜가 위, 같은 날은 원래 순서 */
+  /* 복습지 날짜별로 묶기 (2026-11-12 트레이너 "날짜별 ㄱ") — "11월 12일 (목) · 3개" 제목 아래 그날 복습지. 최신 날짜가 위, 같은 날은 원래 순서
+     + 그날 더 한 운동 (2026-11-12 트레이너 "수업한 날 회원님들이 추가로 운동을 더 하면 종목을 더 추가하고 싶다"):
+       회원 폰에서 그날 칸 아래 "＋ 이날 더 한 운동 추가" → 창고 저장소 mw:<주소>:xd:<YYYY-MM-DD> [{id, n(종목), s(세트), r(횟수), w(kg), memo, at}] (회원 폰도 쓰기 가능, 하루 4KB까지) */
+  var XD_LS = "ptnote:" + SLUG + ":xd", XD = {};
+  try { XD = JSON.parse(localStorage.getItem(XD_LS) || "{}") || {}; } catch (e) { XD = {}; }
+  function xdServer(kv) {
+    if (!kv) return;
+    var o = {}, pre = "mw:" + SLUG + ":xd:";
+    Object.keys(kv).forEach(function (k) { if (k.indexOf(pre) === 0 && Array.isArray(kv[k]) && kv[k].length) o[k.slice(pre.length)] = kv[k]; });
+    if (JSON.stringify(o) === JSON.stringify(XD)) return;
+    XD = o; try { localStorage.setItem(XD_LS, JSON.stringify(XD)); } catch (e) {}
+    if (/^#forms$/.test(location.hash || "")) route();
+  }
+  function xdToday() { var t = new Date(); return t.getFullYear() + "-" + ("0" + (t.getMonth() + 1)).slice(-2) + "-" + ("0" + t.getDate()).slice(-2); }
   function formKey(d) { var m = String(d || "").match(/(\d{4})\D+(\d{1,2})\D+(\d{1,2})/); return m ? m[1] + "-" + ("0" + m[2]).slice(-2) + "-" + ("0" + m[3]).slice(-2) : ""; }
+  function dayLabel(k) {
+    if (!k) return "날짜 없음";
+    var p = k.split("-"), d = new Date(+p[0], +p[1] - 1, +p[2]), DW = ["일", "월", "화", "수", "목", "금", "토"];
+    return (p[0] !== String(new Date().getFullYear()) ? p[0] + "년 " : "") + (+p[1]) + "월 " + (+p[2]) + "일 (" + DW[d.getDay()] + ")";
+  }
+  function xdBlock(k) {
+    var L = XD[k] || [], can = !DEMO;
+    if (!L.length && !can) return "";
+    var h = '<div class="xd">';
+    if (L.length) h += '<div class="xdh">이날 더 한 운동 <small>' + L.length + '개</small></div>' + L.map(function (x) {
+      var sr = [[x.s ? x.s + "세트" : "", x.r ? x.r + "회" : ""].filter(Boolean).join(" × "), x.w ? x.w + "kg" : ""].filter(Boolean).join(" · ");
+      return '<div class="xdi">' + img(iconOf({ name: x.n }), "xdic", true) + '<div><b>' + esc(x.n) + '</b>' + (sr ? '<span>' + esc(sr) + '</span>' : '') +
+        (x.memo ? '<p>' + esc(x.memo) + '</p>' : '') + '</div>' + (can ? '<button type="button" class="xddel" data-xdel="' + esc(k + "|" + x.id) + '">삭제</button>' : '') + '</div>';
+    }).join("");
+    if (can) h += '<button type="button" class="xdadd" data-xadd="' + esc(k) + '">＋ 이날 더 한 운동 추가</button>';
+    return h + '</div>';
+  }
   function formDays() {
     var G = {}, order = [];
-    M.forms.forEach(function (f) { var k = formKey(f.date); if (!G[k]) { G[k] = []; order.push(k); } G[k].push(f); });
+    function add(k) { if (!G[k]) { G[k] = []; order.push(k); } }
+    M.forms.forEach(function (f) { var k = formKey(f.date); add(k); G[k].push(f); });
+    Object.keys(XD).forEach(function (k) { if ((XD[k] || []).length) add(k); });
     order.sort(function (a, b) { return a < b ? 1 : a > b ? -1 : 0; });
-    var yNow = String(new Date().getFullYear()), DW = ["일", "월", "화", "수", "목", "금", "토"];
-    return order.map(function (k) {
-      var lab = "날짜 없음";
-      if (k) { var p = k.split("-"), d = new Date(+p[0], +p[1] - 1, +p[2]); lab = (p[0] !== yNow ? p[0] + "년 " : "") + (+p[1]) + "월 " + (+p[2]) + "일 (" + DW[d.getDay()] + ")"; }
-      return '<div class="fday"><h3>' + esc(lab) + '<small>' + G[k].length + '개</small></h3><div class="flist">' + G[k].map(formCard).join("") + '</div></div>';
+    var top = !DEMO && order.indexOf(xdToday()) < 0 ? '<button type="button" class="xdadd today" data-xadd="' + xdToday() + '">＋ 오늘 더 한 운동 기록하기<small>수업 말고 혼자 더 한 운동을 적어 두세요</small></button>' : '';
+    return top + order.map(function (k) {
+      var fs = G[k];
+      return '<div class="fday"><h3>' + esc(dayLabel(k)) + '<small>' + (fs.length ? '복습지 ' + fs.length + '개' : '') + ((XD[k] || []).length ? (fs.length ? ' · ' : '') + '더 한 운동 ' + XD[k].length + '개' : '') + '</small></h3>' +
+        (fs.length ? '<div class="flist">' + fs.map(formCard).join("") + '</div>' : '') + xdBlock(k) + '</div>';
     }).join("");
   }
+  function xdSave(k, arr, sh, ok) {
+    var key = "mw:" + SLUG + ":xd:" + k, items = {}; items[key] = arr.length ? arr : null;
+    if (JSON.stringify(arr).length > 3800) { if (sh) sh.msg("하루에 적을 수 있는 양을 넘었어요 — 메모를 줄여 주세요"); return; }
+    if (sh) sh.msg("저장하는 중…");
+    rtPost({ a: "kv_set", items: items }).then(function (j) {
+      if (!j || !j.ok) { if (sh) sh.msg(j && j.error === "action" ? "창고를 새 버전으로 다시 배포해야 해요" : "저장이 안 됐어요 — 다시 눌러 주세요"); else attToast("저장이 안 됐어요"); return; }
+      if (arr.length) XD[k] = arr; else delete XD[k];
+      try { localStorage.setItem(XD_LS, JSON.stringify(XD)); } catch (e) {}
+      if (sh) sh.close(); route(); attToast(ok);
+    }).catch(function () { if (sh) sh.msg(rtNetMsg()); else attToast(rtNetMsg()); });
+  }
+  document.addEventListener("click", function (e) {
+    var a = e.target.closest && e.target.closest("[data-xadd]");
+    if (a) {
+      var k = a.getAttribute("data-xadd"), names = [];
+      RT_CAT.forEach(function (c) { c[1].forEach(function (n) { if (names.indexOf(n) < 0) names.push(n); }); });
+      var sh = rtSheet(dayLabel(k) + " 더 한 운동",
+        '<label>운동 이름<input id="xdN" list="xdNL" maxlength="30" placeholder="예: 레그 익스텐션" autocomplete="off"></label><datalist id="xdNL">' + names.map(function (n) { return '<option value="' + esc(n) + '">'; }).join("") + '</datalist>' +
+        '<div class="xdrow"><label>세트<input id="xdS" type="number" inputmode="numeric" min="1" max="20" placeholder="3"></label><label>횟수<input id="xdR" inputmode="numeric" maxlength="8" placeholder="12"></label><label>무게 kg<input id="xdW" inputmode="decimal" maxlength="6" placeholder="20"></label></div>' +
+        '<label>메모 <small>없어도 돼요</small><input id="xdM" maxlength="60" placeholder="예: 마지막 세트 힘들었어요" autocomplete="off"></label>',
+        function (s) {
+          var n = fv(s, "xdN"); if (!n) return "운동 이름을 넣어 주세요";
+          var x = { id: Date.now().toString(36), n: n, s: fv(s, "xdS"), r: fv(s, "xdR"), w: fv(s, "xdW").replace(/kg/i, ""), memo: fv(s, "xdM"), at: new Date().toISOString() };
+          Object.keys(x).forEach(function (q) { if (x[q] === "") delete x[q]; });
+          xdSave(k, (XD[k] || []).concat([x]), s, n + " 추가했어요");
+          return true;
+        }, "추가");
+      setTimeout(function () { var i = sh.querySelector("#xdN"); if (i) i.focus(); }, 50);
+      return;
+    }
+    var d = e.target.closest && e.target.closest("[data-xdel]");
+    if (d) {
+      if (!d.classList.contains("sure")) { d.classList.add("sure"); d.textContent = "한 번 더"; setTimeout(function () { d.classList.remove("sure"); d.textContent = "삭제"; }, 2500); return; }
+      var p = d.getAttribute("data-xdel").split("|");
+      xdSave(p[0], (XD[p[0]] || []).filter(function (x) { return x.id !== p[1]; }), null, "지웠어요");
+    }
+  });
   function renderForms() {
     var h = (CAN_EDIT ? '<button type="button" class="fxnew" data-fx="new">＋ 사진·영상 복습지 만들기<small>운동 이름만 넣고 사진·영상을 바로 올려요</small></button>' : '') +
       '<section>' + head("", "자세 복습지", "수업에서 배운 자세를 영상으로 다시 봐요");
