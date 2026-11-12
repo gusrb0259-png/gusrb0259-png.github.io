@@ -2,5 +2,6 @@
 window.COACH_MEMBERS = [
   "sample-k7d2qx",
   "dahye-dfpttw",
-  "jihyeon-d1xp2n"
+  "jihyeon-d1xp2n",
+  "okgyu-s4os2w"
 ];

@@ -90,6 +90,7 @@ _tools/anatomy_v3.py  인체모형 v3 (자극 부위 그림). build(경로, 앞 
 | 홍길동 (샘플, 가상) | m/sample-k7d2qx/ | M |
 | 이다혜 | m/dahye-dfpttw/ | F |
 | 홍지현 | m/jihyeon-d1xp2n/ | F |
+| 백옥규 | m/okgyu-s4os2w/ | M |
 
 ## 폰에서 새 회원 노트 만들기 (2026-11-12 트레이너 "클로드 말고 PT 노트 안에서 이름만 넣으면 자동으로")
 - 선생님 페이지 회원 목록 위 "＋ 새 회원 노트 만들기" → 이름·성별·PT 시작한 달·목표(선택) → 주소 `<이름 로마자>-<랜덤6>` 자동(성 빼고 이름만 로마자, coach index.html roman()) → 링크 복사·노트 열기.
@@ -104,7 +105,7 @@ _tools/anatomy_v3.py  인체모형 v3 (자극 부위 그림). build(경로, 앞 
 1. 주소: `m/<이름 로마자>-<랜덤 소문자·숫자 6자>/` (예: jisu-k3x9qa). 추측하기 어렵게.
 2. `m/sample-k7d2qx/index.html` 복사(site.js·exicons.js·app.js 스크립트 태그 그대로) → 제목·og:title·헤더 문구의 이름, og:image 경로, theme-color(여 #C2185B) 바꾸기.
 3. data.js 작성 (아래 형식). sex "F"면 핑크 테마·핑크 아이콘 자동.
-4. og.jpg 생성 (1200×630, 테마색 배경 + 로고 + "MY PT NOTE · 나만의 운동 노트" + "OOO 회원님" + 아래 띠 "GYMTOS 도당점 · 담당 OOO 트레이너").
+4. og.jpg 생성: `python3 _tools/make_og.py m/<주소>/og.jpg "<이름>" M|F "<담당 이름> <직함>"` (2026-11-12 — 남 블랙+골드 / 여 오렌지+브라운, 박현규는 "박현규 팀장", 다른 선생님은 "OOO 트레이너", 그룹 PT면 끝에 group).
 5. 위 회원 목록 표에 추가하고, coach-co8rde/members.js에도 주소 추가.
 
 ## data.js 형식
