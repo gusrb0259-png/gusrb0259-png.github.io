@@ -784,7 +784,8 @@ section.folded .fsum:not(:empty) { display: inline; }
     document.getElementById("bnSec").hidden = !ME.admin;
     document.getElementById("guideCard").hidden = !ME.admin;
     var nm = ME.sub ? ME.name : ME.admin ? SITE.trainer : ME.name;
-    if (nm) document.getElementById("trn").textContent = nm + " 트레이너";
+    var meT = TRAINERS.filter(function (x) { return x.id === ME.id; })[0], role = meT && meT.role || "트레이너";   /* 직함 (2026-11-12 조승일 "점장") */
+    if (nm) document.getElementById("trn").textContent = nm + " " + role;
     document.title = "PT 노트 " + (ME.admin ? "선생님" : ME.name + " 선생님") + " · " + BRN;
     if (ME.admin) trDraw();
   }
@@ -831,7 +832,7 @@ section.folded .fsum:not(:empty) { display: inline; }
     var ids = ["all", "admin"].concat(TRAINERS.map(function (t) { return t.id; }));
     box.innerHTML = ids.map(function (id) {
       var st = tStat(id), t = TRAINERS.filter(function (x) { return x.id === id; })[0], nm = id === "all" ? "모든 선생님" : tName(id);
-      var sub = id === "all" ? "선생님 " + (TRAINERS.length + 1) + "명 전체" : id === "admin" ? "팀장" : [t && t.admin ? "관리자" : "", t && t.ext ? "개인 사이트 연결" : "", t && t.off ? "꺼짐" : ""].filter(Boolean).join(" · ");
+      var sub = id === "all" ? "선생님 " + (TRAINERS.length + 1) + "명 전체" : id === "admin" ? "팀장" : [t && t.role ? t.role : "", t && t.admin ? "관리자" : "", t && t.ext ? "개인 사이트 연결" : "", t && t.off ? "꺼짐" : ""].filter(Boolean).join(" · ");
       return '<button type="button" class="tdi' + (id === "all" ? " all" : "") + (t && t.off ? " off" : "") + '" data-tf="' + esc(id) + '" aria-current="' + (TF === id) + '">' +
         '<span class="tav">' + (id === "all" ? "全" : esc(nm.charAt(0))) + '</span><span class="tt"><b>' + esc(nm) + '</b><small>' +
         (st.n ? '오늘 출석 <span class="ok">' + st.on + '</span> · 미출석 <span class="no">' + (st.done ? st.off : "…") + '</span>' : '아직 회원 없음') + (sub ? ' · ' + esc(sub) : '') + '</small></span>' +
@@ -952,7 +953,7 @@ section.folded .fsum:not(:empty) { display: inline; }
     var cnt = {}; ROWS.forEach(function (r) { var t = tidOf(r.slug, r.M); cnt[t] = (cnt[t] || 0) + 1; });
     var head = '<div class="tri"><span class="tav">' + esc((SITE.trainer || "팀").charAt(0)) + '</span><div class="tt"><b>' + esc(SITE.trainer || "팀장") + ' <small>· 팀장(관리자)</small></b><small>담당 회원 ' + (cnt.admin || 0) + '명 · 모든 회원 보기·고치기</small></div></div>';
     box.innerHTML = head + TRAINERS.map(function (t) {
-      return '<div class="tri' + (t.off ? " off" : "") + '" data-tid="' + esc(t.id) + '"><span class="tav">' + esc(t.name.charAt(0)) + '</span><div class="tt"><b>' + esc(t.name) + '</b><small>' + (t.admin ? '관리자 · ' : '') + '담당 회원 ' + (cnt[t.id] || 0) + '명' + (t.ext ? ' · 개인 사이트 ' + esc(t.ext.site.replace("https://", "")) + ' 연결' : '') + (t.off ? ' · 꺼짐(못 들어와요)' : '') + '</small></div>' +
+      return '<div class="tri' + (t.off ? " off" : "") + '" data-tid="' + esc(t.id) + '"><span class="tav">' + esc(t.name.charAt(0)) + '</span><div class="tt"><b>' + esc(t.name) + (t.role ? ' <small>· ' + esc(t.role) + '</small>' : '') + '</b><small>' + (t.admin ? '관리자 · ' : '') + '담당 회원 ' + (cnt[t.id] || 0) + '명' + (t.ext ? ' · 개인 사이트 ' + esc(t.ext.site.replace("https://", "")) + ' 연결' : '') + (t.off ? ' · 꺼짐(못 들어와요)' : '') + '</small></div>' +
         '<div class="tb"><button type="button" data-act="adm">' + (t.admin ? "관리자 ✓" : "관리자로") + '</button><button type="button" data-act="ext">' + (t.ext ? "개인 사이트 ✓" : "개인 사이트") + '</button><button type="button" data-act="key">새 링크</button><button type="button" data-act="off">' + (t.off ? "켜기" : "끄기") + '</button><button type="button" data-act="del">삭제</button></div></div>';
     }).join("");
     fsum("trainers", "선생님 " + (TRAINERS.length + 1) + "명");
