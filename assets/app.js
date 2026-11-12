@@ -47,7 +47,7 @@
   /* 담당 선생님 이름 (2026-11-12 선생님 여러 명) — data.js trainer / 창고 pub:m:<주소>:trainer(팀장이 담당 바꾸면) / 없으면 site.js 트레이너 */
   var TRN_LS = "ptnote:" + INFO_SLUG + ":trainer";
   try { var trnC = localStorage.getItem(TRN_LS); if (trnC) M.trainer = trnC; } catch (e) {}
-  var TRN = M.trainer || SITE.trainer || "OOO", BRAND = SITE.brand || "GYMTOS", BRANCH = SITE.branch || "도당점", BRN = BRAND + (BRANCH ? " " + BRANCH : "");
+  var TRN = M.trainer || SITE.trainer || "OOO", TRL = function () { return TRN === SITE.trainer && SITE.role ? SITE.role : "트레이너"; }, BRAND = SITE.brand || "GYMTOS", BRANCH = SITE.branch || "도당점", BRN = BRAND + (BRANCH ? " " + BRANCH : "");
   /* 루틴 고치기 (2026-11-10): 선생님이 폰에서 고친 루틴은 출석 창고(시트 "루틴")에 저장되고,
      회원 휴대폰에는 ptnote:<주소>:routine 으로 기억해 둠 → 열자마자 고친 루틴으로 보임.
      기준(base) = data.js 루틴의 version|updated. data.js 루틴이 새로 올라오면(기준이 달라지면) data.js가 이김 */
@@ -495,7 +495,7 @@
     var now = journeyNow();
     var h = '<div class="hero"><div class="hero-main"><div class="hero-l"><div class="eyebrow">MY GOAL <b>· 나의 목표</b></div>' +
       '<h1>' + esc(M.goal || "나의 목표") + '</h1><div class="en">' + esc(M.name) + ' 회원님 · ' + (BP ? '기초 → 벌크 → 컷팅, 바프 촬영까지 함께 가요' : '기초 → 변화 → 자립, 3단계로 함께 가요') + '</div>' +
-      '<div class="who"><strong>' + (now ? (now.month ? now.month + '개월차' : '곧 시작해요') + ' · ' + now.stage.no + '단계 ' + esc(now.stage.short) : '') + '</strong><span>담당 ' + esc(TRN) + ' 트레이너</span></div></div></div>' +
+      '<div class="who"><strong>' + (now ? (now.month ? now.month + '개월차' : '곧 시작해요') + ' · ' + now.stage.no + '단계 ' + esc(now.stage.short) : '') + '</strong><span>담당 ' + esc(TRN) + ' ' + TRL() + '</span></div></div></div>' +
       '<div class="keypoint"><small>KEY POINT</small><p>' + (BP ? '목표는 하나, 바프 촬영날! 그 의지라면 충분해요. 단계마다 함께 넘어가요!' : '혼자 가는 길이 아니에요. 단계마다 함께 넘어가요!') + '</p></div></div>';
     h += careSection();
     var n4 = "03", n5 = "04";   /* 몸 변화 기록은 2026-11-06 '몸변화' 탭(#body)으로, 근육 지도는 2026-11-08 루틴 탭으로 이동 */
@@ -1089,7 +1089,7 @@
   function renderBody() {
     var h = '<div class="hero"><div class="hero-main"><div class="hero-l"><div class="eyebrow">MY BODY <b>· 몸 변화 기록</b></div>' +
       '<h1>몸 변화 기록</h1><div class="en">' + esc(M.name) + ' 회원님 · 인바디로 지난달과 비교해요</div>' +
-      '<div class="who"><strong>한 달에 한 번</strong><span>담당 ' + esc(TRN) + ' 트레이너</span></div></div></div>' +
+      '<div class="who"><strong>한 달에 한 번</strong><span>담당 ' + esc(TRN) + ' ' + TRL() + '</span></div></div></div>' +
       '<div class="keypoint"><small>KEY POINT</small><p>숫자는 한 달에 한 번! 같은 시간 · 같은 조건으로 재요</p></div></div>';
     h += '<section>' + head("01", "지난달 vs 이번 달", "결과지 찍어 올리면 비교해 드려요") + ibPanel() + '</section>';
     h += '<section>' + head("02", "한눈에 보는 흐름", "처음 기록부터 지금까지") + ibTrend() + '</section>';
@@ -1432,7 +1432,7 @@
   function reportCard(R) {
     var top = mgTop(R.mc.cnt), white = mgWhite(R.mc.cnt);
     var cm = M.reports && M.reports[R.ym], quote, qwho;
-    if (cm) { quote = esc(cm).replace(/\n/g, "<br>"); qwho = TRN + " 트레이너의 한마디"; }
+    if (cm) { quote = esc(cm).replace(/\n/g, "<br>"); qwho = TRN + " " + TRL() + "의 한마디"; }
     else {
       qwho = R.mo + "월 한 줄 요약";
       quote = !R.done ? "이번 달은 쉬어 갔어요.<br>다음 달엔 하나씩 다시 채워 봐요!" :
@@ -1467,7 +1467,7 @@
       '<div class="rp-side">' + right + '<div class="rp-box rp-bd"><h4>' + (R.badges.length ? '이번 달 받은 배지' : '이번 달 배지') + '</h4>' +
       (bdgs ? '<div class="rp-bds">' + bdgs + '</div>' : '<p>다음 달엔 배지 하나 받아 봐요!</p>') + '</div></div></div>' +
       '<div class="rp-quote"><span aria-hidden="true">“</span><div><p>' + quote + '</p><small>' + qwho + '</small></div></div>' +
-      '<div class="rp-foot"><span><b>MY PT NOTE</b> · 나만의 운동 노트</span><span>' + esc(BRN) + ' · 담당 ' + esc(TRN) + ' 트레이너</span></div></div>';
+      '<div class="rp-foot"><span><b>MY PT NOTE</b> · 나만의 운동 노트</span><span>' + esc(BRN) + ' · 담당 ' + esc(TRN) + ' ' + TRL() + '</span></div></div>';
   }
   function renderReport(ym) {
     var now = new Date(), curYm = ymOf(now), st = startDate(), firstYm = st ? ymOf(st) : curYm;
@@ -1567,7 +1567,7 @@
       '<div class="eyebrow">MY PT NOTE <b>· 나만의 운동 노트</b></div>' +
       '<h1>' + esc(M.name) + ' 회원님</h1>' +
       '<div class="en">' + esc(M.goal || "") + '</div>' +
-      '<div class="who"><span>' + esc(BRN) + ' · ' + esc(TRN) + ' 트레이너</span></div>' +
+      '<div class="who"><span>' + esc(BRN) + ' · ' + esc(TRN) + ' ' + TRL() + '</span></div>' +
       '</div>' + attCheckStrip() + '</div></div></div>';
 
     if (M.next_class) {

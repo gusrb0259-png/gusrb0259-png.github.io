@@ -319,7 +319,7 @@ section.folded .fsum:not(:empty) { display: inline; }
 (function () {
   "use strict";
   var SITE = window.SITE || {}, BRN = (SITE.brand || "GYMTOS") + " " + (SITE.branch || "도당점");
-  if (SITE.trainer) document.getElementById("trn").textContent = SITE.trainer + " 트레이너";
+  if (SITE.trainer) document.getElementById("trn").textContent = SITE.trainer + " " + (SITE.role || "트레이너");
   document.title = "PT 노트 선생님 · " + BRN;
   var API = SITE.att_api || "";
   var LIST = (window.COACH_MEMBERS || []).slice();
@@ -797,7 +797,7 @@ section.folded .fsum:not(:empty) { display: inline; }
     document.getElementById("bnSec").hidden = !ME.admin;
     document.getElementById("guideCard").hidden = !ME.admin;
     var nm = ME.sub ? ME.name : ME.admin ? SITE.trainer : ME.name;
-    var meT = TRAINERS.filter(function (x) { return x.id === ME.id; })[0], role = meT && meT.role || "트레이너";   /* 직함 (2026-11-12 조승일 "점장") */
+    var meT = TRAINERS.filter(function (x) { return x.id === ME.id; })[0], role = meT && meT.role || (ME.admin && !ME.sub && SITE.role) || "트레이너";   /* 직함 (2026-11-12 조승일 "점장") */
     if (nm) document.getElementById("trn").textContent = nm + " " + role;
     document.title = "PT 노트 " + (ME.admin ? "선생님" : ME.name + " 선생님") + " · " + BRN;
     if (ME.admin) trDraw();
