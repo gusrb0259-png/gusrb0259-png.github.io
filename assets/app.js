@@ -116,10 +116,30 @@
   function dayIcon(d) { return !d || d.rest ? "rest" : d.cardio_only ? "treadmill" : d.pick ? "dumbbell" : iconOf(mainItem(d)); }
   /* 운동 아이콘: assets/exicons.js(움직이는 SVG, 2026-11-10)에 있는 종목은 그걸로, 없으면 예전 PNG. still = 멈춘 그림(작은 칸용) */
   function img(key, cls, still) {
-    if (window.EXI && EXI.has(key)) return EXI.svg(key, { sex: THEME, cls: cls || "icn", still: !!still });
+    if (window.EXI && EXI.has(key)) return EXI.svg(key, { sex: PINK ? "P" : THEME, cls: cls || "icn", still: !!still });
     return '<img class="' + (cls || "icn") + '" src="' + iconSrc(key) + '" alt="" loading="lazy">';
   }
   document.documentElement.setAttribute("data-sex", M.sex === "F" ? "F" : "M");
+  /* 회원별 테마 (2026-11-13 이다혜 회원님 pinkcheck — 분홍 체크 + 아기 토끼 보니) */
+  var PINK = M.theme === "pinkcheck";
+  if (PINK) document.documentElement.setAttribute("data-theme", "pinkcheck");
+  /* 보니: 직접 디자인한 아기 토끼(긴 귀·헤어밴드·작은 덤벨) */
+  function bunny() {
+    return '<svg class="bunny" viewBox="0 0 100 100" aria-hidden="true">' +
+      '<g class="bn-ear"><path d="M34 46C26 30 26 10 33 6c7-3 11 16 10 38z" fill="#FFFFFF" stroke="#7A4636" stroke-width="2.2"/><path d="M35 40c-4-11-4-24 0-27 3-1 5 12 4 26z" fill="#FFC2D6"/></g>' +
+      '<g class="bn-ear r"><path d="M58 44c0-22 6-40 13-37 7 4 5 24-4 40z" fill="#FFFFFF" stroke="#7A4636" stroke-width="2.2"/><path d="M62 39c1-14 4-25 7-24 3 2 1 14-4 26z" fill="#FFC2D6"/></g>' +
+      '<path d="M30 45q20-10 40 0" fill="none" stroke="#FFD86B" stroke-width="5" stroke-linecap="round"/>' +
+      '<circle cx="70" cy="44" r="4" fill="#FFD86B" stroke="#7A4636" stroke-width="1.6"/>' +
+      '<ellipse cx="50" cy="66" rx="27" ry="23" fill="#FFFFFF" stroke="#7A4636" stroke-width="2.2"/>' +
+      '<ellipse cx="41" cy="63" rx="2.6" ry="3.4" fill="#4A2A1F"/><ellipse cx="59" cy="63" rx="2.6" ry="3.4" fill="#4A2A1F"/>' +
+      '<circle cx="42" cy="61.6" r=".9" fill="#fff"/><circle cx="60" cy="61.6" r=".9" fill="#fff"/>' +
+      '<ellipse cx="34" cy="71" rx="4.6" ry="3" fill="#FF9DBD" opacity=".75"/><ellipse cx="66" cy="71" rx="4.6" ry="3" fill="#FF9DBD" opacity=".75"/>' +
+      '<path d="M47 69q3 2.4 6 0" fill="none" stroke="#4A2A1F" stroke-width="1.6" stroke-linecap="round"/><path d="M50 69v3" stroke="#4A2A1F" stroke-width="1.4"/>' +
+      '<path d="M46.5 72.5q3.5 3 7 0" fill="none" stroke="#4A2A1F" stroke-width="1.5" stroke-linecap="round"/>' +
+      '<g transform="translate(70 80) rotate(-18)"><rect x="-12" y="-1.6" width="24" height="3.2" rx="1.6" fill="#B9A3AE"/><rect x="-15" y="-6" width="6" height="12" rx="2.4" fill="#EE86A8" stroke="#7A4636" stroke-width="1.4"/><rect x="9" y="-6" width="6" height="12" rx="2.4" fill="#EE86A8" stroke="#7A4636" stroke-width="1.4"/></g>' +
+      '<ellipse cx="66" cy="81" rx="5" ry="4" fill="#FFFFFF" stroke="#7A4636" stroke-width="1.8"/>' +
+      '</svg>';
+  }
 
   var DAY_KEYS = ["sun", "mon", "tue", "wed", "thu", "fri", "sat"];
   var DAY_KO = { mon: "월", tue: "화", wed: "수", thu: "목", fri: "금", sat: "토", sun: "일" };
@@ -1568,7 +1588,7 @@
       '<h1>' + esc(M.name) + ' 회원님</h1>' +
       '<div class="en">' + esc(M.goal || "") + '</div>' +
       '<div class="who"><span>' + esc(BRN) + ' · ' + esc(TRN) + ' ' + TRL() + '</span></div>' +
-      '</div>' + attCheckStrip() + '</div></div></div>';
+      '</div>' + (PINK ? bunny() : "") + attCheckStrip() + '</div></div></div>';
 
     if (M.next_class) {
       h += '<div class="panel next"><svg width="40" height="40" viewBox="0 0 40 40" aria-hidden="true"><rect x="4" y="7" width="32" height="29" rx="6" fill="var(--primary)"/><rect x="4" y="7" width="32" height="9" rx="4" fill="var(--side)"/><rect x="11" y="3" width="4" height="9" rx="2" fill="var(--key)"/><rect x="25" y="3" width="4" height="9" rx="2" fill="var(--key)"/></svg>' +
@@ -3116,7 +3136,7 @@
     var seen = false; try { seen = sessionStorage.getItem("ptsplash:" + SLUG) === "1"; sessionStorage.setItem("ptsplash:" + SLUG, "1"); } catch (e) {}
     if (seen || DEMO || window.self !== window.top) return;
     var sp = document.createElement("div"); sp.className = "splash";
-    sp.innerHTML = '<img src="' + BASE + 'logo.png" alt=""><b>' + esc(M.name) + ' 회원님</b><span>MY PT NOTE</span>';
+    sp.innerHTML = (PINK ? bunny() : '<img src="' + BASE + 'logo.png" alt="">') + '<b>' + esc(M.name) + ' 회원님</b><span>MY PT NOTE</span>';
     document.body.appendChild(sp);
     setTimeout(function () { sp.classList.add("out"); setTimeout(function () { sp.remove(); }, 450); }, RM ? 300 : 900);
   })();

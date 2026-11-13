@@ -1237,3 +1237,49 @@ body { overscroll-behavior-y: contain; }
 /* 유산소 눌러서 고치기 (2026-11-12) */
 [data-cardio] { cursor: pointer; }
 .ex.cardio[data-cardio]::after { content: "✎ 눌러서 고치기"; display: block; margin-top: 6px; font-size: 11.5px; font-weight: 800; color: var(--gold); text-align: right; }
+
+/* ===== 회원별 테마: pinkcheck (2026-11-13 이다혜 회원님 — 분홍 체크무늬 + 하트 + 아기 토끼 "보니", 직접 디자인한 캐릭터) =====
+   data.js "theme": "pinkcheck" → app.js가 html[data-theme] 를 붙임. 여성 테마 변수 위에 덮어씀. */
+:root[data-theme="pinkcheck"] {
+  --primary: #EE86A8; --side: #D9688E; --key: #7A4636; --tint: #FFF0F5; --tint2: #FCDDE8;
+  --muted: #FFE3EE; --dot: #FFFFFF; --rule: #F7D2DF; --page: #FFF5F8; --line: #F6DDE6;
+  --pink: #E0789C; --pink-e: #B24E73; --pink-l: #F9C9D9; --led: #FF8FB5;
+}
+:root[data-theme="pinkcheck"] body {
+  background-color: #FFF6F9;
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='132' height='132'%3E%3Cg fill='%23F7A9C3' fill-opacity='.55'%3E%3Cpath d='M30 38c-5-6-14-2-12 5 1 4 12 11 12 11s11-7 12-11c2-7-7-11-12-5z'/%3E%3Cpath transform='translate(80 86) scale(.7)' d='M30 38c-5-6-14-2-12 5 1 4 12 11 12 11s11-7 12-11c2-7-7-11-12-5z'/%3E%3C/g%3E%3Cg fill='%23FFFFFF'%3E%3Ccircle cx='104' cy='26' r='2.4'/%3E%3Ccircle cx='22' cy='104' r='1.8'/%3E%3C/g%3E%3C/svg%3E"),
+    linear-gradient(90deg, rgba(246, 168, 194, .22) 50%, transparent 50%),
+    linear-gradient(rgba(246, 168, 194, .22) 50%, transparent 50%);
+  background-size: 132px 132px, 28px 28px, 28px 28px;
+  background-attachment: fixed;
+}
+:root[data-theme="pinkcheck"] .panel { border-radius: 20px; box-shadow: 0 2px 0 #F8D6E2, 0 6px 16px rgba(238, 134, 168, .10); }
+:root[data-theme="pinkcheck"] .hero { border-radius: 24px; box-shadow: 0 6px 18px rgba(238, 134, 168, .25); }
+:root[data-theme="pinkcheck"] .hero-l {
+  position: relative;
+  background-color: var(--primary);
+  background-image:
+    linear-gradient(90deg, rgba(255, 255, 255, .13) 50%, transparent 50%),
+    linear-gradient(rgba(255, 255, 255, .13) 50%, transparent 50%);
+  background-size: 22px 22px;
+}
+:root[data-theme="pinkcheck"] .bar { background: rgba(255, 246, 249, .94); border-bottom-color: #F6D3DF; }
+:root[data-theme="pinkcheck"] .tabs { background: rgba(255, 246, 249, .97); }
+:root[data-theme="pinkcheck"] .splash {
+  background-image:
+    linear-gradient(90deg, rgba(255, 255, 255, .14) 50%, transparent 50%),
+    linear-gradient(rgba(255, 255, 255, .14) 50%, transparent 50%);
+  background-size: 30px 30px;
+}
+/* 아기 토끼 보니 */
+.bunny { display: block; flex: none; }
+:root[data-theme="pinkcheck"] .hero-home { padding-bottom: 58px; }
+.hero-home .bunny { position: absolute; right: 30px; bottom: 6px; width: 62px; height: 64px; filter: drop-shadow(0 3px 4px rgba(150, 50, 90, .22)); animation: bnHop 2.6s ease-in-out infinite; transform-origin: 50% 100%; }
+.splash .bunny { width: 108px; height: 108px; animation: spIn .6s cubic-bezier(.2,.8,.3,1) both, bnHop 1.3s .6s ease-in-out infinite; }
+.bunny .bn-ear { transform-origin: 50% 100%; transform-box: fill-box; animation: bnEar 2.6s ease-in-out infinite; }
+.bunny .bn-ear.r { animation-delay: .25s; }
+@keyframes bnHop { 0%, 70%, 100% { transform: translateY(0); } 80% { transform: translateY(-5px) scaleY(1.02); } 90% { transform: translateY(0) scaleY(.97); } }
+@keyframes bnEar { 0%, 60%, 100% { transform: rotate(0); } 75% { transform: rotate(-7deg); } }
+:root[data-theme="pinkcheck"] .hero-home .who span::after { content: " ♡"; }
+@media (prefers-reduced-motion: reduce) { .bunny, .bunny .bn-ear { animation: none !important; } }

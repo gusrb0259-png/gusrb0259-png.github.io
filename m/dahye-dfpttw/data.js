@@ -2,6 +2,7 @@
 window.MEMBER = {
   "name": "이다혜",
   "sex": "F",
+  "theme": "pinkcheck",
   "since": "2026. 2",
   "goal": "탄탄한 몸매 라인 · 체력 키우기",
   "journey": {

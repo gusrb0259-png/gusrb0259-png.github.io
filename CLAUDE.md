@@ -279,6 +279,11 @@ _tools/anatomy_v3.py  인체모형 v3 (자극 부위 그림). build(경로, 앞 
   - 연결된 사이트: 장동욱 = https://gymtos-dodang.github.io (coach-tqqnlh, 회원 14명, GitHub gymtos-dodang — 팀장 저장소에 협업자로도 초대됨).
 - **Claude가 다른 선생님 회원의 정식 노트(data.js)를 만들 때**: data.js에 `tid`(선생님 id — 창고 coach:trainers에서)·`trainer`(이름) 넣고, og.jpg 띠의 "담당 OOO 트레이너"도 그 선생님 이름으로.
 
+## 회원별 테마 (2026-11-13 트레이너 — 이다혜 회원님 "키티 느낌 비슷하게")
+- data.js `"theme": "pinkcheck"` → html[data-theme="pinkcheck"]: 분홍 체크무늬(배경·히어로·시작 화면) + 하트, 둥근 카드, 움직이는 아이콘 색 exicons STY.P, 홈 히어로 오른쪽 아래·시작 화면에 **직접 디자인한 아기 토끼 "보니"**(긴 귀·노란 헤어밴드·작은 덤벨, app.js bunny()). 회원 index.html theme-color #EE86A8.
+- **헬로키티 등 남의 캐릭터를 따라 그리거나 닮게 만들지 않음**(흰 고양이·귀 리본 X). 회원이 캐릭터를 원하면 새로 만든 캐릭터로.
+- 지금 쓰는 회원: 이다혜(m/dahye-dfpttw). 다른 여성 회원은 오렌지 테마 그대로. 코드 style.css 맨 아래 pinkcheck 블록.
+
 ## 새 공지 팝업 (2026-11-05 트레이너 요청)
 - data.js notices 맨 위에 새 공지를 올리면, 회원이 PT 노트를 열 때 화면 위에서 팝업이 내려왔다가 약 5초 뒤 사라짐(위로 밀어도 닫힘). 누르면 공지 탭의 그 공지로 이동해 반짝 표시.
 - 공지 하나당 팝업은 한 번만. 공지 탭을 열기 전까지 아래 '공지' 탭에 빨간 점. 14일 넘은 공지는 새 공지로 안 침.

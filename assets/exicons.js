@@ -337,7 +337,8 @@
   /* ---------- 그리기 ---------- */
   var STY = {
     M: { tile: "#F0F0F2", fig: "#1C1C1E", eq: "#8792A8", eq2: "#C5CCDA", floor: "#C5CCDA", hl: "#D4A62A" },
-    F: { tile: "#FDF0E6", fig: "#D35C14", eq: "#A8968A", eq2: "#EAD9CC", floor: "#EAD9CC", hl: "#4A2A17" }
+    F: { tile: "#FDF0E6", fig: "#D35C14", eq: "#A8968A", eq2: "#EAD9CC", floor: "#EAD9CC", hl: "#4A2A17" },
+    P: { tile: "#FFF0F5", fig: "#EE86A8", eq: "#B9A3AE", eq2: "#F3DCE5", floor: "#F3DCE5", hl: "#7A4636" }   /* 회원 테마 pinkcheck */
   };
   function pose(ex, t) {
     var P = {}, k;
