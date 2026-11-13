@@ -104,7 +104,14 @@
 .tri.off { opacity: .55; }
 .tri .tav { width: 34px; height: 34px; border-radius: 50%; background: var(--primary); color: #fff; display: grid; place-items: center; font-weight: 800; flex: none; }
 .tri .tt { flex: 1; min-width: 0; } .tri .tt b { display: block; font-size: 15px; } .tri .tt small { font-size: 12px; color: var(--sub); }
-.tri .tb { display: flex; gap: 4px; flex-wrap: wrap; flex-basis: 100%; padding-left: 44px; }
+.tri .tb { display: none; gap: 4px; flex-wrap: wrap; flex-basis: 100%; padding-left: 44px; }
+/* 선생님 줄 토글 (2026-11-13 팀장 "선생님 관리 토글") — 줄을 누르면 버튼이 펼쳐짐, 한 번에 한 명 */
+.tri[data-tid] { cursor: pointer; }
+.tri.open { border-color: var(--primary); background: var(--tint, #F7F7F9); }
+.tri.open .tb { display: flex; }
+.tri .tchev { flex: none; width: 30px; height: 30px; border: 0; border-radius: 9px; background: #EEF0F4; color: var(--sub); display: grid; place-items: center; cursor: pointer; padding: 0; }
+.tri .tchev svg { width: 16px; height: 16px; transition: transform .2s ease; }
+.tri.open .tchev svg { transform: rotate(180deg); }
 .tri .tb button { font: inherit; font-size: 12px; font-weight: 700; padding: 5px 9px; border-radius: 99px; border: 1.5px solid var(--rule); background: var(--paper); color: var(--sub); cursor: pointer; }
 .tri .tb button.sure { background: var(--bad); border-color: var(--bad); color: #fff; }
 .trf { display: flex; gap: 8px; } .trf input { flex: 1; min-width: 0; font: inherit; font-size: 15px; padding: 10px 12px; border: 1.5px solid var(--rule); border-radius: 12px; }
@@ -1084,12 +1091,14 @@ section.folded .fsum:not(:empty) { display: inline; }
     });
     box.scrollIntoView({ block: "nearest", behavior: "smooth" });
   }
+  var TR_OPEN = "";
   function trDraw() {
     var box = document.getElementById("trList"); if (!box) return;
     var cnt = {}; ROWS.forEach(function (r) { var t = tidOf(r.slug, r.M); cnt[t] = (cnt[t] || 0) + 1; });
     var head = '<div class="tri"><span class="tav">' + esc((SITE.trainer || "팀").charAt(0)) + '</span><div class="tt"><b>' + esc(SITE.trainer || "팀장") + ' <small>· 팀장(관리자)</small></b><small>담당 회원 ' + (cnt.admin || 0) + '명 · 모든 회원 보기·고치기</small></div></div>';
     box.innerHTML = head + TRAINERS.map(function (t) {
-      return '<div class="tri' + (t.off ? " off" : "") + '" data-tid="' + esc(t.id) + '"><span class="tav">' + esc(t.name.charAt(0)) + '</span><div class="tt"><b>' + esc(t.name) + (t.role ? ' <small>· ' + esc(t.role) + '</small>' : '') + '</b><small>' + (t.admin ? '관리자 · ' : '') + '담당 회원 ' + (cnt[t.id] || 0) + '명' + (t.ext ? ' · 개인 사이트 ' + esc(t.ext.site.replace("https://", "")) + ' 연결' : '') + (t.off ? ' · 꺼짐(못 들어와요)' : '') + '</small></div>' +
+      return '<div class="tri' + (t.off ? " off" : "") + (TR_OPEN === t.id ? " open" : "") + '" data-tid="' + esc(t.id) + '"><span class="tav">' + esc(t.name.charAt(0)) + '</span><div class="tt"><b>' + esc(t.name) + (t.role ? ' <small>· ' + esc(t.role) + '</small>' : '') + '</b><small>' + (t.admin ? '관리자 · ' : '') + '담당 회원 ' + (cnt[t.id] || 0) + '명' + (t.ext ? ' · 개인 사이트 ' + esc(t.ext.site.replace("https://", "")) + ' 연결' : '') + (t.off ? ' · 꺼짐(못 들어와요)' : '') + '</small></div>' +
+        '<button type="button" class="tchev" aria-label="' + esc(t.name) + ' 선생님 관리 버튼 ' + (TR_OPEN === t.id ? '접기' : '펼치기') + '" aria-expanded="' + (TR_OPEN === t.id) + '"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button>' +
         '<div class="tb"><button type="button" data-act="adm">' + (t.admin ? "관리자 ✓" : "관리자로") + '</button><button type="button" data-act="ext">' + (t.ext ? "개인 사이트 ✓" : "개인 사이트") + '</button><button type="button" data-act="key">새 링크</button><button type="button" data-act="off">' + (t.off ? "켜기" : "끄기") + '</button><button type="button" data-act="del">삭제</button></div></div>';
     }).join("");
     fsum("trainers", "선생님 " + (TRAINERS.length + 1) + "명");
@@ -1109,7 +1118,19 @@ section.folded .fsum:not(:empty) { display: inline; }
   });
   var trTimer = null;
   document.getElementById("trList").addEventListener("click", function (e) {
-    var b = e.target.closest("button[data-act]"); if (!b || b.disabled) return;
+    var b = e.target.closest("button[data-act]");
+    if (!b) {   /* 줄(이름·⌄)을 누르면 그 선생님 버튼만 펼치기/접기 */
+      var row = e.target.closest(".tri[data-tid]"); if (!row) return;
+      var tid = row.getAttribute("data-tid");
+      TR_OPEN = TR_OPEN === tid ? "" : tid;
+      Array.prototype.forEach.call(this.querySelectorAll(".tri[data-tid]"), function (r) {
+        var on = r.getAttribute("data-tid") === TR_OPEN, c = r.querySelector(".tchev");
+        r.classList.toggle("open", on);
+        if (c) { c.setAttribute("aria-expanded", String(on)); c.setAttribute("aria-label", c.getAttribute("aria-label").replace(/(펼치기|접기)$/, on ? "접기" : "펼치기")); }
+      });
+      return;
+    }
+    if (b.disabled) return;
     var id = b.closest(".tri").getAttribute("data-tid"), act = b.getAttribute("data-act"), msg = document.getElementById("trMsg");
     var t = TRAINERS.filter(function (x) { return x.id === id; })[0]; if (!t) return;
     if (act === "ext") {
