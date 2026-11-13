@@ -1273,13 +1273,40 @@ body { overscroll-behavior-y: contain; }
   background-size: 30px 30px;
 }
 /* 아기 토끼 보니 */
-.bunny { display: block; flex: none; }
-:root[data-theme="pinkcheck"] .hero-home { padding-bottom: 58px; }
-.hero-home .bunny { position: absolute; right: 30px; bottom: 6px; width: 62px; height: 64px; filter: drop-shadow(0 3px 4px rgba(150, 50, 90, .22)); animation: bnHop 2.6s ease-in-out infinite; transform-origin: 50% 100%; }
-.splash .bunny { width: 108px; height: 108px; animation: spIn .6s cubic-bezier(.2,.8,.3,1) both, bnHop 1.3s .6s ease-in-out infinite; }
-.bunny .bn-ear { transform-origin: 50% 100%; transform-box: fill-box; animation: bnEar 2.6s ease-in-out infinite; }
-.bunny .bn-ear.r { animation-delay: .25s; }
+.mascot { display: block; flex: none; }
+:root[data-theme] .hero-home { padding-bottom: 58px; }
+.hero-home .mascot { position: absolute; right: 30px; bottom: 6px; width: 62px; height: 64px; filter: drop-shadow(0 3px 4px rgba(150, 50, 90, .22)); animation: bnHop 2.6s ease-in-out infinite; transform-origin: 50% 100%; }
+.splash .mascot { width: 108px; height: 108px; animation: spIn .6s cubic-bezier(.2,.8,.3,1) both, bnHop 1.3s .6s ease-in-out infinite; }
+.mascot .bn-ear { transform-origin: 50% 100%; transform-box: fill-box; animation: bnEar 2.6s ease-in-out infinite; }
+.mascot .bn-ear.r { animation-delay: .25s; }
 @keyframes bnHop { 0%, 70%, 100% { transform: translateY(0); } 80% { transform: translateY(-5px) scaleY(1.02); } 90% { transform: translateY(0) scaleY(.97); } }
 @keyframes bnEar { 0%, 60%, 100% { transform: rotate(0); } 75% { transform: rotate(-7deg); } }
 :root[data-theme="pinkcheck"] .hero-home .who span::after { content: " ♡"; }
-@media (prefers-reduced-motion: reduce) { .bunny, .bunny .bn-ear { animation: none !important; } }
+@media (prefers-reduced-motion: reduce) { .mascot, .mascot .bn-ear { animation: none !important; } }
+
+/* ===== 회원별 테마: chihuahua (2026-11-13 채와와 회원님 "치와와 테마") — 크림 땡땡이 + 발바닥·뼈다귀 + 직접 디자인한 아기 치와와 "와와" ===== */
+:root[data-theme="chihuahua"] {
+  --primary: #D9925A; --side: #B8733F; --key: #5A3A28; --tint: #FFF4E8; --tint2: #F8E2CC;
+  --muted: #FFEAD4; --dot: #FFFFFF; --rule: #F0D8C0; --page: #FFF8F0; --line: #F2E2D2;
+  --pink: #E07F92; --pink-e: #A9506A; --pink-l: #F7C3CF; --led: #FF9EB3;
+}
+:root[data-theme="chihuahua"] body {
+  background-color: #FFF8EF;
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cg fill='%23E2B88E' fill-opacity='.42'%3E%3Cellipse cx='30' cy='40' rx='7' ry='6'/%3E%3Ccircle cx='21' cy='31' r='3'/%3E%3Ccircle cx='27' cy='26' r='3'/%3E%3Ccircle cx='34' cy='26' r='3'/%3E%3Ccircle cx='40' cy='31' r='3'/%3E%3C/g%3E%3Cg fill='%23F2A8BD' fill-opacity='.45' transform='rotate(-25 100 100)'%3E%3Crect x='86' y='97' width='28' height='6' rx='3'/%3E%3Ccircle cx='86' cy='96' r='4'/%3E%3Ccircle cx='86' cy='104' r='4'/%3E%3Ccircle cx='114' cy='96' r='4'/%3E%3Ccircle cx='114' cy='104' r='4'/%3E%3C/g%3E%3C/svg%3E"),
+    radial-gradient(circle, rgba(226, 184, 142, .30) 2.2px, transparent 2.6px);
+  background-size: 140px 140px, 20px 20px;
+  background-attachment: fixed;
+}
+:root[data-theme="chihuahua"] .panel { border-radius: 20px; box-shadow: 0 2px 0 #F1DCC6, 0 6px 16px rgba(185, 115, 63, .10); }
+:root[data-theme="chihuahua"] .hero { border-radius: 24px; box-shadow: 0 6px 18px rgba(185, 115, 63, .25); }
+:root[data-theme="chihuahua"] .hero-l { position: relative; }
+:root[data-theme="chihuahua"] .hero-l, :root[data-theme="chihuahua"] .splash {
+  background-color: var(--primary);
+  background-image: radial-gradient(circle, rgba(255, 246, 232, .32) 3px, transparent 3.5px);
+  background-size: 18px 18px;
+}
+:root[data-theme="chihuahua"] .bar { background: rgba(255, 248, 239, .94); border-bottom-color: #F0D8C0; }
+:root[data-theme="chihuahua"] .tabs { background: rgba(255, 248, 239, .97); }
+:root[data-theme="chihuahua"] .hero-home .who span::after { content: " 🐾"; }
+.hero-home .mascot.wawa { filter: drop-shadow(0 3px 4px rgba(90, 58, 40, .25)); }

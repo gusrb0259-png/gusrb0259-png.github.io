@@ -116,16 +116,18 @@
   function dayIcon(d) { return !d || d.rest ? "rest" : d.cardio_only ? "treadmill" : d.pick ? "dumbbell" : iconOf(mainItem(d)); }
   /* 운동 아이콘: assets/exicons.js(움직이는 SVG, 2026-11-10)에 있는 종목은 그걸로, 없으면 예전 PNG. still = 멈춘 그림(작은 칸용) */
   function img(key, cls, still) {
-    if (window.EXI && EXI.has(key)) return EXI.svg(key, { sex: PINK ? "P" : THEME, cls: cls || "icn", still: !!still });
+    if (window.EXI && EXI.has(key)) return EXI.svg(key, { sex: THM === "pinkcheck" ? "P" : THM === "chihuahua" ? "C" : THEME, cls: cls || "icn", still: !!still });
     return '<img class="' + (cls || "icn") + '" src="' + iconSrc(key) + '" alt="" loading="lazy">';
   }
   document.documentElement.setAttribute("data-sex", M.sex === "F" ? "F" : "M");
-  /* 회원별 테마 (2026-11-13 이다혜 회원님 pinkcheck — 분홍 체크 + 아기 토끼 보니) */
-  var PINK = M.theme === "pinkcheck";
-  if (PINK) document.documentElement.setAttribute("data-theme", "pinkcheck");
+  /* 회원별 테마 (2026-11-13) — pinkcheck = 이다혜(분홍 체크 + 아기 토끼 보니) / chihuahua = 채와와(크림 땡땡이 + 발바닥 + 치와와 와와) */
+  var THM = M.theme === "pinkcheck" || M.theme === "chihuahua" ? M.theme : "";
+  var PINK = THM === "pinkcheck";
+  if (THM) document.documentElement.setAttribute("data-theme", THM);
+  function mascot() { return THM === "pinkcheck" ? bunny() : THM === "chihuahua" ? wawa() : ""; }
   /* 보니: 직접 디자인한 아기 토끼(긴 귀·헤어밴드·작은 덤벨) */
   function bunny() {
-    return '<svg class="bunny" viewBox="0 0 100 100" aria-hidden="true">' +
+    return '<svg class="mascot bunny" viewBox="0 0 100 100" aria-hidden="true">' +
       '<g class="bn-ear"><path d="M34 46C26 30 26 10 33 6c7-3 11 16 10 38z" fill="#FFFFFF" stroke="#7A4636" stroke-width="2.2"/><path d="M35 40c-4-11-4-24 0-27 3-1 5 12 4 26z" fill="#FFC2D6"/></g>' +
       '<g class="bn-ear r"><path d="M58 44c0-22 6-40 13-37 7 4 5 24-4 40z" fill="#FFFFFF" stroke="#7A4636" stroke-width="2.2"/><path d="M62 39c1-14 4-25 7-24 3 2 1 14-4 26z" fill="#FFC2D6"/></g>' +
       '<path d="M30 45q20-10 40 0" fill="none" stroke="#FFD86B" stroke-width="5" stroke-linecap="round"/>' +
@@ -138,6 +140,26 @@
       '<path d="M46.5 72.5q3.5 3 7 0" fill="none" stroke="#4A2A1F" stroke-width="1.5" stroke-linecap="round"/>' +
       '<g transform="translate(70 80) rotate(-18)"><rect x="-12" y="-1.6" width="24" height="3.2" rx="1.6" fill="#B9A3AE"/><rect x="-15" y="-6" width="6" height="12" rx="2.4" fill="#EE86A8" stroke="#7A4636" stroke-width="1.4"/><rect x="9" y="-6" width="6" height="12" rx="2.4" fill="#EE86A8" stroke="#7A4636" stroke-width="1.4"/></g>' +
       '<ellipse cx="66" cy="81" rx="5" ry="4" fill="#FFFFFF" stroke="#7A4636" stroke-width="1.8"/>' +
+      '</svg>';
+  }
+  /* 와와: 직접 디자인한 아기 치와와(큰 세모 귀·크림색 이마 줄·분홍 목줄과 하트 이름표·작은 덤벨) */
+  function wawa() {
+    return '<svg class="mascot wawa" viewBox="0 0 100 100" aria-hidden="true">' +
+      '<g class="bn-ear"><path d="M33 50L9 13q20 3 36 25z" fill="#E3A46A" stroke="#5A3A28" stroke-width="2.2" stroke-linejoin="round"/><path d="M31 44L17 21q12 3 21 16z" fill="#F7C6B4"/></g>' +
+      '<g class="bn-ear r"><path d="M67 50L91 13q-20 3-36 25z" fill="#E3A46A" stroke="#5A3A28" stroke-width="2.2" stroke-linejoin="round"/><path d="M69 44L83 21q-12 3-21 16z" fill="#F7C6B4"/></g>' +
+      '<ellipse cx="50" cy="61" rx="28" ry="24" fill="#E8B07A" stroke="#5A3A28" stroke-width="2.2"/>' +
+      '<path d="M46 38q4-3 8 0l1 22h-10z" fill="#FFF1DE"/>' +
+      '<ellipse cx="50" cy="72" rx="14" ry="10" fill="#FFF1DE"/>' +
+      '<circle cx="38" cy="59" r="5.4" fill="#3A2418"/><circle cx="62" cy="59" r="5.4" fill="#3A2418"/>' +
+      '<circle cx="39.8" cy="57" r="1.8" fill="#fff"/><circle cx="63.8" cy="57" r="1.8" fill="#fff"/>' +
+      '<ellipse cx="29" cy="69" rx="4.4" ry="2.8" fill="#FF9DB0" opacity=".7"/><ellipse cx="71" cy="69" rx="4.4" ry="2.8" fill="#FF9DB0" opacity=".7"/>' +
+      '<ellipse cx="50" cy="68.5" rx="3.4" ry="2.5" fill="#3A2418"/>' +
+      '<path d="M45 73q2.5 2.6 5 0q2.5 2.6 5 0" fill="none" stroke="#3A2418" stroke-width="1.5" stroke-linecap="round"/>' +
+      '<path d="M48.2 74.6q1.8 4.6 3.6 0z" fill="#FF8FA6"/>' +
+      '<path d="M31 80q19 9 38 0" fill="none" stroke="#F28BA8" stroke-width="4.5" stroke-linecap="round"/>' +
+      '<path d="M50 85.5c-1.6-2.2-5-1-4.4 1.4.4 1.6 4.4 4 4.4 4s4-2.4 4.4-4c.6-2.4-2.8-3.6-4.4-1.4z" fill="#FFD86B" stroke="#5A3A28" stroke-width="1.2"/>' +
+      '<g transform="translate(73 84) rotate(-18)"><rect x="-11" y="-1.5" width="22" height="3" rx="1.5" fill="#B9A89C"/><rect x="-14" y="-5.6" width="5.6" height="11.2" rx="2.2" fill="#D9925A" stroke="#5A3A28" stroke-width="1.3"/><rect x="8.4" y="-5.6" width="5.6" height="11.2" rx="2.2" fill="#D9925A" stroke="#5A3A28" stroke-width="1.3"/></g>' +
+      '<ellipse cx="69" cy="85" rx="4.6" ry="3.8" fill="#E8B07A" stroke="#5A3A28" stroke-width="1.7"/>' +
       '</svg>';
   }
 
@@ -1588,7 +1610,7 @@
       '<h1>' + esc(M.name) + ' 회원님</h1>' +
       '<div class="en">' + esc(M.goal || "") + '</div>' +
       '<div class="who"><span>' + esc(BRN) + ' · ' + esc(TRN) + ' ' + TRL() + '</span></div>' +
-      '</div>' + (PINK ? bunny() : "") + attCheckStrip() + '</div></div></div>';
+      '</div>' + mascot() + attCheckStrip() + '</div></div></div>';
 
     if (M.next_class) {
       h += '<div class="panel next"><svg width="40" height="40" viewBox="0 0 40 40" aria-hidden="true"><rect x="4" y="7" width="32" height="29" rx="6" fill="var(--primary)"/><rect x="4" y="7" width="32" height="9" rx="4" fill="var(--side)"/><rect x="11" y="3" width="4" height="9" rx="2" fill="var(--key)"/><rect x="25" y="3" width="4" height="9" rx="2" fill="var(--key)"/></svg>' +
@@ -3136,7 +3158,7 @@
     var seen = false; try { seen = sessionStorage.getItem("ptsplash:" + SLUG) === "1"; sessionStorage.setItem("ptsplash:" + SLUG, "1"); } catch (e) {}
     if (seen || DEMO || window.self !== window.top) return;
     var sp = document.createElement("div"); sp.className = "splash";
-    sp.innerHTML = (PINK ? bunny() : '<img src="' + BASE + 'logo.png" alt="">') + '<b>' + esc(M.name) + ' 회원님</b><span>MY PT NOTE</span>';
+    sp.innerHTML = (THM ? mascot() : '<img src="' + BASE + 'logo.png" alt="">') + '<b>' + esc(M.name) + ' 회원님</b><span>MY PT NOTE</span>';
     document.body.appendChild(sp);
     setTimeout(function () { sp.classList.add("out"); setTimeout(function () { sp.remove(); }, 450); }, RM ? 300 : 900);
   })();
