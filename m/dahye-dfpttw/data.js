@@ -11,6 +11,12 @@ window.MEMBER = {
   "notices": [
     {
       "date": "2026. 11. 13",
+      "title": "머신 암 컬 자세 복습지가 올라왔어요",
+      "body": "팔꿈치는 패드에 딱 붙여 고정! 손만 감아올리고, 내릴 땐 천천히 버텨요.",
+      "link": "form-machine-arm-curl"
+    },
+    {
+      "date": "2026. 11. 13",
       "title": "시티드 로우 자세 복습지가 올라왔어요",
       "body": "가슴은 세우고 패드에 붙인 채, 팔꿈치를 뒤로 끌어 날개뼈를 꽉 모아요.",
       "link": "form-seated-row"
@@ -35,6 +41,35 @@ window.MEMBER = {
   ],
   "next_class": null,
   "forms": [
+    {
+      "id": "machine-arm-curl",
+      "dir": "media/form-machine-arm-curl/",
+      "date": "2026. 11. 13",
+      "exercise": "머신 암 컬",
+      "exercise_en": "Machine Arm Curl",
+      "part": "팔",
+      "targets": ["팔 앞(이두근)", "아래팔(전완근)"],
+      "benefit": "팔 앞쪽을 매끈하게 다듬어 팔 라인이 탄탄해지고, 등 운동 때 당기는 힘도 같이 좋아져요",
+      "key_point": "팔꿈치는 패드에 딱 붙여 고정! 손만 위로 감아올리고, 내릴 땐 천천히 버티기",
+      "good_points": [
+        {"title": "팔꿈치 고정", "desc": "올리고 내리는 동안 팔꿈치가 패드에서 떨어지지 않았어요"},
+        {"title": "상체 곧게", "desc": "등을 세우고 앉아 몸을 흔들지 않고 팔로만 들었어요"},
+        {"title": "끝까지 펴 주기", "desc": "내릴 때 팔을 끝까지 펴서 이두근을 길게 썼어요"}
+      ],
+      "primary_muscles": [
+        {"name": "이두근", "where": "팔 앞 · 알통"}
+      ],
+      "secondary_muscles": "상완근(이두근 아래 깊은 곳) · 전완근(아래팔) · 전면 삼각근(어깨 앞, 버티기)",
+      "feel_good": "팔 앞(알통)이 꽉 조이고 뜨거워지면 성공",
+      "feel_stop": "팔꿈치 안쪽이나 손목이 찌릿하면 바로 멈추고 무게 낮추기",
+      "steps": [
+        {"title": "자리 잡기", "desc": "의자 높이를 겨드랑이가 패드 위에 오게 맞추고 앉아요. 팔꿈치를 패드에 붙이고 손잡이를 잡아요", "chip": "숨 들이마시기", "media": "step1.jpg"},
+        {"title": "감아올리기", "desc": "팔꿈치는 그대로 두고 손을 어깨 쪽으로 감아올려요. 끝에서 알통을 1초 꽉 쥐어요", "chip": "숨 내쉬기", "media": "step2.webp", "loop": true},
+        {"title": "천천히 내리기", "desc": "무게를 버티며 2~3초 동안 내려요. 팔이 거의 펴질 때까지", "chip": "숨 들이마시기", "media": "step3.webp", "loop": true}
+      ],
+      "do": ["팔꿈치는 패드에 계속 붙이기", "올린 끝에서 1초 꽉 쥐기", "내릴 땐 2~3초 천천히"],
+      "dont": ["몸을 뒤로 젖혀 반동 쓰기", "팔꿈치를 패드에서 들기", "손목을 안으로 꺾어 들기"]
+    },
     {
       "id": "seated-row",
       "dir": "media/form-seated-row/",
