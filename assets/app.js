@@ -92,7 +92,7 @@
     "케이블 풀오버": "cable_pullover", "시티드 페이스풀": "face_pull", "페이스풀": "face_pull", "리버스 펙덱": "reverse_pec_deck",
     "레그 익스텐션": "leg_extension", "이너타이": "inner_thigh", "아웃타이 머신": "outer_thigh_pin", "플레이트 아웃타이": "outer_thigh_plate",
     "아웃타이": "outer_thigh", "고블릿 스쿼트": "goblet_squat", "핵스쿼트": "hack_squat", "스미스 스쿼트": "smith_squat",
-    "레그프레스": "leg_press", "라잉 레그컬": "lying_leg_curl", "힙쓰러스트": "hip_thrust", "덤벨 RDL": "db_rdl",
+    "레그프레스": "leg_press", "파워 레그프레스": "leg_press", "파워레그프레스": "leg_press", "스탠딩 아웃타이": "outer_thigh_pin", "스탠딩아웃타이": "outer_thigh_pin", "라잉 레그컬": "lying_leg_curl", "힙쓰러스트": "hip_thrust", "덤벨 RDL": "db_rdl",
     "백 익스텐션": "back_extension", "사이드 레터럴 레이즈": "lateral_raise", "레터럴 레이즈": "lateral_raise",
     "사이드 레터럴 레이즈 머신": "lateral_raise_standing", "레터럴 레이즈 머신": "lateral_raise_standing", "머신 레터럴 레이즈": "lateral_raise_standing",
     "스탠딩 사이드 레터럴 레이즈 머신": "lateral_raise_standing", "시티드 레터럴 레이즈": "seated_lateral_raise", "시티드 사이드 레터럴 레이즈": "seated_lateral_raise", "숄더 프레스 머신": "shoulder_press", "숄더 프레스": "shoulder_press",
@@ -2294,11 +2294,11 @@
     ["등", ["랫풀다운", "언더그립 랫풀다운", "뉴텍 버티컬 풀다운", "뉴텍 시티드 로우 머신", "케이블 시티드 로우", "언더그립 시티드 로우", "해머스트렝스 로우로우", "티바 로우", "원암 덤벨 로우", "스미스 벤트오버 로우", "스트레이트 암 풀다운", "케이블 풀오버", "덤벨 슈러그", "스미스 슈러그", "백 익스텐션"]],
     ["어깨", ["숄더 프레스 머신", "덤벨 숄더 프레스", "스미스 숄더 프레스", "사이드 레터럴 레이즈 머신", "사이드 레터럴 레이즈", "시티드 레터럴 레이즈", "시티드 페이스풀", "리버스 펙덱"]],
     ["팔", ["덤벨 컬", "머신 암 컬", "해머 컬", "인클라인 덤벨 컬", "케이블 푸쉬다운", "오버헤드 익스텐션", "덤벨 오버헤드 익스텐션"]],
-    ["하체", ["레그 익스텐션", "이너타이", "아웃타이 머신", "플레이트 아웃타이", "레그프레스", "핵스쿼트", "스미스 스쿼트", "고블릿 스쿼트", "라잉 레그컬", "덤벨 RDL"]],
+    ["하체", ["레그 익스텐션", "이너타이", "아웃타이 머신", "스탠딩 아웃타이", "플레이트 아웃타이", "레그프레스", "파워 레그프레스", "핵스쿼트", "스미스 스쿼트", "고블릿 스쿼트", "라잉 레그컬", "덤벨 RDL"]],
     ["엉덩이", ["힙쓰러스트 머신", "케이블 힙 킥백", "힙 익스텐션"]],
     ["복근", ["플랭크"]]
   ];
-  var RT_CAT_EN = { "머신 암 컬": "Machine Arm Curl", "티바 로우": "T-Bar Row", "스미스 벤트오버 로우": "Smith Bent-over Row", "뉴텍 버티컬 풀다운": "Vertical Pulldown", "시티드 레터럴 레이즈": "Seated Lateral Raise", "백 익스텐션": "Back Extension", "스미스 벤치프레스": "Smith Bench Press" };
+  var RT_CAT_EN = { "파워 레그프레스": "Power Leg Press", "스탠딩 아웃타이": "Standing Hip Abduction", "머신 암 컬": "Machine Arm Curl", "티바 로우": "T-Bar Row", "스미스 벤트오버 로우": "Smith Bent-over Row", "뉴텍 버티컬 풀다운": "Vertical Pulldown", "시티드 레터럴 레이즈": "Seated Lateral Raise", "백 익스텐션": "Back Extension", "스미스 벤치프레스": "Smith Bench Press" };
   function rtEnOf(n) { return RT_EN[n] || RT_CAT_EN[n] || ""; }
   function rtMine() {   /* 이 회원님 루틴에 이미 있는 종목 (이름별 첫 번째) */
     var seen = {}, out = [];
