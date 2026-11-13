@@ -1309,4 +1309,12 @@ body { overscroll-behavior-y: contain; }
 :root[data-theme="chihuahua"] .bar { background: rgba(255, 248, 239, .94); border-bottom-color: #F0D8C0; }
 :root[data-theme="chihuahua"] .tabs { background: rgba(255, 248, 239, .97); }
 :root[data-theme="chihuahua"] .hero-home .who span::after { content: " 🐾"; }
-.hero-home .mascot.wawa { filter: drop-shadow(0 3px 4px rgba(90, 58, 40, .25)); }
+:root[data-theme="chihuahua"] .hero-home { padding-bottom: 86px; }
+.hero-home .mascot.wawa { width: 84px; height: 84px; right: 22px; bottom: 2px; filter: drop-shadow(0 0 1.5px #FFF3E2) drop-shadow(0 0 1.5px #FFF3E2) drop-shadow(0 3px 4px rgba(90, 58, 40, .3)); animation: none; }
+.splash .mascot.wawa { width: 124px; height: 124px; animation: spIn .6s cubic-bezier(.2,.8,.3,1) both; }
+/* 성난 치와와 — 부들부들 떨다가 왈! 하고 튐 */
+.wawa .ww-shake { animation: wwShake 2.4s linear infinite; transform-origin: 50% 96%; transform-box: view-box; }
+.wawa .ww-mad { animation: wwMad 2.4s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
+@keyframes wwShake { 0%, 100% { transform: translate(0, 0); } 4%, 12%, 20%, 28%, 36%, 44%, 52% { transform: translate(-.8px, 0) rotate(-.8deg); } 8%, 16%, 24%, 32%, 40%, 48%, 56% { transform: translate(.8px, 0) rotate(.8deg); } 66% { transform: translateY(-4px) scale(1.04); } 72% { transform: translateY(0) scale(.98, 1.02); } 78% { transform: none; } }
+@keyframes wwMad { 0%, 58% { transform: scale(.85); opacity: .75; } 66% { transform: scale(1.25); opacity: 1; } 78%, 100% { transform: scale(.9); opacity: .8; } }
+@media (prefers-reduced-motion: reduce) { .wawa .ww-shake, .wawa .ww-mad { animation: none !important; } }
