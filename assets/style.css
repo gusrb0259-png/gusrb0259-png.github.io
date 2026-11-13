@@ -1304,12 +1304,27 @@ body { overscroll-behavior-y: contain; }
 :root[data-theme="chihuahua"] .tabs { background: rgba(250, 241, 231, .97); }
 :root[data-theme="chihuahua"] .hero-home .who span::after { content: " 🐾"; }
 :root[data-theme="chihuahua"] .hero-home { padding-bottom: 92px; }
-.hero-home .mascot.wawa { width: 86px; height: 86px; right: 22px; bottom: 10px; border-radius: 50%; border: 3px solid #FFF6EC; object-fit: cover;
-  box-shadow: 0 4px 10px rgba(70, 45, 30, .3); animation: wwShake 2.6s linear infinite; }
+.hero-home .mascot.wawa { position: absolute; width: 86px; height: 86px; right: 22px; bottom: 10px; }
+.mascot.wawa img { display: block; width: 100%; height: 100%; border-radius: 50%; border: 3px solid #FFF6EC; object-fit: cover; box-shadow: 0 4px 10px rgba(70, 45, 30, .3); animation: wwShake 2.6s linear infinite; }
+.mascot.wawa i { position: absolute; font-style: normal; pointer-events: none; }
+.mascot.wawa .ww-mad { width: 26px; height: 26px; right: -8px; top: -6px; animation: wwMad 2.6s ease-in-out infinite; }
+.mascot.wawa .ww-mad svg, .mascot.wawa .ww-puff svg { display: block; width: 100%; height: 100%; }
+.mascot.wawa .ww-puff { width: 26px; height: 20px; opacity: 0; }
+.mascot.wawa .ww-puff.a { left: -18px; top: 10px; animation: wwPuffL 2.6s ease-out infinite; }
+.mascot.wawa .ww-puff.b { right: -20px; top: 40px; animation: wwPuffR 2.6s .15s ease-out infinite; }
+.mascot.wawa .ww-bark { left: -30px; top: -14px; font-size: 15px; font-weight: 900; color: #FFF6EC; text-shadow: 0 1px 0 #5E4334, 0 0 6px rgba(94, 67, 52, .5); transform: rotate(-14deg) scale(0); animation: wwBark 2.6s ease-out infinite; }
+@keyframes wwMad { 0%, 58% { transform: scale(.8); opacity: .7; } 66% { transform: scale(1.35); opacity: 1; } 78%, 100% { transform: scale(.9); opacity: .85; } }
+@keyframes wwPuffL { 0%, 60% { opacity: 0; transform: translate(10px, 4px) scale(.4); } 68% { opacity: 1; transform: translate(0, 0) scale(1); } 90%, 100% { opacity: 0; transform: translate(-10px, -6px) scale(1.15); } }
+@keyframes wwPuffR { 0%, 60% { opacity: 0; transform: translate(-10px, 4px) scale(.4) scaleX(-1); } 68% { opacity: 1; transform: translate(0, 0) scale(1) scaleX(-1); } 90%, 100% { opacity: 0; transform: translate(10px, -6px) scale(1.15) scaleX(-1); } }
+@keyframes wwBark { 0%, 62% { transform: rotate(-14deg) scale(0); opacity: 0; } 68% { transform: rotate(-14deg) scale(1.3); opacity: 1; } 76% { transform: rotate(-14deg) scale(1); } 88% { opacity: 1; } 100% { transform: rotate(-14deg) scale(1); opacity: 0; } }
+/* 시작 화면: 그림이 부들부들 + "왈!" */
+:root[data-theme="chihuahua"] .splash { overflow: hidden; }
+:root[data-theme="chihuahua"] .splash::before { content: ""; position: absolute; inset: -8px; background: url("theme/chihuahua/splash.webp") center bottom / cover no-repeat; animation: wwShake 1.3s -.5s linear infinite; z-index: -1; }
+:root[data-theme="chihuahua"] .splash .sp-bark { position: absolute; left: 8%; top: 38%; font-style: normal; font-size: 34px; font-weight: 900; color: #5E4334; transform: rotate(-14deg) scale(0); animation: wwBark 1.3s -.6s ease-out infinite; }
+@media (prefers-reduced-motion: reduce) { .mascot.wawa img, .mascot.wawa i, :root[data-theme="chihuahua"] .splash::before, .splash .sp-bark { animation: none !important; } }
 /* 시작 화면 = 그림 통째, 이름은 위쪽 빈 곳에 */
-:root[data-theme="chihuahua"] .splash { background: #F7E8D9 url("theme/chihuahua/splash.webp") center bottom / cover no-repeat; justify-content: flex-start; padding-top: 16vh; }
+:root[data-theme="chihuahua"] .splash { background: #F7E8D9; justify-content: flex-start; padding-top: 16vh; isolation: isolate; }
 :root[data-theme="chihuahua"] .splash b { color: #5E4334; }
 :root[data-theme="chihuahua"] .splash span { color: #A97E5D; }
 /* 성난 치와와 — 부들부들 떨다가 왈! 하고 튐 */
 @keyframes wwShake { 0%, 100% { transform: translate(0, 0); } 4%, 12%, 20%, 28%, 36%, 44%, 52% { transform: translate(-.8px, 0) rotate(-1.2deg); } 8%, 16%, 24%, 32%, 40%, 48%, 56% { transform: translate(.8px, 0) rotate(1.2deg); } 66% { transform: translateY(-5px) scale(1.04); } 72% { transform: translateY(0) scale(.98, 1.02); } 78% { transform: none; } }
-@media (prefers-reduced-motion: reduce) { .hero-home .mascot.wawa { animation: none !important; } }

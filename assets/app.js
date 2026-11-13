@@ -143,7 +143,12 @@
       '</svg>';
   }
   /* 와와: 트레이너가 준 성난 치와와 그림(2026-11-13) — assets/theme/chihuahua/face.webp(얼굴 동그라미)·splash.webp(시작 화면 통째) */
-  function wawa() { return '<img class="mascot wawa" src="' + BASE + 'theme/chihuahua/face.webp" alt="">'; }
+  function wawa() {
+    var puff = '<svg viewBox="0 0 40 30"><path d="M10 26c-6 0-8-7-3-9-2-6 6-10 10-6 2-6 12-5 12 1 6-1 9 7 3 9 1 5-6 7-9 4-3 3-9 3-11 0z" fill="#FFFDF9" stroke="#7A5A48" stroke-width="2"/></svg>';
+    return '<span class="mascot wawa"><img src="' + BASE + 'theme/chihuahua/face.webp" alt="">' +
+      '<i class="ww-mad"><svg viewBox="-10 -10 20 20"><path d="M-7-2q4 0 5-5M2-7q1 5 5 5M7 2q-4 0-5 5M-2 7q-1-5-5-5" fill="none" stroke="#C0392B" stroke-width="2.8" stroke-linecap="round"/></svg></i>' +
+      '<i class="ww-puff a">' + puff + '</i><i class="ww-puff b">' + puff + '</i><i class="ww-bark">왈!</i></span>';
+  }
 
   var DAY_KEYS = ["sun", "mon", "tue", "wed", "thu", "fri", "sat"];
   var DAY_KO = { mon: "월", tue: "화", wed: "수", thu: "목", fri: "금", sat: "토", sun: "일" };
@@ -3140,7 +3145,7 @@
     var seen = false; try { seen = sessionStorage.getItem("ptsplash:" + SLUG) === "1"; sessionStorage.setItem("ptsplash:" + SLUG, "1"); } catch (e) {}
     if (seen || DEMO || window.self !== window.top) return;
     var sp = document.createElement("div"); sp.className = "splash";
-    sp.innerHTML = (THM === "chihuahua" ? "" : THM ? mascot() : '<img src="' + BASE + 'logo.png" alt="">') + '<b>' + esc(M.name) + ' 회원님</b><span>MY PT NOTE</span>';
+    sp.innerHTML = (THM === "chihuahua" ? '<i class="sp-bark">왈!</i>' : THM ? mascot() : '<img src="' + BASE + 'logo.png" alt="">') + '<b>' + esc(M.name) + ' 회원님</b><span>MY PT NOTE</span>';
     document.body.appendChild(sp);
     setTimeout(function () { sp.classList.add("out"); setTimeout(function () { sp.remove(); }, 450); }, RM ? 300 : 900);
   })();
