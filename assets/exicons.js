@@ -339,7 +339,7 @@
     M: { tile: "#F0F0F2", fig: "#1C1C1E", eq: "#8792A8", eq2: "#C5CCDA", floor: "#C5CCDA", hl: "#D4A62A" },
     F: { tile: "#FDF0E6", fig: "#D35C14", eq: "#A8968A", eq2: "#EAD9CC", floor: "#EAD9CC", hl: "#4A2A17" },
     P: { tile: "#FFF0F5", fig: "#EE86A8", eq: "#B9A3AE", eq2: "#F3DCE5", floor: "#F3DCE5", hl: "#7A4636" },   /* 회원 테마 pinkcheck */
-    C: { tile: "#FFF4E8", fig: "#D9925A", eq: "#B9A89C", eq2: "#F0DDC8", floor: "#F0DDC8", hl: "#E07F92" }   /* 회원 테마 chihuahua */
+    C: { tile: "#FBF2E8", fig: "#A97E5D", eq: "#B5A496", eq2: "#EEDDCB", floor: "#EEDDCB", hl: "#C26A55" }   /* 회원 테마 chihuahua */
   };
   function pose(ex, t) {
     var P = {}, k;

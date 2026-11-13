@@ -120,7 +120,7 @@
     return '<img class="' + (cls || "icn") + '" src="' + iconSrc(key) + '" alt="" loading="lazy">';
   }
   document.documentElement.setAttribute("data-sex", M.sex === "F" ? "F" : "M");
-  /* 회원별 테마 (2026-11-13) — pinkcheck = 이다혜(분홍 체크 + 아기 토끼 보니) / chihuahua = 채와와(크림 땡땡이 + 발바닥 + 치와와 와와) */
+  /* 회원별 테마 (2026-11-13) — pinkcheck = 이다혜(분홍 체크 + 아기 토끼 보니) / chihuahua = 채와와(트레이너가 준 성난 치와와 그림 — 베이지 + 발바닥·뼈다귀) */
   var THM = M.theme === "pinkcheck" || M.theme === "chihuahua" ? M.theme : "";
   var PINK = THM === "pinkcheck";
   if (THM) document.documentElement.setAttribute("data-theme", THM);
@@ -142,42 +142,8 @@
       '<ellipse cx="66" cy="81" rx="5" ry="4" fill="#FFFFFF" stroke="#7A4636" stroke-width="1.8"/>' +
       '</svg>';
   }
-  /* 와와: 직접 디자인한 성난 아기 치와와(사과 모양 머리·옆으로 크게 뻗은 귀·튀어나온 큰 눈·찌푸린 눈썹·이빨 드러낸 입·💢·가는 다리로 버팀·부들부들) */
-  function wawa() {
-    var O = ' stroke="#4A2E1F" stroke-width="2" stroke-linejoin="round"';
-    return '<svg class="mascot wawa" viewBox="0 0 100 100" aria-hidden="true"><g class="ww-shake">' +
-      /* 다리·몸 */
-      '<path d="M42 84v11M47 86v10M53 86v10M58 84v11" stroke="#4A2E1F" stroke-width="5.6" stroke-linecap="round"/>' +
-      '<path d="M42 84v11M47 86v10M53 86v10M58 84v11" stroke="#E2A468" stroke-width="3" stroke-linecap="round"/>' +
-      '<ellipse cx="50" cy="80" rx="13" ry="10.5" fill="#E2A468"' + O + '/>' +
-      '<ellipse cx="50" cy="82" rx="6.5" ry="7" fill="#FFF3E2"/>' +
-      '<path d="M62 78q9-6 8-14" fill="none" stroke="#4A2E1F" stroke-width="4.6" stroke-linecap="round"/><path d="M62 78q9-6 8-14" fill="none" stroke="#E2A468" stroke-width="2.2" stroke-linecap="round"/>' +
-      /* 귀 — 옆으로 크게 */
-      '<g class="bn-ear"><path d="M33 34Q12 26 3 6q24 2 37 18z" fill="#E2A468"' + O + '/><path d="M31 29Q16 22 10 11q15 3 24 13z" fill="#F7BFAE"/></g>' +
-      '<g class="bn-ear r"><path d="M67 34Q88 26 97 6q-24 2-37 18z" fill="#E2A468"' + O + '/><path d="M69 29Q84 22 90 11q-15 3-24 13z" fill="#F7BFAE"/></g>' +
-      /* 사과 모양 머리 */
-      '<path d="M50 18c19 0 26 13 25 27-1 13-11 21-25 21S26 58 25 45c-1-14 6-27 25-27z" fill="#E2A468"' + O + '/>' +
-      '<path d="M47 20h6l1 30h-8z" fill="#FFF3E2"/>' +
-      '<ellipse cx="50" cy="56" rx="10" ry="7.6" fill="#FFF3E2"/>' +
-      /* 튀어나온 큰 눈 + 찌푸린 눈꺼풀·눈썹 */
-      '<circle cx="38" cy="43" r="7.4" fill="#fff" stroke="#4A2E1F" stroke-width="1.6"/><circle cx="62" cy="43" r="7.4" fill="#fff" stroke="#4A2E1F" stroke-width="1.6"/>' +
-      '<circle cx="39.5" cy="44.5" r="4.8" fill="#2E1A10"/><circle cx="60.5" cy="44.5" r="4.8" fill="#2E1A10"/>' +
-      '<circle cx="41" cy="43" r="1.5" fill="#fff"/><circle cx="62" cy="43" r="1.5" fill="#fff"/>' +
-      '<path d="M29 34L47 41 46 36 30 31z" fill="#E2A468"/><path d="M71 34L53 41 54 36 70 31z" fill="#E2A468"/>' +
-      '<path d="M30 35.5L46.5 41.5M70 35.5L53.5 41.5" stroke="#4A2E1F" stroke-width="3.4" stroke-linecap="round"/>' +
-      /* 코·주름·으르렁 입 */
-      '<ellipse cx="50" cy="52.5" rx="3" ry="2.2" fill="#2E1A10"/>' +
-      '<path d="M45 50.5q-2-1.5-4-1M55 50.5q2-1.5 4-1" stroke="#B8733F" stroke-width="1.3" stroke-linecap="round" fill="none"/>' +
-      '<path d="M43 58q7-4 14 0q-7 6-14 0z" fill="#8E2F2F" stroke="#4A2E1F" stroke-width="1.4"/>' +
-      '<path d="M45 57.6l1.6 2.6 1.4-3.2zM55 57.6l-1.6 2.6-1.4-3.2z" fill="#fff"/>' +
-      /* 분홍 목줄(가시) */
-      '<path d="M35 64q15 7 30 0" fill="none" stroke="#F28BA8" stroke-width="4" stroke-linecap="round"/>' +
-      '<path d="M40 66.5l1.5 3.5 1.5-3M48.5 68.2l1.5 3.6 1.5-3.6M57 66.5l1.5 3 1.5-3.5" fill="#FFE08A" stroke="#4A2E1F" stroke-width=".9" stroke-linejoin="round"/>' +
-      '</g>' +
-      /* 💢 */
-      '<g transform="translate(86 52)"><g class="ww-mad"><path d="M-7-2q4 0 5-5M2-7q1 5 5 5M7 2q-4 0-5 5M-2 7q-1-5-5-5" fill="none" stroke="#E5484D" stroke-width="2.8" stroke-linecap="round"/></g></g>' +
-      '</svg>';
-  }
+  /* 와와: 트레이너가 준 성난 치와와 그림(2026-11-13) — assets/theme/chihuahua/face.webp(얼굴 동그라미)·splash.webp(시작 화면 통째) */
+  function wawa() { return '<img class="mascot wawa" src="' + BASE + 'theme/chihuahua/face.webp" alt="">'; }
 
   var DAY_KEYS = ["sun", "mon", "tue", "wed", "thu", "fri", "sat"];
   var DAY_KO = { mon: "월", tue: "화", wed: "수", thu: "목", fri: "금", sat: "토", sun: "일" };
@@ -3174,7 +3140,7 @@
     var seen = false; try { seen = sessionStorage.getItem("ptsplash:" + SLUG) === "1"; sessionStorage.setItem("ptsplash:" + SLUG, "1"); } catch (e) {}
     if (seen || DEMO || window.self !== window.top) return;
     var sp = document.createElement("div"); sp.className = "splash";
-    sp.innerHTML = (THM ? mascot() : '<img src="' + BASE + 'logo.png" alt="">') + '<b>' + esc(M.name) + ' 회원님</b><span>MY PT NOTE</span>';
+    sp.innerHTML = (THM === "chihuahua" ? "" : THM ? mascot() : '<img src="' + BASE + 'logo.png" alt="">') + '<b>' + esc(M.name) + ' 회원님</b><span>MY PT NOTE</span>';
     document.body.appendChild(sp);
     setTimeout(function () { sp.classList.add("out"); setTimeout(function () { sp.remove(); }, 450); }, RM ? 300 : 900);
   })();

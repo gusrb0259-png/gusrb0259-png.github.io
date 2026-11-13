@@ -1284,37 +1284,32 @@ body { overscroll-behavior-y: contain; }
 :root[data-theme="pinkcheck"] .hero-home .who span::after { content: " ♡"; }
 @media (prefers-reduced-motion: reduce) { .mascot, .mascot .bn-ear { animation: none !important; } }
 
-/* ===== 회원별 테마: chihuahua (2026-11-13 채와와 회원님 "치와와 테마") — 크림 땡땡이 + 발바닥·뼈다귀 + 직접 디자인한 아기 치와와 "와와" ===== */
+/* ===== 회원별 테마: chihuahua (2026-11-13 채와와 회원님 — 트레이너가 준 "성난 치와와" 그림으로) — 베이지 + 모카 + 발바닥·뼈다귀 ===== */
 :root[data-theme="chihuahua"] {
-  --primary: #D9925A; --side: #B8733F; --key: #5A3A28; --tint: #FFF4E8; --tint2: #F8E2CC;
-  --muted: #FFEAD4; --dot: #FFFFFF; --rule: #F0D8C0; --page: #FFF8F0; --line: #F2E2D2;
-  --pink: #E07F92; --pink-e: #A9506A; --pink-l: #F7C3CF; --led: #FF9EB3;
+  --primary: #A97E5D; --side: #8C6346; --key: #5E4334; --tint: #FBF2E8; --tint2: #F1E0CE;
+  --muted: #F7E8D9; --dot: #FFFFFF; --rule: #EAD6C2; --page: #F7E8D9; --line: #EBDBCB;
+  --pink: #C26A55; --pink-e: #9A4A38; --pink-l: #F0C9BC; --led: #E8A27F;
 }
 :root[data-theme="chihuahua"] body {
-  background-color: #FFF8EF;
-  background-image:
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cg fill='%23E2B88E' fill-opacity='.42'%3E%3Cellipse cx='30' cy='40' rx='7' ry='6'/%3E%3Ccircle cx='21' cy='31' r='3'/%3E%3Ccircle cx='27' cy='26' r='3'/%3E%3Ccircle cx='34' cy='26' r='3'/%3E%3Ccircle cx='40' cy='31' r='3'/%3E%3C/g%3E%3Cg fill='%23F2A8BD' fill-opacity='.45' transform='rotate(-25 100 100)'%3E%3Crect x='86' y='97' width='28' height='6' rx='3'/%3E%3Ccircle cx='86' cy='96' r='4'/%3E%3Ccircle cx='86' cy='104' r='4'/%3E%3Ccircle cx='114' cy='96' r='4'/%3E%3Ccircle cx='114' cy='104' r='4'/%3E%3C/g%3E%3C/svg%3E"),
-    radial-gradient(circle, rgba(226, 184, 142, .30) 2.2px, transparent 2.6px);
-  background-size: 140px 140px, 20px 20px;
+  background-color: #F7E8D9;
+  background-image: url("theme/chihuahua/tile.webp");
+  background-size: 180px 180px;
   background-attachment: fixed;
 }
-:root[data-theme="chihuahua"] .panel { border-radius: 20px; box-shadow: 0 2px 0 #F1DCC6, 0 6px 16px rgba(185, 115, 63, .10); }
-:root[data-theme="chihuahua"] .hero { border-radius: 24px; box-shadow: 0 6px 18px rgba(185, 115, 63, .25); }
-:root[data-theme="chihuahua"] .hero-l { position: relative; }
-:root[data-theme="chihuahua"] .hero-l, :root[data-theme="chihuahua"] .splash {
-  background-color: var(--primary);
-  background-image: radial-gradient(circle, rgba(255, 246, 232, .32) 3px, transparent 3.5px);
-  background-size: 18px 18px;
-}
-:root[data-theme="chihuahua"] .bar { background: rgba(255, 248, 239, .94); border-bottom-color: #F0D8C0; }
-:root[data-theme="chihuahua"] .tabs { background: rgba(255, 248, 239, .97); }
+:root[data-theme="chihuahua"] .panel { border-radius: 20px; box-shadow: 0 2px 0 #EBD8C4, 0 6px 16px rgba(140, 99, 70, .10); }
+:root[data-theme="chihuahua"] .hero { border-radius: 24px; box-shadow: 0 6px 18px rgba(140, 99, 70, .25); }
+:root[data-theme="chihuahua"] .hero-l { position: relative; background-color: var(--primary);
+  background-image: radial-gradient(circle, rgba(255, 244, 230, .16) 3px, transparent 3.5px); background-size: 18px 18px; }
+:root[data-theme="chihuahua"] .bar { background: rgba(247, 232, 217, .94); border-bottom-color: #EAD6C2; }
+:root[data-theme="chihuahua"] .tabs { background: rgba(250, 241, 231, .97); }
 :root[data-theme="chihuahua"] .hero-home .who span::after { content: " 🐾"; }
-:root[data-theme="chihuahua"] .hero-home { padding-bottom: 86px; }
-.hero-home .mascot.wawa { width: 84px; height: 84px; right: 22px; bottom: 2px; filter: drop-shadow(0 0 1.5px #FFF3E2) drop-shadow(0 0 1.5px #FFF3E2) drop-shadow(0 3px 4px rgba(90, 58, 40, .3)); animation: none; }
-.splash .mascot.wawa { width: 124px; height: 124px; animation: spIn .6s cubic-bezier(.2,.8,.3,1) both; }
+:root[data-theme="chihuahua"] .hero-home { padding-bottom: 92px; }
+.hero-home .mascot.wawa { width: 86px; height: 86px; right: 22px; bottom: 10px; border-radius: 50%; border: 3px solid #FFF6EC; object-fit: cover;
+  box-shadow: 0 4px 10px rgba(70, 45, 30, .3); animation: wwShake 2.6s linear infinite; }
+/* 시작 화면 = 그림 통째, 이름은 위쪽 빈 곳에 */
+:root[data-theme="chihuahua"] .splash { background: #F7E8D9 url("theme/chihuahua/splash.webp") center bottom / cover no-repeat; justify-content: flex-start; padding-top: 16vh; }
+:root[data-theme="chihuahua"] .splash b { color: #5E4334; }
+:root[data-theme="chihuahua"] .splash span { color: #A97E5D; }
 /* 성난 치와와 — 부들부들 떨다가 왈! 하고 튐 */
-.wawa .ww-shake { animation: wwShake 2.4s linear infinite; transform-origin: 50% 96%; transform-box: view-box; }
-.wawa .ww-mad { animation: wwMad 2.4s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
-@keyframes wwShake { 0%, 100% { transform: translate(0, 0); } 4%, 12%, 20%, 28%, 36%, 44%, 52% { transform: translate(-.8px, 0) rotate(-.8deg); } 8%, 16%, 24%, 32%, 40%, 48%, 56% { transform: translate(.8px, 0) rotate(.8deg); } 66% { transform: translateY(-4px) scale(1.04); } 72% { transform: translateY(0) scale(.98, 1.02); } 78% { transform: none; } }
-@keyframes wwMad { 0%, 58% { transform: scale(.85); opacity: .75; } 66% { transform: scale(1.25); opacity: 1; } 78%, 100% { transform: scale(.9); opacity: .8; } }
-@media (prefers-reduced-motion: reduce) { .wawa .ww-shake, .wawa .ww-mad { animation: none !important; } }
+@keyframes wwShake { 0%, 100% { transform: translate(0, 0); } 4%, 12%, 20%, 28%, 36%, 44%, 52% { transform: translate(-.8px, 0) rotate(-1.2deg); } 8%, 16%, 24%, 32%, 40%, 48%, 56% { transform: translate(.8px, 0) rotate(1.2deg); } 66% { transform: translateY(-5px) scale(1.04); } 72% { transform: translateY(0) scale(.98, 1.02); } 78% { transform: none; } }
+@media (prefers-reduced-motion: reduce) { .hero-home .mascot.wawa { animation: none !important; } }
