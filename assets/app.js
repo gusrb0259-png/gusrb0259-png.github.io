@@ -102,7 +102,7 @@
     "스미스 벤치프레스": "smith_bench_press", "스미스 클로즈그립 벤치프레스": "smith_bench_press",
     "스미스 벤트오버 로우": "smith_row", "티바 로우": "smith_row", "티바로우": "smith_row", "티바 로우 머신": "smith_row", "스미스 숄더 프레스": "smith_shoulder_press", "덤벨 오버헤드 익스텐션": "overhead_ext",
     "스미스 슈러그": "smith_shrug", "인클라인 덤벨 컬": "incline_db_curl", "덤벨 숄더 프레스": "shoulder_press", "랙 밴드 푸쉬업": "band_push_up",
-    "체스트 프레스 머신": "chest_press", "힙쓰러스트 머신": "hip_thrust", "케이블 힙 킥백": "cable_kickback", "힙 익스텐션": "back_extension"
+    "체스트 프레스 머신": "chest_press", "힙쓰러스트 머신": "hip_thrust", "몬스터 글루트": "hip_thrust", "몬스터글루트": "hip_thrust", "케이블 힙 킥백": "cable_kickback", "힙 익스텐션": "back_extension"
   };
   function iconSrc(key) { return BASE + "icons/" + THEME + "/" + key + ".png"; }
   function iconOf(it) {
@@ -2896,10 +2896,10 @@
     ["어깨", ["숄더 프레스 머신", "덤벨 숄더 프레스", "스미스 숄더 프레스", "사이드 레터럴 레이즈 머신", "사이드 레터럴 레이즈", "시티드 레터럴 레이즈", "시티드 페이스풀", "리버스 펙덱"]],
     ["팔", ["덤벨 컬", "머신 암 컬", "해머 컬", "인클라인 덤벨 컬", "케이블 푸쉬다운", "오버헤드 익스텐션", "덤벨 오버헤드 익스텐션"]],
     ["하체", ["레그 익스텐션", "이너타이", "아웃타이 머신", "스탠딩 아웃타이", "플레이트 아웃타이", "레그프레스", "파워 레그프레스", "핵스쿼트", "스미스 스쿼트", "고블릿 스쿼트", "라잉 레그컬", "덤벨 RDL", "핵프레스"]],
-    ["엉덩이", ["힙쓰러스트 머신", "케이블 힙 킥백", "힙 익스텐션"]],
+    ["엉덩이", ["힙쓰러스트 머신", "몬스터 글루트", "케이블 힙 킥백", "힙 익스텐션"]],
     ["복근", ["플랭크"]]
   ];
-  var RT_CAT_EN = { "파워 레그프레스": "Power Leg Press", "스탠딩 아웃타이": "Standing Hip Abduction", "머신 암 컬": "Machine Arm Curl", "티바 로우": "T-Bar Row", "스미스 벤트오버 로우": "Smith Bent-over Row", "뉴텍 버티컬 풀다운": "Vertical Pulldown", "시티드 레터럴 레이즈": "Seated Lateral Raise", "백 익스텐션": "Back Extension", "스미스 벤치프레스": "Smith Bench Press" };
+  var RT_CAT_EN = { "몬스터 글루트": "Monster Glute", "파워 레그프레스": "Power Leg Press", "스탠딩 아웃타이": "Standing Hip Abduction", "머신 암 컬": "Machine Arm Curl", "티바 로우": "T-Bar Row", "스미스 벤트오버 로우": "Smith Bent-over Row", "뉴텍 버티컬 풀다운": "Vertical Pulldown", "시티드 레터럴 레이즈": "Seated Lateral Raise", "백 익스텐션": "Back Extension", "스미스 벤치프레스": "Smith Bench Press" };
   function rtEnOf(n) { return RT_EN[n] || RT_CAT_EN[n] || ""; }
   function rtMine() {   /* 이 회원님 루틴에 이미 있는 종목 (이름별 첫 번째) */
     var seen = {}, out = [];

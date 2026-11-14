@@ -16,8 +16,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap">
-<link rel="stylesheet" href="/assets/style.css?v=2611141257">
-<script src="/assets/site.js?v=2611141257"></script>
+<link rel="stylesheet" href="/assets/style.css?v=2611141340">
+<script src="/assets/site.js?v=2611141340"></script>
 <style>
 .wrap { padding-bottom: calc(40px + env(safe-area-inset-bottom, 0px)); }
 .sum { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
@@ -929,7 +929,7 @@ section.folded .fsum:not(:empty) { display: inline; }
      2026-11-12 처음엔 Web Worker였는데 아이폰 사파리에서 동욱쌤 회원이 안 보여서 iframe으로 바꿈 */
   var XF = '<!doctype html><meta charset="utf-8"><script>(function(){var d=__D__,t="?t="+Date.now(),o={api:"",members:[]};' +
     'function ld(u){return new Promise(function(ok){var s=document.createElement("script");s.src=u;s.onload=s.onerror=function(){ok()};document.head.appendChild(s);});}' +
-    'ld(d.site+"/assets/site.js?v=2611141257"+t).then(function(){o.api=(window.SITE||{}).att_api||"";return ld(d.site+"/"+d.coach+"/members.js"+t);}).then(function(){' +
+    'ld(d.site+"/assets/site.js?v=2611141340"+t).then(function(){o.api=(window.SITE||{}).att_api||"";return ld(d.site+"/"+d.coach+"/members.js"+t);}).then(function(){' +
     'var L=(window.COACH_MEMBERS||[]).filter(function(x){return /^[a-z0-9-]{3,40}$/.test(x)}),i=0;' +
     'function nx(){if(i>=L.length){parent.postMessage(JSON.stringify({xpt:d.id,o:o}),"*");return;}var sl=L[i++];window.MEMBER=null;' +
     'ld(d.site+"/m/"+sl+"/data.js"+t).then(function(){if(window.MEMBER){try{o.members.push({slug:sl,M:JSON.parse(JSON.stringify(window.MEMBER))});}catch(e){}}nx();});}nx();});})();<\/script>';
