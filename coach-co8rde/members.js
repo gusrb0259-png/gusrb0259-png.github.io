@@ -4,5 +4,6 @@ window.COACH_MEMBERS = [
   "dahye-dfpttw",
   "jihyeon-d1xp2n",
   "okgyu-s4os2w",
-  "chaewon-ryfvmy"
+  "chaewon-ryfvmy",
+  "heeran-bh16wb"
 ];
