@@ -15,7 +15,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap">
-<link rel="stylesheet" href="/assets/style.css?v=2611141340">
+<link rel="stylesheet" href="/assets/style.css?v=2611141433">
 <!-- 2026-11-12: 선생님 페이지 "＋ 새 회원 노트 만들기"로 만든 회원은 폴더(data.js)가 없음 → GitHub Pages가 이 404.html을 보여 줌.
      주소 /m/<주소>/ 에서 회원 주소를 읽고, 출석 창고 저장소(pub:m:<주소>:profile)에서 노트 정보를 받아 app.js로 그림. -->
 </head>
@@ -33,7 +33,7 @@
   <a href="#diet" data-tab="diet"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="13" cy="13" r="6.5"/><path d="M4 4v6M6.5 4v6M4 7h2.5M5.2 10v10"/></svg>식단</a>
   <a href="#notice" data-tab="notice"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M4 10v4h3l6 4V6L7 10z"/><path d="M16.5 9.5a3.5 3.5 0 0 1 0 5M19 7a7 7 0 0 1 0 10" stroke-linecap="round"/></svg>공지</a>
 </div></nav>
-<script src="/assets/site.js?v=2611141340"></script>
+<script src="/assets/site.js?v=2611141433"></script>
 <script>
 (function () {
   var mm = location.pathname.match(/^\/m\/([a-z0-9-]{3,40})\/?$/);
@@ -55,8 +55,8 @@
     if (M.sex === "F") { document.getElementById("tc").setAttribute("content", "#D35C14"); document.getElementById("ic").href = "/assets/icon-f-192.png"; document.getElementById("ati").href = "/assets/icon-f-180.png"; }
     document.documentElement.setAttribute("data-sex", M.sex === "F" ? "F" : "M");
     view.innerHTML = "";
-    var a = document.createElement("script"); a.src = "/assets/exicons.js?v=2611141340";
-    a.onload = a.onerror = function () { var b = document.createElement("script"); b.src = "/assets/app.js?v=2611141340"; document.body.appendChild(b); };
+    var a = document.createElement("script"); a.src = "/assets/exicons.js?v=2611141433";
+    a.onload = a.onerror = function () { var b = document.createElement("script"); b.src = "/assets/app.js?v=2611141433"; document.body.appendChild(b); };
     document.body.appendChild(a);
   }
   var LS = "ptnote:" + slug + ":profile", cached = null;

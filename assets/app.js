@@ -2499,7 +2499,7 @@
   })();
   function renderRoutine(sel) {
     var R = M.routine;
-    if (!R) return (CAN_EDIT ? '<div class="rtbar"><div><b>선생님만 보여요</b><span>여기서 바로 루틴을 만들 수 있어요</span></div><div class="rtbar-b"><button type="button" class="rtb" data-rt="createcopy">다른 회원 루틴 복사</button><button type="button" class="rtb fill" data-rt="create">✎ 새 루틴 만들기</button></div></div>' : '') +
+    if (!R) return wkSeg("routine") + (CAN_EDIT ? '<div class="rtbar"><div><b>선생님만 보여요</b><span>여기서 바로 루틴을 만들 수 있어요</span></div><div class="rtbar-b"><button type="button" class="rtb" data-rt="createcopy">다른 회원 루틴 복사</button><button type="button" class="rtb fill" data-rt="create">✎ 새 루틴 만들기</button></div></div>' : '') +
       '<section>' + head("", "주간 루틴", "") + '<div class="panel empty"><h3>루틴이 아직 없어요</h3><p>선생님이 곧 올려드릴게요</p></div></section>' + remember();
     var tk = todayKey(), ED = !!RT_EDIT;
     sel = sel || tk;
