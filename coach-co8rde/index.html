@@ -16,8 +16,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap">
-<link rel="stylesheet" href="/assets/style.css?v=2611141433">
-<script src="/assets/site.js?v=2611141433"></script>
+<link rel="stylesheet" href="/assets/style.css?v=2611141548">
+<script src="/assets/site.js?v=2611141548"></script>
 <style>
 .wrap { padding-bottom: calc(40px + env(safe-area-inset-bottom, 0px)); }
 .sum { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
@@ -223,6 +223,38 @@ section.folded .fsum:not(:empty) { display: inline; }
 .pane-empty { position: absolute; inset: 0; display: grid; place-items: center; text-align: center; color: var(--faint); padding: 24px; }
 .pane-empty b { display: block; font-size: 18px; color: var(--sub); margin-bottom: 6px; }
 .pane-empty svg { width: 64px; height: 64px; color: #C9CED8; margin-bottom: 10px; }
+
+/* 회원 목록 = 앱 아이콘 타일 (2026-11-14 팀장 "동욱쌤처럼 간편하게") — 누르면 노트, 꾹 누르면 그 자리에서 정보·담당·바로가기·삭제가 펼쳐짐 */
+.mlist { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px 4px; background: var(--paper); border-radius: 20px; padding: 16px 8px; box-shadow: 0 1px 2px rgba(30, 35, 48, .06); }
+.mlist > .panel, .mlist > .mdelbg { grid-column: 1 / -1; }
+.mlist > .panel { box-shadow: none; }
+.mcard { background: transparent; box-shadow: none; padding: 0; border-radius: 16px; gap: 0; align-items: stretch; }
+.mcard[hidden] { display: none; }
+.mcard .mtop { flex-direction: column; gap: 6px; text-align: center; -webkit-touch-callout: none; user-select: none; -webkit-user-select: none; }
+.mcard .av { position: relative; width: 62px; height: 62px; border-radius: 18px; font-size: 25px; box-shadow: 0 6px 14px -6px rgba(0, 0, 0, .45); transition: transform .15s ease; }
+.mcard .av.M { background: linear-gradient(160deg, #3A3A42, #141416); }
+.mcard .av.F { background: linear-gradient(160deg, #EE8A4A, #B94A0E); }
+.mcard .av i { font-style: normal; }
+.mcard .av.on { box-shadow: 0 0 0 3px var(--paper), 0 0 0 6px #4FCB7C, 0 6px 14px -6px rgba(0, 0, 0, .45); }
+.mcard[data-care] .av.off, .mcard[data-care] .av.wait, .mcard[data-care] .av.rest { box-shadow: 0 0 0 3px var(--paper), 0 0 0 6px #E3B341, 0 6px 14px -6px rgba(0, 0, 0, .45); }
+.mcard .dot { position: absolute; right: -4px; bottom: -4px; width: 18px; height: 18px; border-radius: 50%; border: 3px solid var(--paper); background: #C3C8D2; }
+.mcard .av.on .dot { background: #2ECC71; box-shadow: 0 0 6px rgba(46, 204, 113, .7); }
+.mcard .av.off .dot { background: #E5484D; }
+.mcard .mnm { font-size: 15px; font-weight: 800; line-height: 1.2; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.mcard .mst { font-size: 12px; font-weight: 800; margin-top: -3px; font-variant-numeric: tabular-nums; color: #A3A9B5; }
+.mcard .mst.on { color: var(--good); } .mcard .mst.off { color: var(--bad); }
+.mcard .mtop:active .av { transform: scale(.93); }
+.mcard.lp .av { transform: scale(.9); }
+.mcard .mdet { display: none; }
+.mcard.open { grid-column: 1 / -1; background: var(--page, #F4F4F5); padding: 12px; border-radius: 16px; gap: 12px; }
+.mcard.open .mtop { flex-direction: row; text-align: left; gap: 12px; }
+.mcard.open .mtop .mst { margin: 0 0 0 auto; }
+.mcard.open .mdet { display: flex; flex-direction: column; gap: 10px; }
+.mhd { display: flex; align-items: center; gap: 10px; } .mhd > div { flex: 1; min-width: 0; }
+.mhd h3 { margin: 0; font-size: 16px; } .mhd p { margin: 2px 0 0; font-size: 12.5px; color: var(--faint); }
+.mdbtn { display: flex; gap: 8px; } .mdbtn button { flex: 1; font: inherit; font-size: 13.5px; font-weight: 800; padding: 9px; border-radius: 10px; border: 1.5px solid var(--rule); background: var(--paper); color: var(--sub); cursor: pointer; }
+.mdbtn .mdel { color: #E5484D; border-color: #F3C2C3; }
+body.pad .mcard.sel .av { outline: 3px solid var(--key); outline-offset: 3px; }
 </style>
 </head>
 <body>
@@ -286,7 +318,7 @@ section.folded .fsum:not(:empty) { display: inline; }
   </section>
 
   <section data-fold="list">
-    <div class="head"><h2>회원 목록</h2><p>이름을 누르면 그 회원님 PT 노트로</p></div>
+    <div class="head"><h2>회원 목록</h2><p>누르면 바로 노트 · 꾹 누르면 정보·담당·삭제</p></div>
     <div class="panel nmbox">
       <button type="button" class="bnnew" id="nmOpen">＋ 새 회원 노트 만들기</button>
       <form class="bnf" id="nmForm" hidden>
@@ -428,11 +460,16 @@ section.folded .fsum:not(:empty) { display: inline; }
     }
     var jt = journeyText(M);
     var stKey = !days ? "wait" : on ? "on" : rest ? "rest" : "off";
-    return '<div class="mcard ' + sex + '" data-name="' + esc(M.name) + '" data-cho="' + esc(cho(M.name)) + '" data-st="' + stKey + '" data-t="' + esc(tid) + '" data-slug="' + esc(slug) + '"' + (M._base ? ' data-x="1"' : '') + '><a class="mtop" href="' + base + '#home"' + xa + '><span class="av ' + sex + '">' + esc(M.name.charAt(0)) + '</span>' +
-      '<div><h3>' + esc(M.name) + ' 회원님</h3><p>' + esc(M.goal || "") + (jt ? ' · ' + jt : '') + '</p>' + (M.care ? '<p class="mcare">⚠ ' + esc(String(M.care).replace(/\s*\n\s*/g, " · ")) + '</p>' : '') + '</div>' + st + '</a>' +
+    var tm = !days ? "확인 중" : on ? (days[today] || "출석") : rest ? "쉬는 날" : "미출석";
+    var given = M.name.length >= 3 ? M.name.slice(1) : M.name;
+    return '<div class="mcard ' + sex + '" data-name="' + esc(M.name) + '" data-cho="' + esc(cho(M.name)) + '" data-st="' + stKey + '" data-t="' + esc(tid) + '" data-slug="' + esc(slug) + '"' + (M._base ? ' data-x="1"' : '') + (M.care ? ' data-care="1"' : '') + '>' +
+      '<a class="mtop" href="' + base + '#home"' + xa + '><span class="av ' + sex + ' ' + stKey + '"><i>' + esc(M.name.charAt(0)) + '</i><em class="dot"></em></span>' +
+      '<b class="mnm">' + esc(given) + '</b><small class="mst ' + stKey + '">' + esc(tm) + '</small></a>' +
+      '<div class="mdet"><div class="mhd"><div><h3>' + esc(M.name) + ' 회원님</h3><p>' + esc(M.goal || "") + (jt ? ' · ' + jt : '') + '</p>' + (M.care ? '<p class="mcare">⚠ ' + esc(String(M.care).replace(/\s*\n\s*/g, " · ")) + '</p>' : '') + '</div>' + st + '</div>' +
       '<div class="mrow2">' + info + '</div>' +
       '<div class="qlinks"><a class="' + sex + '" href="' + base + '#home"' + xa + '>홈</a><a class="' + sex + '" href="' + base + '#goal"' + xa + '>출석·목표</a>' +
-      '<a class="' + sex + '" href="' + base + '#routine"' + xa + '>루틴</a><a class="' + sex + '" href="' + base + '#forms"' + xa + '>복습지</a></div></div>';
+      '<a class="' + sex + '" href="' + base + '#routine"' + xa + '>루틴</a><a class="' + sex + '" href="' + base + '#forms"' + xa + '>복습지</a></div>' +
+      '<div class="mdbtn"><button type="button" data-mclose="1">접기</button>' + (M._base ? '' : '<button type="button" class="mdel" data-mdel="' + esc(slug) + '">삭제</button>') + '</div></div></div>';
   }
   /* 초성 검색: "OO" → "ㅊㅈㅎ" */
   var CHO = "ㄱㄲㄴㄷㄸㄹㅁㅂㅃㅅㅆㅇㅈㅉㅊㅋㅌㅍㅎ";
@@ -929,7 +966,7 @@ section.folded .fsum:not(:empty) { display: inline; }
      2026-11-12 처음엔 Web Worker였는데 아이폰 사파리에서 동욱쌤 회원이 안 보여서 iframe으로 바꿈 */
   var XF = '<!doctype html><meta charset="utf-8"><script>(function(){var d=__D__,t="?t="+Date.now(),o={api:"",members:[]};' +
     'function ld(u){return new Promise(function(ok){var s=document.createElement("script");s.src=u;s.onload=s.onerror=function(){ok()};document.head.appendChild(s);});}' +
-    'ld(d.site+"/assets/site.js?v=2611141433"+t).then(function(){o.api=(window.SITE||{}).att_api||"";return ld(d.site+"/"+d.coach+"/members.js"+t);}).then(function(){' +
+    'ld(d.site+"/assets/site.js?v=2611141548"+t).then(function(){o.api=(window.SITE||{}).att_api||"";return ld(d.site+"/"+d.coach+"/members.js"+t);}).then(function(){' +
     'var L=(window.COACH_MEMBERS||[]).filter(function(x){return /^[a-z0-9-]{3,40}$/.test(x)}),i=0;' +
     'function nx(){if(i>=L.length){parent.postMessage(JSON.stringify({xpt:d.id,o:o}),"*");return;}var sl=L[i++];window.MEMBER=null;' +
     'ld(d.site+"/m/"+sl+"/data.js"+t).then(function(){if(window.MEMBER){try{o.members.push({slug:sl,M:JSON.parse(JSON.stringify(window.MEMBER))});}catch(e){}}nx();});}nx();});})();<\/script>';
@@ -991,7 +1028,7 @@ section.folded .fsum:not(:empty) { display: inline; }
     }
     list.addEventListener("pointerdown", function (e) {
       if (e.pointerType === "mouse" && e.button !== 0) return;
-      var c = e.target.closest(".mcard"); if (!c || c.getAttribute("data-x") || e.target.closest("select,button,input,label")) return;
+      var c = e.target.closest(".mcard"); if (!c || !c.classList.contains("open") || c.getAttribute("data-x") || e.target.closest("select,button,input,label")) return;
       st = { c: c, x: e.clientX, y: e.clientY, dx: 0, on: false, id: e.pointerId };
     });
     list.addEventListener("pointermove", function (e) {
@@ -1021,6 +1058,33 @@ section.folded .fsum:not(:empty) { display: inline; }
     }
     list.addEventListener("pointerup", end); list.addEventListener("pointercancel", end);
     list.addEventListener("click", function (e) { if (eat) { e.preventDefault(); e.stopPropagation(); } }, true);
+  })();
+
+  /* 꾹 누르기 (2026-11-14): 회원 타일을 0.5초 누르면 그 자리에서 정보가 펼쳐짐(다른 건 접힘). 누르기만 하면 노트로 */
+  (function () {
+    var list = document.getElementById("list"), lp = null, eatLP = false;
+    function clear() { if (lp) { clearTimeout(lp.t); lp.c.classList.remove("lp"); lp = null; } }
+    list.addEventListener("pointerdown", function (e) {
+      var a = e.target.closest(".mtop"); if (!a) return;
+      var c = a.closest(".mcard"); if (c.classList.contains("open")) return;
+      clear();
+      lp = { c: c, x: e.clientX, y: e.clientY, t: setTimeout(function () {
+        var cc = lp && lp.c; clear(); if (!cc) return;
+        eatLP = true; setTimeout(function () { eatLP = false; }, 600);
+        Array.prototype.forEach.call(list.querySelectorAll(".mcard.open"), function (o) { if (o !== cc) o.classList.remove("open"); });
+        cc.classList.add("open"); if (navigator.vibrate) try { navigator.vibrate(12); } catch (x) {}
+        cc.scrollIntoView({ block: "nearest", behavior: "smooth" });
+      }, 500) };
+      c.classList.add("lp");
+    });
+    list.addEventListener("pointermove", function (e) { if (lp && (Math.abs(e.clientX - lp.x) > 10 || Math.abs(e.clientY - lp.y) > 10)) clear(); });
+    ["pointerup", "pointercancel", "pointerleave"].forEach(function (k) { list.addEventListener(k, function () { if (lp) clear(); }); });
+    list.addEventListener("contextmenu", function (e) { if (e.target.closest(".mtop")) e.preventDefault(); });
+    list.addEventListener("click", function (e) {
+      if (eatLP && e.target.closest(".mtop")) { e.preventDefault(); e.stopPropagation(); return; }
+      var x = e.target.closest("[data-mclose]"); if (x) { x.closest(".mcard").classList.remove("open"); return; }
+      var d = e.target.closest("[data-mdel]"); if (d) mAsk(d.getAttribute("data-mdel"));
+    }, true);
   })();
   function mRow(slug) { for (var i = 0; i < ROWS.length; i++) if (ROWS[i].slug === slug && !ROWS[i].ext) return ROWS[i]; return null; }
   function mAsk(slug) {
