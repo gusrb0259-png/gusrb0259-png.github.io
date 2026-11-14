@@ -86,13 +86,15 @@
     "인클라인 덤벨 프레스": "incline_db_press", "스미스 인클라인 프레스": "smith_incline_press", "인클라인 프레스 머신": "incline_machine_press", "머신 인클라인 프레스": "incline_machine_press",
     "체스트 프레스": "chest_press", "뉴텍 체스트 프레스 머신": "lying_chest_press", "뉴텍 체스트프레스 머신": "lying_chest_press", "펙덱 플라이": "pec_deck", "펙덱": "pec_deck", "케이블 푸쉬다운": "cable_pushdown",
     "오버헤드 익스텐션": "overhead_ext", "랫풀다운": "lat_pulldown", "언더그립 랫풀다운": "underhand_pulldown",
-    "스트레이트 암 풀다운": "straight_arm_pulldown", "뉴텍 시티드 로우 머신": "seated_row_machine", "시티드 로우 머신": "seated_row_machine", "시티드 로우": "seated_row_machine",
+    "스트레이트 암 풀다운": "straight_arm_pulldown", "뉴텍 시티드 로우 머신": "seated_row_machine", "뉴텍 엠토처 시티드 로우": "mtorture_row", "엠토처 시티드 로우": "mtorture_row", "시티드 로우 머신": "seated_row_machine", "시티드 로우": "seated_row_machine",
     "케이블 시티드 로우": "cable_seated_row", "언더그립 시티드 로우": "underhand_seated_row", "원암 덤벨 로우": "one_arm_row",
     "해머스트렝스 로우로우": "low_row", "로우로우": "low_row", "하이 로우": "high_row", "뉴텍 버티컬 풀다운": "vertical_pulldown", "버티컬 풀다운 머신": "vertical_pulldown", "버티컬 풀다운": "vertical_pulldown",
-    "케이블 풀오버": "cable_pullover", "시티드 페이스풀": "face_pull", "페이스풀": "face_pull", "리버스 펙덱": "reverse_pec_deck",
+    "케이블 풀오버": "cable_pullover", "시티드 페이스풀": "face_pull", "페이스풀": "face_pull", "리버스 펙덱": "reverse_pec_deck", "리버스 펙덱 플라이": "reverse_pec_deck", "케이블 체스트 프레스": "cable_chest_press",
+    "어시스트 친업": "assisted_chin_up", "어시스티드 친업": "assisted_chin_up", "어시스트 풀업": "assisted_chin_up", "해머 로우로우": "low_row",
     "레그 익스텐션": "leg_extension", "이너타이": "inner_thigh", "아웃타이 머신": "outer_thigh_pin", "플레이트 아웃타이": "outer_thigh_plate",
     "아웃타이": "outer_thigh", "고블릿 스쿼트": "goblet_squat", "핵스쿼트": "hack_squat", "스미스 스쿼트": "smith_squat",
     "레그프레스": "leg_press", "파워 레그프레스": "leg_press", "파워레그프레스": "leg_press", "스탠딩 아웃타이": "outer_thigh_pin", "스탠딩아웃타이": "outer_thigh_pin", "라잉 레그컬": "lying_leg_curl", "힙쓰러스트": "hip_thrust", "덤벨 RDL": "db_rdl",
+    "핵프레스": "hack_press",
     "백 익스텐션": "back_extension", "사이드 레터럴 레이즈": "lateral_raise", "레터럴 레이즈": "lateral_raise",
     "사이드 레터럴 레이즈 머신": "lateral_raise_standing", "레터럴 레이즈 머신": "lateral_raise_standing", "머신 레터럴 레이즈": "lateral_raise_standing",
     "스탠딩 사이드 레터럴 레이즈 머신": "lateral_raise_standing", "시티드 레터럴 레이즈": "seated_lateral_raise", "시티드 사이드 레터럴 레이즈": "seated_lateral_raise", "숄더 프레스 머신": "shoulder_press", "숄더 프레스": "shoulder_press",
@@ -149,6 +151,37 @@
       '<i class="ww-mad"><svg viewBox="-10 -10 20 20"><path d="M-7-2q4 0 5-5M2-7q1 5 5 5M7 2q-4 0-5 5M-2 7q-1-5-5-5" fill="none" stroke="#C0392B" stroke-width="2.8" stroke-linecap="round"/></svg></i>' +
       '<i class="ww-puff a">' + puff + '</i><i class="ww-puff b">' + puff + '</i><i class="ww-bark">왈!</i></span>';
   }
+  /* 2026-11-13 회원별 테마 스킨 (data.js skin: "bunny" — 김지수님 토롱이). 기능은 그대로, 글꼴·색·꾸밈 그림만 얹음 */
+  var SKIN = String(M.skin || "");
+  if (SKIN) {
+    document.documentElement.setAttribute("data-skin", SKIN);
+    if (!document.getElementById("skinFont")) {
+      var sfl = document.createElement("link"); sfl.id = "skinFont"; sfl.rel = "stylesheet";
+      sfl.href = "https://fonts.googleapis.com/css2?family=Jua&display=swap"; document.head.appendChild(sfl);
+    }
+  }
+  function skinDeco() {   /* 토롱이 그림을 정해진 칸에 하나씩 (이미 있으면 그대로) — 누르기·글자에는 영향 없음(pointer-events none) */
+    if (!SKIN) return;
+    var T = BASE + "theme/" + SKIN + "/";
+    function put(sel, cls, file) {
+      Array.prototype.forEach.call(document.querySelectorAll(sel), function (el) {
+        var f = typeof file === "function" ? file(el) : file, old = el.querySelector(":scope > .bny");
+        if (old && old.getAttribute("data-f") === f) return;
+        if (old) old.remove();
+        var im = document.createElement("img"); im.className = "bny " + cls; im.src = T + f; im.alt = ""; im.setAttribute("aria-hidden", "true"); im.setAttribute("data-f", f);
+        el.appendChild(im);
+      });
+    }
+    put(".stamp", "bny-stamp", function (el) { return el.classList.contains("on") ? "cheer.svg" : "stamp.svg"; });
+    put(".thero", "bny-lift", "lift.svg");
+    put(".tabs", "bny-peek", "peek.svg");
+    put(".hero", "bny-hero", "base.svg");
+  }
+  if (SKIN) {
+    var skinT = 0;
+    new MutationObserver(function () { if (!skinT) skinT = requestAnimationFrame(function () { skinT = 0; skinDeco(); }); })
+      .observe(document.documentElement, { childList: true, subtree: true });
+  }
 
   var DAY_KEYS = ["sun", "mon", "tue", "wed", "thu", "fri", "sat"];
   var DAY_KO = { mon: "월", tue: "화", wed: "수", thu: "목", fri: "금", sat: "토", sun: "일" };
@@ -194,15 +227,16 @@
   var XIC = '<span class="ic no"><svg aria-hidden="true"><use href="#i-x"/></svg></span>';
   var view = document.getElementById("view");
   /* 아래 탭 (회원 페이지 공통 — 여기서 그림) */
+  /* 2026-11-11 앱 화면(시안 A "라이트 네이티브"): 아래 탭 5개 — 목표·몸변화·공지는 '나' 탭(위 칸 전환)과 오른쪽 위 종으로 */
   var TABS = [
     ["home", "홈", '<path d="M3.5 10.5 12 4l8.5 6.5V20a1 1 0 0 1-1 1H15v-6H9v6H4.5a1 1 0 0 1-1-1z" stroke-linejoin="round"/>'],
-    ["goal", "목표", '<path d="M5 21V4" stroke-linecap="round"/><path d="M5 4.5h12.5l-2.5 4 2.5 4H5" stroke-linejoin="round"/>'],
-    ["body", "몸변화", '<path d="M4 18l5-5.5 4 3L20 8" stroke-linecap="round" stroke-linejoin="round"/><path d="M15.5 8H20v4.5" stroke-linecap="round" stroke-linejoin="round"/>'],
-    ["routine", "루틴", '<path d="M6.5 8v8M17.5 8v8M3.5 10v4M20.5 10v4M6.5 12h11" stroke-linecap="round"/>'],
-    ["forms", "복습지", '<rect x="3" y="5" width="18" height="14" rx="3"/><path d="m10 9 5 3-5 3z" fill="currentColor"/>'],
+    ["routine", "운동", '<path d="M6.5 8v8M17.5 8v8M3.5 10v4M20.5 10v4M6.5 12h11" stroke-linecap="round"/>'],
     ["diet", "식단", '<circle cx="13" cy="13" r="6.5"/><path d="M4 4v6M6.5 4v6M4 7h2.5M5.2 10v10" stroke-linecap="round"/>'],
-    ["notice", "공지", '<path d="M4 10v4h3l6 4V6L7 10z" stroke-linejoin="round"/><path d="M16.5 9.5a3.5 3.5 0 0 1 0 5M19 7a7 7 0 0 1 0 10" stroke-linecap="round"/>']
+    ["log", "기록", '<rect x="5" y="4" width="14" height="17" rx="2.5"/><path d="M9 3.5h6v3H9z" stroke-linejoin="round"/><path d="m9 13 2 2 4-4.5" stroke-linecap="round" stroke-linejoin="round"/>'],
+    ["me", "나", '<circle cx="12" cy="8" r="4"/><path d="M4 21c1-4 4-6 8-6s7 2 8 6" stroke-linecap="round"/>', "goal"]
   ];
+  /* 2026-11-14 장동욱 "루틴이랑 복습지 합치고, 기록 탭" — 운동(루틴 | 자세 복습지 전환칸) · 기록(오늘 한 운동·첫날 vs 오늘·근육 지도·인바디) */
+  function tabOf(t) { return t === "forms" ? "routine" : /^(body|log)$/.test(t) ? "log" : /^(goal|notice)$/.test(t) ? "me" : t; }
   /* 2026-11-06 몸변화 탭 (인바디) — 그룹 PT 페이지(이름에 ·)·inbody:false 회원은 탭 없음 */
   if (/·/.test(M.name || "") || M.inbody === false) TABS = TABS.filter(function (t) { return t[0] !== "body"; });
   var COACH_MODE = false;
@@ -246,15 +280,38 @@
     } else if (coachPath && barIn && /^\/coach-[a-z0-9]+\/$/.test(coachPath) && window.self === window.top) {   /* 아이패드 선생님 페이지 오른쪽 칸(iframe) 안에선 안 붙임 */
       var cb = document.createElement("a");
       cb.href = coachPath; cb.className = "coachback"; cb.textContent = "← 회원 목록";
+      cb.addEventListener("click", function () { try { sessionStorage.setItem("vtdir", "back"); } catch (e) {} });
       barIn.insertBefore(cb, barIn.children[1] || null);
     }
   } catch (e) {}
   var tabsIn = document.querySelector(".tabs-in");
   if (tabsIn) {
     tabsIn.innerHTML = TABS.map(function (t) {
-      return '<a href="#' + t[0] + '" data-tab="' + t[0] + '"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">' + t[2] + '</svg>' + t[1] + '</a>';
+      return '<a href="#' + (t[3] || t[0]) + '" data-tab="' + t[0] + '"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">' + t[2] + '</svg>' + t[1] + '</a>';
     }).join("");
     tabsIn.style.gridTemplateColumns = "repeat(" + TABS.length + ", 1fr)";
+  }
+  (function () {   /* 위 막대 오른쪽: 공지 종(새 공지면 빨간 점) + 내 이름 동그라미(→ 나 탭) */
+    var bi = document.querySelector(".bar-in");
+    if (!bi || bi.querySelector(".bar-r")) return;
+    var nm = String(M.name || "").split("·")[0].trim(), ini = /·/.test(M.name || "") ? "함께" : (nm.length >= 3 ? nm.slice(1) : nm);
+    var r = document.createElement("div"); r.className = "bar-r";
+    r.innerHTML = '<a class="bell" href="#notice" aria-label="선생님 공지"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9a6 6 0 1 1 12 0c0 6.5 2.5 8.5 2.5 8.5h-17S6 15.5 6 9"/><path d="M10 21h4"/></svg></a>' +
+      '<button type="button" class="gear" id="gearBtn" aria-label="설정" aria-haspopup="menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></button>' +
+      '<a class="ava" href="#goal" aria-label="나의 목표 · 출석">' + esc(ini) + '</a>';
+    bi.appendChild(r);
+  })();
+  function wkSeg(cur) {   /* 2026-11-14 '운동' 탭 위 전환 칸: 루틴 / 자세 복습지 */
+    var nNew = (M.forms || []).filter(function (f) { return formNew(f); }).length;
+    return '<nav class="meseg wkseg" aria-label="운동">' +
+      '<a href="#routine"' + (cur === "routine" ? ' aria-current="page"' : '') + '>루틴</a>' +
+      '<a href="#forms"' + (cur === "forms" ? ' aria-current="page"' : '') + '>자세 복습지' + (nNew ? ' <i class="wk-new">NEW</i>' : (M.forms || []).length ? ' <small>' + M.forms.length + '</small>' : '') + '</a></nav>';
+  }
+  function meSeg(cur) {   /* '나' 탭 위 전환 칸: 목표·출석 / 몸변화 / 공지 */
+    var L = [["goal", "목표 · 출석"], ["notice", "공지"]];   /* 몸변화는 2026-11-14 기록 탭으로 */
+    return '<nav class="meseg" aria-label="나의 기록">' + L.map(function (x) {
+      return '<a href="#' + x[0] + '"' + (x[0] === cur ? ' aria-current="page"' : '') + '>' + x[1] + '</a>';
+    }).join("") + '</nav>';
   }
 
 
@@ -272,7 +329,24 @@
     return "d" + (done % n + 1);
   }
   function todayKey() { return ROT ? turnKey() : DAY_KEYS[new Date().getDay()]; }
+  /* 이번 주 요일 옮기기 (2026-11-14 장동욱 "그날 못 나오면 상단 루틴 꾹 눌러서 옮기기 — A안, 쉬는 날 갑자기 나와도 넣을 수 있게")
+     창고 저장소 mw:<주소>:mv = { w: 이번 주 월요일, m: { 요일: 가져온 요일 | "-"(이번 주 쉼) }, at } — 다음 주 월요일이면 저절로 원래대로 */
+  var MV_LS = null, MV = null;
+  function mvGet() { if (MV_LS === null) { MV_LS = "ptnote:" + SLUG + ":mv"; try { MV = JSON.parse(localStorage.getItem(MV_LS) || "null"); } catch (e) {} } return MV; }
+  function wkMon(d) { d = d || new Date(); return ymd(new Date(d.getFullYear(), d.getMonth(), d.getDate() - (d.getDay() + 6) % 7)); }
+  function mvMap() { mvGet(); return (!ROT && MV && MV.w === wkMon() && MV.m) || {}; }
   function dayByKey(k) {
+    var raw = dayByKeyRaw(k);
+    if (ROT || RT_EDIT || isRotKey(k)) return raw;
+    var src = mvMap()[k];
+    if (!src) return raw;
+    if (src === "-") return { day: DAY_KO[k], part: "이번 주 쉼", en: "", rest: true, mvSkip: 1 };
+    var sd = dayByKeyRaw(src); if (!sd) return raw;
+    var o = {}; for (var x in sd) o[x] = sd[x];
+    o.day = DAY_KO[k]; o.mvFrom = src; return o;
+  }
+  function dayAt(dt) { var k = DAY_KEYS[dt.getDay()]; return wkMon(dt) === wkMon() ? dayByKey(k) : dayByKeyRaw(k); }
+  function dayByKeyRaw(k) {
     if (isRotKey(k)) return rotDays()[+k.slice(1) - 1];
     var days = (M.routine && M.routine.days) || [];
     for (var i = 0; i < days.length; i++) if (KO_KEY[days[i].day] === k) return days[i];
@@ -290,7 +364,10 @@
     var f = it.form && findForm(it.form);
     if (f) return f;
     var n = fnorm(it.name);
-    for (var i = 0; n && i < (M.forms || []).length; i++) if (fnorm(M.forms[i].exercise) === n) return M.forms[i];
+    for (var i = 0; n && i < (M.forms || []).length; i++) {   /* 복습지 also:[다른 이름] — 루틴 이름이 조금 달라도 연결 (예: 리버스 펙덱 플라이 ↔ 리버스 펙덱) */
+      var fm = M.forms[i], nm = [fm.exercise].concat(fm.also || []);
+      for (var j = 0; j < nm.length; j++) if (fnorm(nm[j]) === n) return fm;
+    }
     return null;
   }
   function remember() {
@@ -506,6 +583,28 @@
       '<ul class="jfocus">' + s.focus.map(function (f) { return '<li>' + esc(f) + '</li>'; }).join("") + '</ul>' +
       (compact && state !== "cur" ? '' : '<p class="jmsg">' + esc(s.msg) + '</p>') + prog + '</div>';
   }
+  /* 목표 탭: 1·2·3단계 줄 — 지난 단계 ✓, 지금 단계 숨쉬는 점, 지나온 만큼 선이 채워짐. 누르면 아래 카드가 그 단계로 */
+  function stageStepper(now) {
+    var ci = JST.indexOf(now.stage), cs = now.stage;
+    var f = Math.max(0, Math.min(1, (ci + Math.max(0, Math.min(1, (now.m - cs.from) / (cs.to - cs.from)))) / (JST.length - 1)));
+    return '<p class="js-hint">단계를 눌러 목표를 확인해요</p><div class="jstep"><div class="js-track"><i style="width:' + (f * 100).toFixed(1) + '%"></i></div>' +
+      JST.map(function (st) {
+        var state = st.no < cs.no ? "done" : st === cs ? "cur" : "next";
+        return '<button type="button" class="js-n ' + state + (st === cs ? ' on' : '') + '" data-st="' + st.no + '" aria-pressed="' + (st === cs) + '">' +
+          '<i>' + (state === "done" ? '✓' : st.no) + '</i><b>' + esc(st.short) + '</b><small>' + (state === "cur" ? '지금 여기' : esc(st.range)) + '</small></button>';
+      }).join("") + '</div>';
+  }
+  document.addEventListener("click", function (e) {
+    var b = e.target.closest && e.target.closest(".js-n");
+    if (!b) return;
+    var now = journeyNow(), st = JST[+b.getAttribute("data-st") - 1], box = document.getElementById("jdet");
+    if (!now || !st || !box || b.classList.contains("on")) return;
+    [].forEach.call(document.querySelectorAll(".js-n"), function (x) { x.classList.toggle("on", x === b); x.setAttribute("aria-pressed", x === b); });
+    var dir = +b.getAttribute("data-st") > +(box.getAttribute("data-st") || now.stage.no) ? "r" : "l";
+    box.setAttribute("data-st", st.no);
+    box.innerHTML = stageCard(st, now, false);
+    box.classList.remove("in-r", "in-l"); void box.offsetWidth; box.classList.add("in-" + dir);
+  });
   function bpStrip() {   /* 바프 회원: 그래프 위 금색 띠 (촬영일 있으면 D-day) */
     var d = bpDday();
     return '<div class="bp-strip"><span class="bp-tag">BODY PROFILE</span>' +
@@ -522,20 +621,20 @@
   }
   function renderGoal() {
     var now = journeyNow();
-    var h = '<div class="hero"><div class="hero-main"><div class="hero-l"><div class="eyebrow">MY GOAL <b>· 나의 목표</b></div>' +
+    var h = meSeg("goal") + '<div class="hero"><div class="hero-main"><div class="hero-l"><div class="eyebrow">MY GOAL <b>· 나의 목표</b></div>' +
       '<h1>' + esc(M.goal || "나의 목표") + '</h1><div class="en">' + esc(M.name) + ' 회원님 · ' + (BP ? '기초 → 벌크 → 컷팅, 바프 촬영까지 함께 가요' : '기초 → 변화 → 자립, 3단계로 함께 가요') + '</div>' +
       '<div class="who"><strong>' + (now ? (now.month ? now.month + '개월차' : '곧 시작해요') + ' · ' + now.stage.no + '단계 ' + esc(now.stage.short) : '') + '</strong><span>담당 ' + esc(TRN) + ' ' + TRL() + '</span></div></div></div>' +
       '<div class="keypoint"><small>KEY POINT</small><p>' + (BP ? '목표는 하나, 바프 촬영날! 그 의지라면 충분해요. 단계마다 함께 넘어가요!' : '혼자 가는 길이 아니에요. 단계마다 함께 넘어가요!') + '</p></div></div>';
     h += careSection();
-    var n4 = "03", n5 = "04";   /* 몸 변화 기록은 2026-11-06 '몸변화' 탭(#body)으로, 근육 지도는 2026-11-08 루틴 탭으로 이동 */
+    var n4 = "03";   /* 몸 변화 기록은 몸변화·기록 탭, 근육 지도는 기록 탭 */
     var attSec = '<section id="att">' + head("01", "출석률 · 출석 달력", "얼마나 꾸준히 나왔는지 봐요") + '<div class="panel attcard">' + attGauge() + attCalendar() + '</div></section>';
     if (!now) {
       return h + attSec + badgeSection("02") + '<div class="panel empty"><h3>PT 여정 준비 중이에요</h3><p>선생님이 시작일을 넣으면 12개월 여정이 나와요</p></div>' + remember();
     }
     h += attSec + badgeSection("02");
-    h += '<section>' + head(n4, BP ? "바프까지 " + JTN + "개월" : "한눈에 보는 12개월", "지금 어디쯤인지 확인해요") + '<div class="panel jpanel' + (BP ? ' bp">' + bpStrip() : '">') + journeyChart(now) + '</div></section>';
-    h += '<section>' + head(n5, "단계별 목표", BP ? "기초 → 벌크 → 컷팅" : "단계마다 하는 것이 달라요") + '<div class="jlist' + (BP ? ' bp' : '') + '">' +
-      JST.map(function (st) { return stageCard(st, now, false); }).join("") + '</div></section>';
+    /* 2026-11-13 "한눈에 보는 12개월 그래프 + 단계별 목표 합치기" — 그래프 아래 1·2·3단계 줄(눌러서 바꾸기) + 고른 단계 목표 카드 */
+    h += '<section id="goal-journey">' + head(n4, BP ? "바프까지 " + JTN + "개월 여정" : "나의 12개월 여정", "지금 어디쯤, 무엇을 할지 한눈에") + '<div class="panel jpanel jmerge' + (BP ? ' bp">' + bpStrip() : '">') + journeyChart(now) +
+      '<div class="jsel">' + stageStepper(now) + '<div class="jdet" id="jdet">' + stageCard(now.stage, now, false) + '</div></div></div></section>';
     return h + remember();
   }
 
@@ -562,7 +661,7 @@
   function attHas(a, key) { return a.indexOf(key) >= 0; }
   function isWorkoutDay(d) {   /* 루틴에서 운동하는 요일인지 (순환 루틴은 어느 날이든 운동할 수 있음) */
     if (ROT) return true;
-    var day = dayByKey(DAY_KEYS[d.getDay()]);
+    var day = dayAt(d);
     return !!(day && !day.rest);
   }
   var ATT_SINCE = new Date(2026, 10, 4);   /* 출석 체크를 시작한 날 (이 전 날짜는 결석으로 세지 않음) */
@@ -600,21 +699,77 @@
   }
   function rateWord(r) { return r >= 80 ? ["good", "아주 좋아요!"] : r >= 50 ? ["mid", "조금만 더!"] : ["low", "다시 시작해봐요"]; }
 
-  function attCheckStrip() {   /* 홈 제목 카드 오른쪽에 들어가는 오늘 출석 체크 */
-    var a = attLoad(), now = new Date(), key = ymd(now), on = attHas(a, key);
-    var m = attStats(a, new Date(now.getFullYear(), now.getMonth(), 1), now);
-    return '<button type="button" class="attq' + (on ? ' on' : '') + '" id="attBtn" aria-pressed="' + on + '" aria-label="' +
-      (now.getMonth() + 1) + '월 ' + now.getDate() + '일 출석 ' + (on ? '완료, 누르면 취소' : '체크하기') + '">' +
-      '<span class="qbox" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5.5 12.5l4.2 4.2 8.8-9.4" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>' +
-      '<span class="qlab">' + (on ? '출석 완료' : '오늘 출석') + '</span>' +
-      '<span class="qrate">' + (on && attTimes[key] ? attTimes[key] + ' 체크' : '이번 달 ' + m.rate + '%') + '</span></button>';
+  /* 출석 도장 (2026-11-11 "A버전에 감성적으로 출석버튼"): 홈 맨 위 카드. 누르면 도장이 쾅 찍히고 점이 톡톡 튐 + 날마다 다른 한마디 */
+  var ST_ON = ["오늘의 땀이 내일의 자신감이 돼요", "나와준 것만으로 이미 절반은 해냈어요", "어제의 나보다 한 걸음 더 왔어요",
+    "꾸준함이 쌓이는 소리, 들리시죠?", "오늘도 나와의 약속을 지켰어요", "몸은 거짓말을 안 해요. 오늘도 잘 왔어요", "이 한 번이 모여서 달라진 몸이 돼요"];
+  var ST_OFF = ["문을 열고 들어온 순간부터 운동이에요", "오늘의 나에게 도장 하나 꾹 찍어줘요", "가장 어려운 건 오는 것, 이미 반은 왔어요", "오늘 찍은 도장이 다음 달 몸이 돼요"];
+  function attSeal(on, now, tm) {
+    var md = pad2(now.getMonth() + 1) + "." + pad2(now.getDate());
+    if (on) return '<svg viewBox="0 0 72 72" aria-hidden="true"><circle cx="36" cy="36" r="33" fill="var(--seal)"/>' +
+      '<circle cx="36" cy="36" r="28.5" fill="none" stroke="#fff" stroke-width="1.4" opacity=".75"/>' +
+      '<text x="36" y="23.5" text-anchor="middle" font-size="7.5" font-weight="900" fill="#fff" letter-spacing="1.5" opacity=".85">JK</text>' +
+      '<text x="36" y="41" text-anchor="middle" font-size="17" font-weight="900" fill="#fff">출석</text>' +
+      '<text x="36" y="53" text-anchor="middle" font-size="8.5" font-weight="700" fill="#fff" opacity=".9">' + md + '</text></svg>';
+    return '<svg viewBox="0 0 72 72" aria-hidden="true"><circle cx="36" cy="36" r="33" fill="#fff" stroke="var(--seal)" stroke-width="2.4" stroke-dasharray="4.6 4.2"/>' +
+      '<circle cx="36" cy="36" r="27" fill="var(--seal)" opacity=".09"/>' +
+      '<text x="36" y="40.5" text-anchor="middle" font-size="15" font-weight="900" fill="var(--seal)">출석</text>' +
+      '<text x="36" y="53" text-anchor="middle" font-size="8.5" font-weight="700" fill="var(--seal)" opacity=".75">' + md + '</text></svg>';
   }
+  function attCheckStrip() {   /* 홈 맨 위 출석 도장 카드 (id attBtn — 출석이 바뀌면 attRefresh가 통째로 다시 그림) */
+    var a = attLoad(), now = new Date(), key = ymd(now), on = attHas(a, key);
+    var doy = Math.floor((now - new Date(now.getFullYear(), 0, 0)) / 86400000);
+    var msg = on ? ST_ON[doy % ST_ON.length] : ST_OFF[doy % ST_OFF.length];
+    var burst = ""; for (var i = 0; i < 10; i++) burst += '<i style="--a:' + (i * 36) + 'deg"></i>';
+    return '<button type="button" class="stamp' + (on ? ' on' : '') + '" id="attBtn" aria-pressed="' + on + '" aria-label="' +
+      (now.getMonth() + 1) + '월 ' + now.getDate() + '일 출석 ' + (on ? '완료, 다시 누르면 취소' : '도장 찍기') + '">' +
+      '<span class="st-seal">' + attSeal(on, now) + '<span class="st-burst" aria-hidden="true">' + burst + '</span></span>' +
+      '<span class="st-txt"><small>' + (on ? a.length + '번째 출석' + (attTimes[key] ? ' · ' + attTimes[key] : '') : '오늘 출석 도장') + '</small>' +
+      '<b>' + (on ? '오늘도 와줘서 고마워요' : '눌러서 출석 도장 꾹') + '</b><em>' + esc(msg) + '</em></span>' +
+      (on ? '<span class="st-undo" aria-hidden="true">다시 누르면 취소</span>' : '<span class="st-go" aria-hidden="true">›</span>') + '</button>';
+  }
+  function homeWidgets() {   /* 홈 작은 위젯 2칸: 이번 달 출석률 링 / 연속 출석 + 이번 주 7칸 */
+    var a = attLoad(), now = new Date(), today = ymd(now);
+    var m = attStats(a, new Date(now.getFullYear(), now.getMonth(), 1), now), s = attStreak(a);
+    var R = 22, C = 2 * Math.PI * R, len = C * m.rate / 100;
+    var mon = new Date(now); mon.setDate(now.getDate() - ((now.getDay() + 6) % 7));
+    var wk = "";
+    for (var i = 0; i < 7; i++) {
+      var d = new Date(mon); d.setDate(mon.getDate() + i);
+      var k = ymd(d), c = attHas(a, k) ? "on" : (!ROT && !isWorkoutDay(d)) ? "rest" : "";
+      wk += '<span class="' + c + (k === today ? ' today' : '') + '"></span>';
+    }
+    return '<div class="hwid" id="hwid"><a class="hw" href="#goal"><svg class="ring" viewBox="0 0 54 54" aria-hidden="true"><circle cx="27" cy="27" r="' + R + '" fill="none" stroke="var(--hw-track)" stroke-width="7"/>' +
+      (m.rate > 0 ? '<circle cx="27" cy="27" r="' + R + '" fill="none" stroke="var(--seal)" stroke-width="7" stroke-linecap="round" stroke-dasharray="' + (m.rate >= 100 ? C.toFixed(1) + ' 0' : len.toFixed(1) + ' ' + C.toFixed(1)) + '" transform="rotate(-90 27 27)"/>' : '') +
+      '</svg><span><small>이번 달 출석률</small><b>' + m.rate + '<i>%</i></b></span></a>' +
+      '<a class="hw col" href="#goal-badges"><small>연속 출석</small><b>' + s + '<i>회</i></b><span class="wk" aria-label="이번 주 출석">' + wk + '</span></a></div>';
+  }
+  function homeInfo() {   /* 홈 작은 위젯 2칸 (2026-11-12 "공지·최근 복습지도 출석률 칸처럼"): 선생님 공지 / 최근 자세 복습지 */
+    var n = (M.notices || [])[0], f = M.forms[0], nNew = n && nUnseen().length > 0;
+    var bell = '<span class="hi-ic bellc' + (nNew ? ' new' : '') + '" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9a6 6 0 1 1 12 0c0 6.5 2.5 8.5 2.5 8.5h-17S6 15.5 6 9"/><path d="M10 21h4"/></svg></span>';
+    var h = '<div class="hwid hinfo">';
+    h += '<a class="hw col hi" href="#notice"' + (n ? ' data-nk="' + esc(nKey(n)) + '"' : '') + '><span class="hi-top">' + bell + (nNew ? '<i class="hi-new">NEW</i>' : '<i class="hi-go">›</i>') + '</span>' +
+      '<small>선생님 공지' + (n && /(\d{1,2})\D+(\d{1,2})\D*$/.test(n.date || "") ? ' · ' + String(n.date).replace(/^.*?(\d{1,2})\D+(\d{1,2})\D*$/, function (x, a, b) { return +a + "월 " + +b + "일"; }) : '') + '</small>' +
+      '<b class="hi-t">' + (n ? esc(n.title) : '아직 공지가 없어요') + '</b></a>';
+    if (f) {
+      var key = iconOf({ name: f.exercise }), ic = key !== "dumbbell" && window.EXI && EXI.has(key) ? img(key, "hi-ex", true) : '<img class="hi-ph" src="' + esc(f.dir) + 'poster.jpg" alt="" loading="lazy">';
+      h += '<a class="hw col hi" href="#form-' + esc(f.id) + '"><span class="hi-top"><span class="hi-ic" aria-hidden="true">' + ic + '</span>' + (formNew(f) ? '<i class="hi-new">NEW</i>' : '<i class="hi-go">›</i>') + '</span>' +
+        '<small>최근 자세 복습지 · ' + M.forms.length + '개</small><b class="hi-t">' + esc(f.exercise) + '</b></a>';
+    } else {
+      h += '<a class="hw col hi" href="#forms"><span class="hi-top"><span class="hi-ic bellc" aria-hidden="true">' + img("dumbbell", "hi-ex", true) + '</span><i class="hi-go">›</i></span><small>최근 자세 복습지</small><b class="hi-t">수업에서 배운 자세가 여기에 쌓여요</b></a>';
+    }
+    return h + '</div>';
+  }
+  document.addEventListener("click", function (e) {   /* 홈 공지 칸 → 그 공지로 바로 (반짝 표시) */
+    var a = e.target.closest && e.target.closest("a.hi[data-nk]");
+    if (a) pendingNotice = a.getAttribute("data-nk");
+  }, true);
   function attRefresh() {   /* 출석이 바뀌면 화면의 출석 부분만 다시 그림 */
     var b = document.getElementById("attBtn");
     if (b) { b.outerHTML = attCheckStrip(); setupAttCheck(); }
+    var hw = document.getElementById("hwid"); if (hw) hw.outerHTML = homeWidgets();
     var g = document.querySelector(".attgauge"); if (g) g.outerHTML = attGauge();
     var c = document.querySelector(".cal"); if (c) { c.outerHTML = attCalendar(); setupCal(); }
-    var bs = document.getElementById("badges"); if (bs) { bs.outerHTML = badgeSection(bs.getAttribute("data-num")); setupBadges(); setupFold((location.hash || "").replace(/^#/, "")); }
+    var bs = document.getElementById("badges"); if (bs) { bs.outerHTML = badgeSection(bs.getAttribute("data-num")); setupBadges(); setupFold(view.getAttribute("data-tab") || "goal"); }
     var mb = document.querySelector(".mm-body"); if (mb) mb.innerHTML = muscleBody();
     alignText(document);
   }
@@ -730,7 +885,7 @@
   function attCall(q) {
     return fetch(ATT_API + "?m=" + encodeURIComponent(SLUG) + (q || ""), { cache: "no-store" })
       .then(function (r) { return r.json(); })
-      .then(function (j) { if (!j || !j.ok) throw new Error("save"); attApply(j.days); if ("routine" in j) rtServer(j.routine); if ("bnotices" in j) bnServer(j.bnotices); if ("kv" in j) careServer(j.kv); return j; });
+      .then(function (j) { if (!j || !j.ok) throw new Error("save"); attApply(j.days); if ("routine" in j) rtServer(j.routine); if ("bnotices" in j) bnServer(j.bnotices); if ("kv" in j) { careServer(j.kv); grServer(j.kv); lgServer(j.kv); mvServer(j.kv); } return j; });
   }
   function attSync() {
     if (!ATT_API) return;
@@ -744,7 +899,7 @@
     var b = document.getElementById("attBtn");
     if (!b) return;
     if (COACH_MODE) {   /* 선생님 휴대폰에서는 보기만 (실수로 눌러 회원 출석이 바뀌지 않게) */
-      b.classList.add("view");
+      b.classList.add("ro");
       b.addEventListener("click", function () { attToast("선생님 보기에서는 출석을 바꿀 수 없어요"); });
       return;
     }
@@ -755,7 +910,7 @@
       attSave(a);
       attRefresh();
       var nb = document.getElementById("attBtn");
-      if (nb && turnOn) nb.classList.add("pop");
+      if (nb && turnOn) { nb.classList.add("pop"); try { navigator.vibrate && navigator.vibrate([18, 40, 26]); } catch (e) {} }
       if (!ATT_API) return;
       if (nb) nb.classList.add("saving");
       attCall("&a=" + (turnOn ? "check" : "uncheck") + "&d=" + key + "&t=" + encodeURIComponent(tm) + "&n=" + encodeURIComponent(M._real || M.name))
@@ -1116,7 +1271,7 @@
     return '<div class="ibtrend panel"><p class="ibt-when">' + a[0].d.replace(/-/g, ". ") + ' → ' + a[a.length - 1].d.replace(/-/g, ". ") + ' · 기록 ' + a.length + '개</p>' + rows + '</div>';
   }
   function renderBody() {
-    var h = '<div class="hero"><div class="hero-main"><div class="hero-l"><div class="eyebrow">MY BODY <b>· 몸 변화 기록</b></div>' +
+    var h = '<a class="back" href="#log">← 기록</a><div class="hero"><div class="hero-main"><div class="hero-l"><div class="eyebrow">MY BODY <b>· 몸 변화 기록</b></div>' +
       '<h1>몸 변화 기록</h1><div class="en">' + esc(M.name) + ' 회원님 · 인바디로 지난달과 비교해요</div>' +
       '<div class="who"><strong>한 달에 한 번</strong><span>담당 ' + esc(TRN) + ' ' + TRL() + '</span></div></div></div>' +
       '<div class="keypoint"><small>KEY POINT</small><p>숫자는 한 달에 한 번! 같은 시간 · 같은 조건으로 재요</p></div></div>';
@@ -1236,7 +1391,7 @@
   }
   function bgIcon(b, gap) {   /* 84×72 배지 그림 (동그라미 60) — 링은 SVG라서 이미지로 저장해도 그대로 */
     var on = !!b.on, t = b.tier, ring = on ? BG_GOLD : BG_GREY;
-    var base = on ? (t === 4 ? BG_GOLD : b.color) : "#E6EAF1", ic = on ? (t === 4 ? BG_N : "#FFFFFF") : "#A3AABA";
+    var base = on ? (t === 4 ? BG_GOLD : b.color) : "#ECE7E7", ic = on ? (t === 4 ? BG_N : "#FFFFFF") : "#A3AABA";
     var s = '<svg class="bdg-s" viewBox="0 0 84 72" width="84" height="72" aria-hidden="true">';
     if (t >= 3) s += '<g fill="' + ring + '">' + LAUREL + '</g>';
     if (t === 4) s += '<polygon points="31,50 40,55 34,71 28,65" fill="' + (on ? BG_P : BG_GREY) + '"/><polygon points="53,50 44,55 50,71 56,65" fill="' + (on ? BG_N : BG_GREY) + '"/>';
@@ -1302,7 +1457,7 @@
   function badgeCheck() {   /* 새로 받은 배지가 있으면 팝업 한 번 */
     bgReady = true;
     if (DEMO || COACH_MODE) return;
-    if (document.querySelector(".npop-wrap, .bgpop-wrap, .ibsheet")) { setTimeout(badgeCheck, 6500); return; }
+    if (TOUR_ON || TOUR_WANT || document.querySelector(".npop-wrap, .bgpop-wrap, .ibsheet")) { setTimeout(badgeCheck, 6500); return; }
     var L = badgeList(), seen = lsArr(BG_SEEN);
     var fresh = L.filter(function (b) { return b.on && seen.indexOf(b.id) < 0; });
     if (!fresh.length) return;
@@ -1344,12 +1499,12 @@
     [/RDL|데드리프트|굿모닝/i, ["thigh", "glute"]],
     [/레그\s?익스텐션|시시\s?스쿼트/, ["thigh"]],
     [/카프|종아리/, ["calf"]],
-    [/스쿼트|레그\s?프레스|런지|스텝\s?업/, ["thigh", "glute"]],
+    [/스쿼트|레그\s?프레스|핵\s?프레스|런지|스텝\s?업/, ["thigh", "glute"]],
     [/이너\s?타이|어덕/, ["thigh"]],
     [/아웃\s?타이|힙|글루트|브릿지|어브덕/, ["glute"]],
     [/페이스\s?풀|리버스\s?펙덱|리어\s?델트/, ["shoulder"]],
     [/레터럴|숄더|밀리터리|프론트\s?레이즈|업라이트/, ["shoulder"]],
-    [/슈러그|풀다운|로우|풀업|턱걸이|풀오버|백\s?익스텐션/, ["back"]],
+    [/슈러그|풀다운|로우|풀업|친업|턱걸이|풀오버|백\s?익스텐션/, ["back"]],
     [/푸[쉬시]\s?다운|익스텐션|딥스|킥백|컬/, ["arm"]],
     [/플랭크|크런치|복근|코어|레그\s?레이즈|싯업|AB/i, ["core"]],
     [/펙덱|플라이|체스트|벤치|프레스|푸[쉬시]\s?업/, ["chest"]]
@@ -1373,15 +1528,18 @@
       return rotDays()[before % n];
     }
     var p = k.split("-");
-    return dayByKey(DAY_KEYS[new Date(+p[0], +p[1] - 1, +p[2]).getDay()]);
+    return dayAt(new Date(+p[0], +p[1] - 1, +p[2]));
   }
   function muscleCounts(ym) {
-    var a = attLoad().slice().sort(), cnt = {}, days = 0;
+    var a = attLoad().slice().sort(), cnt = {}, days = 0, L = (LG && LG.d) || {};
     MG.forEach(function (g) { cnt[g[0]] = 0; });
-    a.forEach(function (k) {
+    var ks = a.slice(); Object.keys(L).forEach(function (k) { if (ks.indexOf(k) < 0) ks.push(k); });
+    ks.forEach(function (k) {
       if (k.slice(0, 7) !== ym) return;
       days++;
-      dayGroups(dayOfDate(k, a)).forEach(function (g) { cnt[g]++; });
+      /* 2026-11-14: 그날 ✓한 종목이 있으면 그 종목들로, 없으면 그날 루틴 전체로 */
+      var g0 = L[k] && L[k].length ? dayGroups({ items: L[k].map(function (x) { return { name: x[0] }; }) }) : dayGroups(dayOfDate(k, a));
+      g0.forEach(function (g) { cnt[g]++; });
     });
     return { cnt: cnt, days: days };
   }
@@ -1427,7 +1585,7 @@
     var now = new Date(), st = startDate(), prevYm = ymAdd(ymOf(now), -1);
     var canPrev = st && ymOf(st) <= prevYm;
     if (!canPrev) mmWhich = "cur";
-    return '<section id="muscle" data-num="' + num + '">' + head(num, "이번 달 근육 지도", "출석한 날 루틴 부위가 하나씩 칠해져요", '<a class="more" href="#report">' + (now.getMonth() + 1) + '월 리포트 →</a>') +
+    return '<section id="muscle" data-num="' + num + '">' + head(num, "이번 달 근육 지도", "✓한 종목 · 출석한 날 부위가 칠해져요", '<a class="more" href="#report">' + (now.getMonth() + 1) + '월 리포트</a>') +
       '<div class="panel mmap"><div class="mm-seg" role="group" aria-label="달 고르기">' +
       '<button type="button" data-m="cur" aria-pressed="' + (mmWhich === "cur") + '">이번 달 ' + (now.getMonth() + 1) + '월</button>' +
       '<button type="button" data-m="prev" aria-pressed="' + (mmWhich === "prev") + '"' + (canPrev ? '' : ' disabled') + '>지난달 ' + (+prevYm.slice(5)) + '월</button></div>' +
@@ -1545,7 +1703,7 @@
     b.addEventListener("click", function () {
       var r = document.getElementById("rp"); if (!r || b.disabled) return;
       b.disabled = true; b.classList.add("saving");
-      var name = "PT리포트-" + (location.hash.match(/\d{4}-\d{2}/) || [ymOf(new Date())])[0] + ".png";
+      var name = /^#growth/.test(location.hash) ? "PT성장기록-" + ymd(new Date()) + ".png" : "PT리포트-" + (location.hash.match(/\d{4}-\d{2}/) || [ymOf(new Date())])[0] + ".png";
       var holder = document.createElement("div");
       holder.style.cssText = "position:fixed;left:-12000px;top:0;width:1080px;height:1350px;overflow:hidden";
       var c = r.cloneNode(true); c.removeAttribute("id"); c.style.transform = "none";
@@ -1562,7 +1720,7 @@
           var file = null;
           try { file = new File([blob], name, { type: "image/png" }); } catch (e) {}
           if (file && navigator.canShare && navigator.canShare({ files: [file] })) {
-            navigator.share({ files: [file], title: M.name + " 회원님 월간 리포트" }).catch(function (e) { if (!e || e.name !== "AbortError") rpShow(url, name); });
+            navigator.share({ files: [file], title: M.name + (/^#growth/.test(location.hash) ? " 회원님 성장 기록" : " 회원님 월간 리포트") }).catch(function (e) { if (!e || e.name !== "AbortError") rpShow(url, name); });
           } else rpShow(url, name);
         }, "image/png");
       }).catch(function () {
@@ -1570,6 +1728,251 @@
         attToast("그림을 못 만들었어요. 인터넷 연결을 확인해 주세요");
       });
     });
+  }
+  /* ---- 첫날 vs 오늘 · 성장 기록 카드 (2026-11-12 장동욱 "재등록 아이디어 1번 — 회원이 얼마나 변했는지 숫자로")
+     #growth. 처음 무게 = data.js start_weights + 창고 pub:m:<주소>:growth {w:{종목:kg}, note, at} (선생님 폰에서 넣음, 루틴 저장할 때 새 종목은 그때 무게로 자동 기록)
+     지금 무게 = 지금 루틴(폰에서 고친 것 포함) 종목별 가장 무거운 세트. 인바디 = 첫 기록 vs 최근 기록. */
+  var GR_LS = "ptnote:" + SLUG + ":growth", GR = null;
+  try { GR = JSON.parse(localStorage.getItem(GR_LS) || "null"); } catch (e) {}
+  /* ---- 운동 기록 (2026-11-14 장동욱 "운동 탭에서 한 종목 끝날 때마다 체크 → 기록 탭에 저장, 첫날 vs 오늘도 기록에 연동")
+     창고 저장소 mw:<주소>:log = { d: {"YYYY-MM-DD": [[종목, 가장 무거운 kg, 세트 수], …]}, f: {종목: 처음 ✓한 kg}, at }
+     회원 폰도 쓸 수 있는 칸(mw:)이라 창고 재배포 필요 없음. 4천 자 넘으면 오래된 날부터 지움. 무게는 루틴에 적힌 무게 그대로(고치기 X) */
+  var LG_LS = "ptnote:" + SLUG + ":log", LG = null, LG_PEND = false, LG_T = 0;
+  try { LG = JSON.parse(localStorage.getItem(LG_LS) || "null"); LG_PEND = !!(LG && LG.pend); } catch (e) {}
+  function lgObj() { if (!LG || typeof LG !== "object") LG = { d: {}, f: {}, at: 0 }; LG.d = LG.d || {}; LG.f = LG.f || {}; return LG; }
+  /* 체크 칸 날짜 (2026-11-14 "오늘 하는 날만 체크 칸, 선생님은 전날·오늘 상관없이"):
+     회원 = 오늘 요일(순환은 오늘 차례 DAY, 로테이션 날은 고를 수 있는 요일)만 → 오늘 날짜 / 선생님 = 이번 주 그 요일 날짜(앞으로 올 요일은 X, 순환은 오늘 날짜)
+     요일 카드의 ✓는 '이번 주 그 날짜' 기록이라 새 주(월요일)가 되면 저절로 비어 있음. 기록은 기록 탭에 그대로 남음 */
+  function chkDate(sel) {
+    if (DEMO) return null;
+    var now = new Date(), today = ymd(now), tk = todayKey(), coach = COACH_MODE;
+    if (ROT) return coach || sel === tk ? today : null;
+    var td = dayByKey(tk);
+    if (sel === tk || (td && td.pick && td.pick.indexOf(sel) >= 0)) return today;
+    if (!coach) return null;
+    var off = ((DAY_KEYS.indexOf(sel) + 6) % 7) - ((now.getDay() + 6) % 7);
+    if (off > 0) return null;
+    return ymd(new Date(now.getFullYear(), now.getMonth(), now.getDate() + off));
+  }
+  function lgDone(name, k) { var t = LG && LG.d && LG.d[k || ymd(new Date())]; return !!t && t.some(function (x) { return x[0] === name; }); }
+  function lgPush() {
+    clearTimeout(LG_T);
+    LG_T = setTimeout(function () {
+      if (!ATT_API) return;
+      var v = {}; for (var k in LG) if (k !== "pend") v[k] = LG[k];
+      rtPost({ a: "kv_set", k: "mw:" + SLUG + ":log", v: v }).then(function (j) {
+        if (j && j.ok) { LG_PEND = false; delete LG.pend; try { localStorage.setItem(LG_LS, JSON.stringify(LG)); } catch (e) {} }
+      }).catch(function () {});
+    }, 900);
+  }
+  function lgSave() {
+    var o = lgObj(); o.at = Date.now(); o.pend = 1; LG_PEND = true;
+    var ds = Object.keys(o.d).sort();
+    while (ds.length > 1 && JSON.stringify({ d: o.d, f: o.f, at: o.at }).length > 3800) delete o.d[ds.shift()];
+    try { localStorage.setItem(LG_LS, JSON.stringify(o)); } catch (e) {}
+    lgPush();
+  }
+  function lgToggle(it, k) {
+    k = k || ymd(new Date());
+    var o = lgObj(), t = o.d[k] = o.d[k] || [];
+    var i = -1; t.forEach(function (x, j) { if (x[0] === it.name) i = j; });
+    var kg = 0; (it.sets || []).forEach(function (s) { if (s[1] != null && +s[1] > kg) kg = +s[1]; });
+    if (i >= 0) { t.splice(i, 1); if (!t.length) delete o.d[k]; }
+    else { t.push([it.name, kg || null, (it.sets || []).length]); if (kg > 0 && !(o.f[it.name] > 0)) o.f[it.name] = kg; }
+    lgSave();
+    return i < 0;
+  }
+  function lgServer(kv) {
+    var v = kv && kv["mw:" + SLUG + ":log"] || null;
+    if (LG_PEND && LG && (!v || (LG.at || 0) >= (v.at || 0))) { lgPush(); return; }   /* 폰에서 체크한 게 아직 안 올라갔으면 다시 보냄 */
+    if (!v || (LG && JSON.stringify(v) === JSON.stringify({ d: LG.d, f: LG.f, at: LG.at }))) return;
+    if (LG && (LG.at || 0) > (v.at || 0)) { lgPush(); return; }
+    LG = v; LG_PEND = false;
+    try { localStorage.setItem(LG_LS, JSON.stringify(v)); } catch (e) {}
+    if (/^#(log|routine|muscle)/.test(location.hash)) rerender();
+  }
+  document.addEventListener("click", function (e) {
+    var b = e.target.closest && e.target.closest(".exchk[data-chk]");
+    if (!b) return;
+    e.preventDefault(); e.stopPropagation();
+    var d = dayByKey(view.getAttribute("data-day")), it = d && d.items && d.items[+b.getAttribute("data-chk")];
+    if (!it) return;
+    var dk = b.getAttribute("data-date") || ymd(new Date());
+    var on = lgToggle(it, dk), card = b.closest(".ex");
+    if (card) card.classList.toggle("done", on);
+    b.setAttribute("aria-pressed", String(on));
+    if (on) { b.classList.remove("pop"); void b.offsetWidth; b.classList.add("pop"); try { navigator.vibrate && navigator.vibrate(18); } catch (x) {} }
+    var kg = 0; (it.sets || []).forEach(function (s) { if (s[1] != null && +s[1] > kg) kg = +s[1]; });
+    var dl = dk === ymd(new Date()) ? "" : lgMd(dk) + " ";
+    attToast(on ? "✓ " + dl + it.name + (kg ? " " + kg + "kg" : "") + " · 기록에 저장했어요" : dl + it.name + " 체크를 풀었어요");
+  }, true);
+  function lgMd(k) { var p = k.split("-"), dt = new Date(+p[0], +p[1] - 1, +p[2]); return (+p[1]) + ". " + (+p[2]) + " (" + "일월화수목금토"[dt.getDay()] + ")"; }
+  function renderLog() {
+    var L = (LG && LG.d) || {}, now = new Date(), today = ymd(now), T = L[today] || [], att = attLoad();
+    var mon = new Date(now.getFullYear(), now.getMonth(), now.getDate() - (now.getDay() + 6) % 7), wn = 0, wk = "";
+    for (var i = 0; i < 7; i++) {
+      var dt = new Date(mon.getFullYear(), mon.getMonth(), mon.getDate() + i), k = ymd(dt), on = !!(L[k] && L[k].length) || att.indexOf(k) >= 0;
+      if (on) wn++;
+      wk += '<span class="' + (on ? 'on' : '') + (k === today ? ' now' : '') + '"><i>' + (on ? '✓' : '') + '</i><small>' + "월화수목금토일"[i] + '</small></span>';
+    }
+    var ym = today.slice(0, 7), mo = 0; Object.keys(L).forEach(function (k) { if (k.slice(0, 7) === ym) mo += L[k].length; });
+    var G = grData(), kp = G.lifts.length ? esc(G.lifts[0].name) + " 처음 " + grKg(G.lifts[0].a) + " → 지금 " + grKg(G.lifts[0].b) + "kg! 꾸준함이 무게가 됐어요" : "한 종목 끝날 때마다 ✓ 꾹 — 그게 다 기록이 돼요";
+    var h = '<div class="hero"><div class="hero-main"><div class="hero-l"><div class="eyebrow">MY LOG <b>· 운동 기록</b></div>' +
+      '<h1>이번 주 ' + wn + '일 운동했어요</h1><div class="en">' + esc(M.name) + ' 회원님 · 운동 탭에서 ✓한 종목이 여기 쌓여요</div>' +
+      '<div class="who"><strong>이번 달 ' + mo + '종목 완료</strong><span>담당 ' + esc(TRN) + ' 트레이너</span></div>' +
+      '<div class="lgweek">' + wk + '</div></div></div>' +
+      '<div class="keypoint"><small>KEY POINT</small><p>' + kp + '</p></div></div>';
+    var rows = T.map(function (x) {
+      return '<li><span class="lg-ck" aria-hidden="true">✓</span><b>' + esc(x[0]) + '</b><small>' + (x[2] || "") + '세트</small><em>' + (x[1] ? x[1] + 'kg' : '맨몸') + '</em></li>';
+    }).join("");
+    var past = Object.keys(L).filter(function (k) { return k < today && L[k].length; }).sort().reverse().slice(0, 5).map(function (k) {
+      var a = L[k], top = a.slice().sort(function (x, y) { return (y[1] || 0) - (x[1] || 0); })[0];
+      return '<li><span>' + lgMd(k) + '</span><b>' + a.length + '종목</b><em>' + esc(top[0]) + (top[1] ? ' ' + top[1] + 'kg' : '') + '</em></li>';
+    }).join("");
+    h += '<section id="lgtoday">' + head("01", "오늘 한 운동", T.length ? T.length + "종목 완료" : "운동 탭에서 ✓하면 여기 쌓여요") +
+      '<div class="panel lglist">' + (T.length ? '<ul class="lg-today">' + rows + '</ul>' :
+        '<div class="lg-empty"><p>아직 오늘 ✓한 종목이 없어요</p><a class="btn fill" href="#routine-' + todayKey() + '">오늘 운동하러 가기 →</a></div>') +
+      (past ? '<div class="lg-past"><h4>지난 기록</h4><ul>' + past + '</ul></div>' : '') + '</div></section>';
+    var gl = G.lifts.length ? G.lifts : G.top;
+    h += '<section id="lggrow">' + head("02", "첫날 vs 오늘", "✓한 무게로 자동으로 채워져요") + grLink() +
+      (gl.length ? '<div class="panel lg-grow"><h4>' + (G.lifts.length ? '처음 무게 → 지금 무게' : '지금 나의 무게 · ✓할수록 처음 무게가 쌓여요') + '</h4>' + gl.map(function (l) {
+        return '<div class="lg-g"><b>' + esc(l.name) + '</b>' + (l.a != null ? '<span><i>' + grKg(l.a) + '</i> → <em>' + grKg(l.b) + 'kg</em></span><u>+' + grKg(l.up) + '</u>' : '<span><em>' + grKg(l.b) + 'kg</em></span>') + '</div>';
+      }).join("") + '</div>' : '') + '</section>';
+    h += muscleSection("03");
+    if (IB_ON) h += '<section id="inbody">' + head("04", "몸 변화 · 인바디", "지난달과 비교해요", '<a class="more" href="#body">흐름 보기</a>') + ibPanel() + '</section>';
+    return h + remember();
+  }
+  function grServer(kv) {
+    var v = kv && kv["pub:m:" + SLUG + ":growth"] || null;
+    if (JSON.stringify(v) === JSON.stringify(GR)) return;
+    GR = v;
+    try { if (v) localStorage.setItem(GR_LS, JSON.stringify(v)); else localStorage.removeItem(GR_LS); } catch (e) {}
+    if (/^#growth/.test(location.hash)) rerender();
+  }
+  function grNowW() {   /* 지금 루틴: 종목 → 가장 무거운 kg */
+    var o = {};
+    ((M.routine && M.routine.days) || []).forEach(function (d) {
+      (d.items || []).forEach(function (it) {
+        (it.sets || []).forEach(function (st) { var kg = +st[1]; if (st[1] != null && kg > 0 && (!o[it.name] || kg > o[it.name])) o[it.name] = kg; });
+      });
+    });
+    return o;
+  }
+  function grBase() { var o = {}, k, a = M.start_weights || {}, b = (GR && GR.w) || {}, f = (LG && LG.f) || {}; for (k in f) if (+f[k] > 0) o[k] = +f[k]; for (k in a) o[k] = +a[k]; for (k in b) if (b[k] != null && b[k] !== "") o[k] = +b[k]; return o; }
+  function grData() {
+    var now = new Date(), st = M.journey && M.journey.start ? jDate(M.journey.start) : null, a = attLoad().slice().sort();
+    if (!st && a.length) { var p = a[0].split("-"); st = new Date(+p[0], +p[1] - 1, +p[2]); }
+    var days = st ? Math.max(1, Math.floor((new Date(now.getFullYear(), now.getMonth(), now.getDate()) - st) / 86400000) + 1) : 0;
+    var nw = grNowW(), bw = grBase(), lifts = [], top = [];
+    Object.keys(nw).forEach(function (k) {
+      if (bw[k] > 0 && nw[k] > bw[k]) lifts.push({ name: k, a: bw[k], b: nw[k], up: nw[k] - bw[k], pct: (nw[k] - bw[k]) / bw[k] });
+      top.push({ name: k, b: nw[k] });
+    });
+    lifts.sort(function (x, y) { return y.pct - x.pct || y.up - x.up; });
+    top.sort(function (x, y) { return y.b - x.b; });
+    var ib = null;
+    if (IB_ON && ibData && ibData.length > 1) { var r = ibData.slice().sort(function (x, y) { return x.d < y.d ? -1 : 1; }); ib = { a: r[0], b: r[r.length - 1] }; }
+    return { st: st, days: days, att: a.length, forms: (M.forms || []).length, badges: badgeList().filter(function (b) { return b.on; }).length,
+      lifts: lifts.slice(0, 4), top: top.slice(0, 4), ib: ib, ver: M.routine && M.routine.version, now: journeyNow() };
+  }
+  function grKg(n) { return (Math.round(n * 10) / 10) + ""; }
+  function grCard(G) {
+    var tile = function (lab, v, unit, cls) { return '<div class="rp-tile ' + (cls || '') + '"><span>' + lab + '</span><p><b>' + v + '</b><small>' + unit + '</small></p></div>'; };
+    var left;
+    if (G.lifts.length) {
+      left = '<div class="rp-box gr-lifts"><h4>처음 무게 → 지금 무게</h4>' + G.lifts.map(function (l) {
+        return '<div class="gr-l"><span>' + esc(l.name) + '</span><p><i>' + grKg(l.a) + '</i><em>→</em><b>' + grKg(l.b) + '<small>kg</small></b><u>+' + grKg(l.up) + 'kg</u></p></div>';
+      }).join("") + '</div>';
+    } else {
+      left = '<div class="rp-box gr-lifts"><h4>지금 나의 무게</h4>' + (G.top.length ? G.top.map(function (l) {
+        return '<div class="gr-l"><span>' + esc(l.name) + '</span><p><b>' + grKg(l.b) + '<small>kg</small></b></p></div>';
+      }).join("") : '<p>루틴이 올라오면 여기에 무게가 쌓여요</p>') + '</div>';
+    }
+    var right = '';
+    if (G.ib) {
+      right += '<div class="rp-box rp-ib"><h4>인바디 · 첫 기록 → 지금</h4>' + [["골격근량", "smm", 1], ["체지방량", "bfm", -1], ["체중", "w", 0]].map(function (r) {
+        var dl = Math.round((G.ib.b[r[1]] - G.ib.a[r[1]]) * 10) / 10, cls = !r[2] || !dl ? "" : (dl > 0) === (r[2] > 0) ? "up" : "down";
+        return '<div class="rp-ibr"><span>' + r[0] + '</span><b class="' + cls + '">' + (dl > 0 ? "+" : dl < 0 ? "−" : "") + ibFmt(Math.abs(dl)) + '<small> kg</small></b></div>';
+      }).join("") + '</div>';
+    }
+    right += '<div class="rp-box gr-path"><h4>지금 나의 자리</h4>' +
+      (G.now ? '<p><b>' + (G.now.month ? G.now.month + '개월차' : '시작') + '</b> · ' + G.now.stage.no + '단계 ' + esc(G.now.stage.short) + '</p>' : '') +
+      (G.ver ? (parseInt(String(G.ver).replace(/\D/g, ""), 10) > 1 ? '<p>루틴을 <b>' + esc(G.ver) + '</b>까지 함께 바꿔 왔어요</p>' : '<p>나만의 루틴 <b>' + esc(G.ver) + '</b>로 운동 중</p>') : '') +
+      '<p>배운 자세 <b>' + G.forms + '개</b> · 받은 배지 <b>' + G.badges + '개</b></p></div>';
+    var quote, qwho;
+    if (GR && GR.note) { quote = esc(GR.note).replace(/\n/g, "<br>"); qwho = TRN + " 트레이너의 한마디"; }
+    else {
+      qwho = "지금까지 한 줄 요약";
+      quote = G.lifts.length ? "처음 " + esc(G.lifts[0].name) + " " + grKg(G.lifts[0].a) + "kg에서 지금 " + grKg(G.lifts[0].b) + "kg까지 왔어요.<br>다음 목표도 같이 만들어 가요!" :
+        G.days > 1 ? G.days + "일 동안 함께 걸어왔어요.<br>이 꾸준함이 몸을 바꿔요!" : "오늘이 첫날이에요.<br>여기서부터 같이 쌓아 가요!";
+    }
+    var d = new Date();
+    return '<div class="rp gr" id="rp"><i class="rp-stripe"></i><i class="rp-c1"></i><i class="rp-c2"></i>' +
+      '<div class="rp-top"><div class="rp-brand"><b>' + esc(BRAND) + '</b><span>' + esc(BRANCH) + '</span></div><span class="rp-k">MY GROWTH · ' + d.getFullYear() + '. ' + pad2(d.getMonth() + 1) + '. ' + pad2(d.getDate()) + '</span></div>' +
+      '<div class="rp-title"><span>' + esc(M.name) + ' 회원님의</span><h2>첫날 vs 오늘</h2>' +
+      (G.st ? '<em>' + G.st.getFullYear() + '. ' + (G.st.getMonth() + 1) + '. ' + G.st.getDate() + ' 시작 · 함께한 지 ' + G.days + '일</em>' : '') + '</div>' +
+      '<div class="rp-tiles">' + tile("함께한 날", G.days, "일", "pk") + tile("출석 도장", G.att, "회") + tile("배운 자세", G.forms, "개") + tile("받은 배지", G.badges, "개", "gd") + '</div>' +
+      '<div class="rp-mid gr-mid">' + left + '<div class="rp-side">' + right + '</div></div>' +
+      '<div class="rp-quote"><span aria-hidden="true">“</span><div><p>' + quote + '</p><small>' + qwho + '</small></div></div>' +
+      '<div class="rp-foot"><span><b>MY PT NOTE</b> · 나만의 운동 노트</span><span>' + esc(BRN) + ' · 담당 ' + esc(TRN) + ' 트레이너</span></div></div>';
+  }
+  function renderGrowth() {
+    var G = grData(), coach = COACH_MODE && !DEMO;
+    return '<div class="rp-nav"><a href="#log" class="rp-back">← 기록</a><b class="gr-navt">성장 기록</b></div>' +
+      '<div class="rp-frame" id="rpFrame">' + grCard(G) + '</div>' +
+      '<button type="button" class="btn fill rp-save" id="rpSave"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11"/><path d="m7 10 5 5 5-5"/><path d="M5 20h14"/></svg>이미지로 저장 · 공유</button>' +
+      (coach ? '<button type="button" class="btn gr-edit" id="grEdit">✎ 처음 무게 · 선생님 한마디 넣기</button>' +
+        '<p class="rp-hint">선생님 보기에만 보여요. 첫날 무게를 넣으면 "처음 → 지금"으로 비교돼요.' + (G.lifts.length ? '' : ' 지금은 처음 무게가 없어서 "지금 나의 무게"로 나와요.') + '</p>' :
+        '<p class="rp-hint">처음 왔던 날과 비교해 봐요. 숫자는 출석·루틴·인바디로 자동으로 바뀌어요.</p>') + remember();
+  }
+  function grSheet() {
+    var nw = grNowW(), bw = grBase(), names = Object.keys(nw);
+    var rows = names.length ? names.map(function (k, i) {
+      return '<div class="gr-row"><span>' + esc(k) + '<small>지금 ' + grKg(nw[k]) + 'kg</small></span><input id="gw' + i + '" data-n="' + esc(k) + '" type="number" inputmode="decimal" step="0.5" min="0" placeholder="처음 kg" value="' + (bw[k] > 0 ? grKg(bw[k]) : '') + '"></div>';
+    }).join("") : '<p class="rts-note">루틴에 무게가 있는 종목이 없어요.</p>';
+    var body = '<p class="rts-note">회원님이 처음 왔을 때 무게(kg)를 넣어 주세요. 비운 종목은 비교에서 빠져요.</p>' +
+      (names.length ? '<button type="button" class="rtb gr-fill" id="grFill">빈 칸은 지금 무게로 채우기</button>' : '') +
+      '<div class="gr-rows">' + rows + '</div>' +
+      '<label>선생님 한마디 <small>(비우면 자동 요약)</small><textarea id="grNote" rows="3" placeholder="처음엔 랫풀다운 20kg도 버거웠는데…">' + esc(GR && GR.note || "") + '</textarea></label>' +
+      '<label id="grKeyWrap"' + (rtKey() ? ' hidden' : '') + '>선생님 열쇠 <small>처음 한 번만</small><input id="grKey" type="password" autocomplete="off"></label>';
+    var sh = rtSheet("첫날 vs 오늘 · 처음 기록", body, function (sh) {
+      var key = fv(sh, "grKey") || rtKey();
+      if (!key) { sh.querySelector("#grKeyWrap").hidden = false; return "선생님 열쇠를 넣어 주세요"; }
+      var w = {};
+      Array.prototype.forEach.call(sh.querySelectorAll(".gr-rows input"), function (x) { var v = parseFloat(x.value); if (v > 0) w[x.getAttribute("data-n")] = v; });
+      var old = (GR && GR.w) || {}, k;
+      for (k in old) if (!(k in nw) && !(k in w)) w[k] = old[k];   /* 지금 루틴에 없는 옛 종목 기록은 그대로 둠 */
+      var v = { w: w, note: fv(sh, "grNote"), at: ymd(new Date()) };
+      var ok = sh.querySelector("[data-ok]"); ok.disabled = true; ok.textContent = "저장 중…"; sh.msg("");
+      rtPost({ a: "kv_set", key: key, k: "pub:m:" + SLUG + ":growth", v: v }).then(function (j) {
+        if (!j || !j.ok) { ok.disabled = false; ok.textContent = "저장"; sh.msg(j && j.error === "key" ? "선생님 열쇠가 맞지 않아요" : rtNetMsg()); if (j && j.error === "key") sh.querySelector("#grKeyWrap").hidden = false; return; }
+        try { localStorage.setItem("ptkey", key); localStorage.setItem(GR_LS, JSON.stringify(v)); } catch (x) {}
+        GR = v; sh.close(); rerender(); attToast("성장 기록에 바로 반영됐어요");
+      }).catch(function () { ok.disabled = false; ok.textContent = "저장"; sh.msg(rtNetMsg()); });
+      return true;
+    }, "저장");
+    var fb = sh.querySelector("#grFill");
+    if (fb) fb.addEventListener("click", function () {
+      Array.prototype.forEach.call(sh.querySelectorAll(".gr-rows input"), function (x) { if (!x.value) x.value = grKg(nw[x.getAttribute("data-n")]); });
+    });
+  }
+  function grSeed(key) {   /* 선생님이 루틴을 저장할 때: 처음 기록이 없는 종목은 그때 무게를 처음 무게로 */
+    var nw = grNowW(), bw = grBase(), w = {}, add = 0, k;
+    for (k in (GR && GR.w) || {}) w[k] = GR.w[k];
+    for (k in nw) if (!(bw[k] > 0)) { w[k] = nw[k]; add++; }
+    if (!add) return;
+    var v = { w: w, note: GR && GR.note || "", at: GR && GR.at || ymd(new Date()) };
+    rtPost({ a: "kv_set", key: key, k: "pub:m:" + SLUG + ":growth", v: v }).then(function (j) {
+      if (j && j.ok) { GR = v; try { localStorage.setItem(GR_LS, JSON.stringify(v)); } catch (x) {} }
+    }).catch(function () {});
+  }
+  function setupGrowth() {
+    setupReport();
+    var e = document.getElementById("grEdit"); if (e) e.addEventListener("click", grSheet);
+  }
+  function grLink() {
+    return '<a class="rp-home gr-link" href="#growth"><span class="rh-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/></svg></span>' +
+      '<span class="rh-t"><small>MY GROWTH</small><b>첫날 vs 오늘 · 나의 성장 기록</b><em>처음 왔던 날과 지금을 숫자로 비교해요</em></span><span class="rh-go" aria-hidden="true">›</span></a>';
   }
   function reportHomeCard() {   /* 매달 1~7일: 지난달 리포트 도착 */
     var now = new Date();
@@ -1590,54 +1993,59 @@
         (it.tag ? ' ' + tagChip(it.tag) : '') + '</li>';
     }).join("") + '</ul>';
   }
+  function todayHero(k, d) {   /* 홈 오늘 운동 큰 카드 (남 블랙 / 여 핑크레드) */
+    var go = function (t) { return '<a class="th-go" href="#routine-' + k + '">' + t + '</a>'; };
+    var top = function (eye, title, sub) { return '<div><div class="th-eye">' + eye + '</div><h2>' + title + '</h2>' + (sub ? '<p class="th-sub">' + sub + '</p>' : '') + '</div>'; };
+    var label = ROT ? dayName(k) : DAY_KO[k] + "요일";
+    if (!d) return '<div class="thero">' + top("TODAY", "루틴이 아직 없어요", "선생님이 곧 올려드릴게요") + '</div>';
+    if (d.rest) return '<div class="thero">' + top("TODAY · REST DAY", label + " 쉬는 날", "푹 쉬고 잘 먹는 것도 운동이에요") + '</div>';
+    if (d.cardio_only) return '<div class="thero">' + top("TODAY · CARDIO", label + " 유산소만!", "유산소 " + d.cardio_only + "분" + (M.routine.cardio ? " · " + esc(M.routine.cardio.options) : "")) + go("오늘 운동 보기 →") + '</div>';
+    if (d.pick) return '<div class="thero">' + top("TODAY · " + esc(d.en.toUpperCase()), "오늘은 골라서 하는 날!", esc(d.note || "이번 주에 아쉬웠던 부위 하나를 골라 그 요일 루틴 그대로 해요")) + go("부위 고르러 가기 →") + '</div>';
+    var its = d.items || [], mi = mainItem(d);
+    var tiles = its.map(function (it) {
+      var main = it === mi && it.tag === "메인";
+      return '<a class="th-tile' + (main ? ' main' : '') + '" href="#routine-' + k + '">' + (main ? '<em>메인</em>' : '') + img(iconOf(it), "icn", !main) + '<span>' + esc(it.name) + '</span></a>';
+    }).join("");
+    return '<div class="thero">' + top("TODAY · " + esc(String(d.en || "").toUpperCase()), label + " " + esc(d.part),
+        its.length + "종목" + (d.cardio && M.routine.cardio ? " · 마무리 유산소 " + M.routine.cardio.minutes + "분" : "")) +
+      '<div class="th-tiles">' + tiles + '</div>' + go("오늘 운동 시작하기 →") +
+      (ROT ? '<p class="th-hint">출석 도장 찍은 날을 세서 다음 순서를 알려줘요. 순서가 다르면 루틴 탭에서 그날 DAY를 눌러요</p>' : '') + '</div>';
+  }
+  /* 회원 메모 (2026-11-12): 선생님 보기에서만 홈 맨 위 — assets/memo.js(PTMemo), 창고 coach:memo:<주소>(선생님 열쇠로만 읽힘) */
+  /* 2026-11-12 "메모칸 간소화 — 상단에 작은 아이콘으로": 홈 칸 대신 위 막대 종 왼쪽 📝 동그라미(메모 개수 배지, 고정 메모 있으면 금색) → 누르면 메모 창 */
+  function cmemoDraw(list) {
+    var b = document.getElementById("memoBtn"); if (!b) return;
+    var n = (list || []).length, pin = (list || []).some(function (x) { return x.pin; });
+    b.classList.toggle("pin", pin);
+    b.querySelector("i").textContent = n ? (n > 9 ? "9+" : n) : "";
+    b.querySelector("i").hidden = !n;
+    b.setAttribute("aria-label", "선생님 메모" + (n ? " " + n + "개" : "") + " (회원님께는 안 보여요)");
+    b.title = n ? window.PTMemo.line(list) : "선생님 메모 — 회원님께는 안 보여요";
+  }
+  function cmemoFill() {
+    if (!(COACH_MODE && !DEMO)) return;
+    var r = document.querySelector(".bar-r"); if (!r || document.getElementById("memoBtn")) return;
+    var b = document.createElement("button"); b.type = "button"; b.className = "memob"; b.id = "memoBtn";
+    b.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 4h10l4 4v12H5z"/><path d="M14 4v5h5M8.5 13h7M8.5 16.5h5"/></svg><i hidden></i>';
+    r.insertBefore(b, r.firstChild);
+    b.addEventListener("click", function () { if (window.PTMemo) window.PTMemo.open(SLUG, M.name, cmemoDraw); });
+    function go() { window.PTMemo.load(SLUG).then(function (o) { cmemoDraw(o ? o[SLUG] : []); }); }
+    if (window.PTMemo) return go();
+    var sc = document.createElement("script"); sc.src = BASE + "memo.js"; sc.onload = go; document.head.appendChild(sc);
+  }
   function renderHome() {
-    var k = todayKey(), d = dayByKey(k);
-    var h = '<div class="hero"><div class="hero-main"><div class="hero-l hero-home"><div class="hh-text">' +
-      '<div class="eyebrow">MY PT NOTE <b>· 나만의 운동 노트</b></div>' +
-      '<h1>' + esc(M.name) + ' 회원님</h1>' +
-      '<div class="en">' + esc(M.goal || "") + '</div>' +
-      '<div class="who"><span>' + esc(BRN) + ' · ' + esc(TRN) + ' ' + TRL() + '</span></div>' +
-      '</div>' + mascot() + attCheckStrip() + '</div></div></div>';
-
-    if (M.next_class) {
-      h += '<div class="panel next"><svg width="40" height="40" viewBox="0 0 40 40" aria-hidden="true"><rect x="4" y="7" width="32" height="29" rx="6" fill="var(--primary)"/><rect x="4" y="7" width="32" height="9" rx="4" fill="var(--side)"/><rect x="11" y="3" width="4" height="9" rx="2" fill="var(--key)"/><rect x="25" y="3" width="4" height="9" rx="2" fill="var(--key)"/></svg>' +
-        '<div><small style="font-size:12px;color:var(--faint);font-weight:700">다음 PT 수업</small><b>' + esc(M.next_class) + '</b></div></div>';
-    }
+    var k = todayKey(), d = dayByKey(k), now = new Date();
+    var h = '<div class="hlead"><p>' + esc(M.name) + ' 회원님 · ' + (now.getMonth() + 1) + '월 ' + now.getDate() + '일 ' + DAY_KO[DAY_KEYS[now.getDay()]] + '요일</p><h1>오늘</h1>' + mascot() + '</div>';
+    h += attCheckStrip();
+    h += todayHero(k, d);
+    h += homeWidgets();
+    h += instHomeCard();
     h += reportHomeCard();
     h += journeyHome();
     if (IB_ON) h += ibHomeStrip() || '<span class="ibstrip-slot"></span>';
-    h += '<section>' + head("", ROT ? "오늘 할 운동" : "오늘의 운동", ROT ? dayName(k) + " 차례" : DAY_KO[k] + "요일", '<a class="more" href="#routine-' + k + '">자세히 →</a>');
-    if (!d) {
-      h += '<div class="panel empty"><h3>루틴이 아직 없어요</h3><p>선생님이 곧 올려드릴게요</p></div>';
-    } else if (d.rest) {
-      h += '<div class="panel today"><div class="today-top"><div class="today-ic">' + img("rest") + '<span>' + d.day + '</span></div><div><small>REST DAY</small><h3>오늘은 쉬는 날!</h3></div></div>' +
-        '<p style="margin:0;color:var(--sub);font-size:14px">푹 쉬고 잘 먹는 것도 운동이에요</p></div>';
-    } else if (d.cardio_only) {
-      h += '<div class="panel today"><div class="today-top"><div class="today-ic">' + img("treadmill") + '<span>' + d.day + '</span></div><div><small>CARDIO DAY</small><h3>오늘은 유산소만!</h3></div></div>' +
-        '<p style="margin:0;color:var(--sub);font-size:14px">유산소 ' + d.cardio_only + '분' + (M.routine.cardio ? ' · ' + esc(M.routine.cardio.options) : '') + '</p>' +
-        '<a class="btn fill" href="#routine-' + k + '" style="align-self:flex-start">오늘 운동 보기</a></div>';
-    } else if (d.pick) {
-      h += '<div class="panel today"><div class="today-top"><div class="today-ic">' + img("dumbbell") + '<span>' + d.day + '</span></div><div><small>' + esc(d.en.toUpperCase()) + '</small><h3>오늘은 골라서 하는 날!</h3></div></div>' +
-        '<p style="margin:0;color:var(--sub);font-size:14px">' + esc(d.note || "이번 주에 아쉬웠던 부위 하나를 골라 그 요일 루틴 그대로 해요") + '</p>' +
-        '<a class="btn fill" href="#routine-' + k + '" style="align-self:flex-start">부위 고르러 가기</a></div>';
-    } else {
-      h += '<div class="panel today"><div class="today-top"><div class="today-ic">' + img(iconOf(mainItem(d))) + '<span>' + (ROT ? k.slice(1) : d.day) + '</span></div><div><small>' + esc(d.en.toUpperCase()) + '</small><h3>' + esc(d.part) + ' 하는 날</h3></div></div>' +
-        exMini(d) + (d.cardio && M.routine.cardio ? '<p style="margin:0;font-size:13.5px;color:var(--sub)">+ 마무리 유산소 ' + M.routine.cardio.minutes + '분</p>' : '') +
-        '<a class="btn fill" href="#routine-' + k + '" style="align-self:flex-start">오늘 운동 보기</a>' +
-        (ROT ? '<p class="rot-hint">출석 체크한 날을 세서 다음 순서를 알려줘요. 순서가 다르면 루틴 탭에서 그날 DAY를 눌러요</p>' : '') + '</div>';
-    }
-    h += '</section>';
 
 
-    if (M.notices && M.notices.length) {
-      var n = M.notices[0];
-      h += '<section>' + head("", "선생님 공지", "", '<a class="more" href="#notice">전체 →</a>') + noticeCard(n) + '</section>';
-    }
-
-    h += '<section>' + head("", "최근 자세 복습지", "", '<a class="more" href="#forms">전체 →</a>');
-    h += M.forms.length ? '<div class="flist">' + M.forms.slice(0, 2).map(formCard).join("") + '</div>'
-      : '<div class="panel empty"><h3>아직 복습지가 없어요</h3><p>수업에서 배운 자세가 여기에 쌓여요</p></div>';
-    h += '</section>';
+    h += homeInfo();
     return h + remember();
   }
 
@@ -1647,7 +2055,7 @@
       (n.link ? '<a class="btn" href="#' + esc(n.link) + '">바로 보기</a>' : '') + '</div>';
   }
   function renderNotice() {
-    var h = '<section>' + head("", "선생님 공지", "새 소식이 위에 있어요");
+    var h = meSeg("notice") + '<section>' + head("", "선생님 공지", "새 소식이 위에 있어요");
     h += (M.notices && M.notices.length) ? M.notices.map(noticeCard).join("") :
       '<div class="panel empty"><h3>아직 공지가 없어요</h3></div>';
     return h + '</section>' + remember();
@@ -1672,7 +2080,7 @@
     return (M.notices || []).filter(function (n) { var d = nDate(n); return (!d || d.getTime() >= d0) && seen.indexOf(nKey(n)) < 0; });
   }
   function nDot() {
-    var a = document.querySelector('.tabs a[data-tab="notice"]');
+    var a = document.querySelector('.bar .bell');
     if (a) a.classList.toggle("has-new", nUnseen().length > 0);
   }
   function nMarkSeen() { lsAdd(NSEEN_KEY, (M.notices || []).map(nKey)); lsAdd(NPOP_KEY, (M.notices || []).map(nKey)); nDot(); }
@@ -1681,6 +2089,7 @@
     if ((location.hash || "").replace(/^#/, "") === "notice") route(); else location.hash = "notice";
   }
   function showNoticePop() {
+    if (TOUR_ON || (TOUR_WANT && (!location.hash || location.hash === "#home"))) return;
     var popped = lsArr(NPOP_KEY);
     var list = nUnseen().filter(function (n) { return popped.indexOf(nKey(n)) < 0; });
     if (!list.length) return;
@@ -1732,13 +2141,21 @@
     if (DEMO) return;
     var sg = litSigs();
     if (sg[curTab] && sg[curTab].length) lsAdd(LIT_KEY, sg[curTab]);
-    var seen = lsArr(LIT_KEY);
-    Object.keys(sg).forEach(function (t) {
+    var seen = lsArr(LIT_KEY), on = {};
+    Object.keys(sg).forEach(function (t) { var e = tabOf(t); on[e] = on[e] || sg[t].some(function (k) { return seen.indexOf(k) < 0; }); });
+    Object.keys(on).forEach(function (t) {
       var a = document.querySelector('.tabs a[data-tab="' + t + '"]');
-      if (a) a.classList.toggle("lit", sg[t].some(function (k) { return seen.indexOf(k) < 0; }));
+      if (a) a.classList.toggle("lit", on[t]);
     });
   }
 
+  /* 복습지 부위별 보기 (2026-11-12 장동욱 "복습지 영상들 부위별로 볼 수 있게 구분칸") — part 글자로 부위를 찾음("어깨·등"은 둘 다) */
+  var FCATS = [["가슴", /가슴/], ["등", /등/], ["어깨", /어깨/], ["팔", /팔|삼두|이두/], ["하체", /하체|다리|허벅지/], ["엉덩이", /엉덩이|힙/], ["복근", /복근|코어/]];
+  var FCAT_K = "ptnote:" + SLUG + ":fcat";
+  function formCats(f) {
+    var p = String(f.part || ""), out = FCATS.filter(function (c) { return c[1].test(p); }).map(function (c) { return c[0]; });
+    return out.length ? out : ["기타"];
+  }
   function fmImg(id, w) { return "https://lh3.googleusercontent.com/d/" + encodeURIComponent(id) + "=w" + (w || 1200); }
   function fmThumb(f) {
     var L = FMEDIA[f.id] || [], im = null;
@@ -1747,7 +2164,7 @@
     return '<span class="fmd-ph">' + (L.length ? "▶" : "📷") + '</span>';
   }
   function formCard(f) {
-    return '<a class="card-link" href="#form-' + esc(f.id) + '"><div class="thumb">' + (f.simple ? fmThumb(f) : '<img src="' + esc(f.dir) + 'poster.jpg" alt="" loading="lazy">') + '</div>' +
+    return '<a class="card-link" data-cat="' + esc(formCats(f).join(" ")) + '" href="#form-' + esc(f.id) + '"><div class="thumb">' + (f.simple ? fmThumb(f) : '<img src="' + esc(f.dir) + 'poster.jpg" alt="" loading="lazy">') + '</div>' +
       '<div>' + (f.part ? '<span class="tagc">' + esc(f.part) + '</span>' : '') + (formNew(f) ? '<span class="fnew">NEW</span>' : '') + '<h3>' + esc(f.exercise) + '</h3><p>' + (f.simple ? '사진·영상 ' + (FMEDIA[f.id] || []).length + '개' : esc(f.exercise_en)) + ' · ' + esc(f.date) + '</p></div></a>';
   }
   /* 복습지 날짜별로 묶기 (2026-11-12 트레이너 "날짜별 ㄱ") — "11월 12일 (목) · 3개" 제목 아래 그날 복습지. 최신 날짜가 위, 같은 날은 원래 순서
@@ -1833,11 +2250,39 @@
     }
   });
   function renderForms() {
-    var h = (CAN_EDIT ? '<button type="button" class="fxnew" data-fx="new">＋ 사진·영상 복습지 만들기<small>운동 이름만 넣고 사진·영상을 바로 올려요</small></button>' : '') +
-      '<section>' + head("", "자세 복습지", "수업에서 배운 자세를 영상으로 다시 봐요");
-    h += M.forms.length ? formDays() :
-      '<div class="panel empty"><h3>아직 복습지가 없어요</h3><p>수업에서 배운 자세가 여기에 쌓여요</p></div>';
+    var h = wkSeg("forms") + (CAN_EDIT ? '<button type="button" class="fxnew" data-fx="new">＋ 사진·영상 복습지 만들기<small>운동 이름만 넣고 사진·영상을 바로 올려요</small></button>' : "") + '<section>' + head("", "자세 복습지", "수업에서 배운 자세를 영상으로 다시 봐요");
+    if (M.forms.length) {
+      var cnt = {}; M.forms.forEach(function (f) { formCats(f).forEach(function (c) { cnt[c] = (cnt[c] || 0) + 1; }); });
+      var cats = FCATS.map(function (c) { return c[0]; }).concat(["기타"]).filter(function (c) { return cnt[c]; });
+      if (cats.length > 1) {
+        h += '<div class="fcat" role="tablist" aria-label="부위별 보기"><button type="button" role="tab" data-fc="" aria-selected="true">전체 <b>' + M.forms.length + '</b></button>' +
+          cats.map(function (c) { return '<button type="button" role="tab" data-fc="' + c + '" aria-selected="false">' + c + ' <b>' + cnt[c] + '</b></button>'; }).join("") + '</div>';
+      }
+      h += formDays();
+    } else h += (Object.keys(XD).length ? formDays() : '') + '<div class="panel empty"><h3>아직 복습지가 없어요</h3><p>수업에서 배운 자세가 여기에 쌓여요</p></div>';
     return h + '</section>' + remember();
+  }
+  function setupForms() {
+    var bar = view.querySelector(".fcat"), list = view.querySelector(".flist");
+    if (!bar || !list) return;
+    var cards = view.querySelectorAll(".flist .card-link");
+    function apply(c, save) {
+      var ok = false;
+      Array.prototype.forEach.call(bar.children, function (b) { var on = b.getAttribute("data-fc") === c; if (on) ok = true; b.setAttribute("aria-selected", on ? "true" : "false"); });
+      if (!ok) { c = ""; bar.children[0].setAttribute("aria-selected", "true"); }
+      Array.prototype.forEach.call(cards, function (a) { a.hidden = !!c && (" " + a.getAttribute("data-cat") + " ").indexOf(" " + c + " ") < 0; });
+      Array.prototype.forEach.call(view.querySelectorAll(".fday"), function (g) {   /* 날짜 칸: 고른 부위 복습지가 없으면 숨김 */
+        g.hidden = !!c && !g.querySelector(".flist .card-link:not([hidden])");
+      });
+      if (save) { try { localStorage.setItem(FCAT_K, c); } catch (e) {} }
+    }
+    bar.addEventListener("click", function (e) {
+      var b = e.target.closest("button[data-fc]"); if (!b) return;
+      apply(b.getAttribute("data-fc"), true);
+      b.scrollIntoView({ block: "nearest", inline: "center", behavior: "smooth" });
+    });
+    var c0 = ""; try { c0 = localStorage.getItem(FCAT_K) || ""; } catch (e) {}
+    apply(c0, false);
   }
 
   /* ---------------- 복습지 상세 */
@@ -1869,7 +2314,7 @@
   function renderForm(f) {
     if (f.simple) return renderSimpleForm(f);
     var D = f.dir;
-    var h = '<a class="back" href="#forms">← 복습지 목록</a>';
+    var h = '<a class="back" href="#forms">← 자세 복습지</a>';
     h += '<div class="hero"><div class="hero-main split"><div class="hero-l">' +
       '<div class="eyebrow">MY FORM NOTE <b>· 자세 복습지</b></div><h1>' + esc(f.exercise) + '</h1>' +
       '<div class="en">' + esc(f.exercise_en) + '</div>' +
@@ -1880,7 +2325,7 @@
       '<div class="keypoint"><small>KEY POINT</small><p>' + esc(f.key_point) + '</p></div></div>';
 
     h += '<section>' + head("01", "오늘 내 자세", "영상으로 확인해요") +
-      '<div class="player"><video id="main" poster="' + esc(D) + 'poster.jpg" autoplay muted loop playsinline webkit-playsinline preload="auto" data-src="' + esc(D) + 'form.mp4" data-gif="' + esc(D) + 'form.webp"></video>' +
+      '<div class="player"><video id="main" poster="' + esc(D) + 'poster.jpg" autoplay muted loop playsinline webkit-playsinline disablepictureinpicture disableremoteplayback x-webkit-airplay="deny" preload="auto" data-src="' + esc(D) + 'form.mp4" data-gif="' + esc(D) + 'form.webp"></video>' +
       '<img id="gifFallback" alt="오늘 수업 영상 (반복 재생)" hidden>' +
       '<span class="chip">▶ 오늘 수업 영상</span><button class="tapper" id="tap" type="button" aria-label="영상 재생 / 멈춤"></button>' +
       '<div class="paused-badge" id="pbadge" hidden></div></div>' +
@@ -1918,6 +2363,15 @@
     return h + remember();
   }
 
+  /* 앱을 나가거나 화면을 끌 때도 영상 멈춤 (아이폰이 재생 중인 영상을 PiP로 빼지 않게) */
+  document.addEventListener("visibilitychange", function () {
+    Array.prototype.forEach.call(document.querySelectorAll("#view video"), function (v) {
+      try {
+        if (document.hidden) { v.setAttribute("data-bg", v.paused ? "" : "1"); v.pause(); }
+        else if (v.getAttribute("data-bg") === "1") { v.removeAttribute("data-bg"); var p = v.play(); if (p && p.catch) p.catch(function () {}); }
+      } catch (e) {}
+    });
+  });
   function setupPlayer() {
     var v = document.getElementById("main");
     if (!v) return;
@@ -1960,6 +2414,89 @@
   }
 
   /* ---------------- 루틴 */
+  /* ---- 요일 옮기기 창 (A안) */
+  var KEYS7 = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"];
+  function mvIdx(k) { return KEYS7.indexOf(k); }
+  function mvDate(k) { var t = new Date(), off = mvIdx(k) - (t.getDay() + 6) % 7; return ymd(new Date(t.getFullYear(), t.getMonth(), t.getDate() + off)); }
+  function mvDid(k) { var dk = mvDate(k); return attLoad().indexOf(dk) >= 0 || !!(LG && LG.d && LG.d[dk] && LG.d[dk].length); }
+  function mvMissed(k) {   /* 이번 주 지난 날 · 운동하는 날인데 출석도 ✓도 없고 아직 안 옮긴 날 */
+    if (ROT || mvIdx(k) < 0 || mvIdx(k) >= mvIdx(todayKey())) return false;
+    var d = dayByKey(k); return !!(d && !d.rest && !d.pick && !d.cardio_only && !mvMap()[k] && !mvDid(k));
+  }
+  function mvSave(m) {
+    mvGet(); var clean = {}; for (var k in m) if (m[k]) clean[k] = m[k];
+    MV = { w: wkMon(), m: clean, at: Date.now() };
+    try { localStorage.setItem(MV_LS, JSON.stringify(MV)); } catch (e) {}
+    if (ATT_API) rtPost({ a: "kv_set", k: "mw:" + SLUG + ":mv", v: MV }).catch(function () {});
+    rerender();
+  }
+  function mvServer(kv) {
+    mvGet(); var v = kv && kv["mw:" + SLUG + ":mv"] || null;
+    if (!v || (MV && (MV.at || 0) >= (v.at || 0))) return;
+    MV = v; try { localStorage.setItem(MV_LS, JSON.stringify(v)); } catch (e) {}
+    if (/^#(routine|home)?$|^#routine/.test(location.hash || "#home")) rerender();
+  }
+  function mvName(k) { var d = dayByKeyRaw(k); return DAY_KO[k] + "요일 " + (d && !d.rest ? d.part : "휴식"); }
+  function mvSheet(k) {
+    if (ROT || RT_EDIT || DEMO || mvIdx(k) < 0) return;
+    var T = todayKey(), it = mvIdx(T), ik = mvIdx(k), m = {}, cur = mvMap(), x;
+    for (x in cur) m[x] = cur[x];
+    var td = dayByKey(T), tRest = !td || td.rest, opts = [], title, sub;
+    var tom = it < 6 ? KEYS7[it + 1] : null, tomD = tom && dayByKey(tom);
+    if (k === T && tRest) {   /* 쉬는 날 나옴 → 이번 주 운동 중 고르기 (못 한 날 먼저) */
+      title = "오늘 어떤 운동 할까요?"; sub = "쉬는 날이어도 나왔다면 이번 주 운동 하나를 골라요";
+      var list = KEYS7.filter(function (q) { var dd = dayByKeyRaw(q); return q !== T && dd && !dd.rest && !dd.pick && !dd.cardio_only; });
+      list.sort(function (a, b) { return (mvMissed(b) ? 1 : 0) - (mvMissed(a) ? 1 : 0); });
+      list.forEach(function (q) {
+        var past = mvIdx(q) < it, done = past && mvDid(q), miss = mvMissed(q);
+        opts.push({ t: mvName(q), s: miss ? "못 한 날 · 오늘로 옮겨요" : past ? (done ? "이미 한 운동 · 한 번 더" : "지난 날 운동") : "앞당기기 · " + DAY_KO[q] + "요일은 쉬어요", hot: miss,
+          go: function () { m[T] = q; if (!(past && done)) m[q] = "-"; return DAY_KO[q] + "요일 운동을 오늘로 가져왔어요"; } });
+      });
+    } else if (ik < it && !cur[k]) {
+      var kd = dayByKey(k);
+      if (!kd || kd.rest || kd.pick || kd.cardio_only) { attToast("쉬는 날은 옮길 운동이 없어요"); return; }
+      title = "이 운동, 언제 할까요?"; sub = mvName(k) + " · " + (kd.items || []).length + "종목 — 이번 주 안에서 옮겨요";
+      if (tRest) opts.push({ t: "오늘(" + DAY_KO[T] + ") 하기", s: "오늘은 쉬는 날이라 그대로 들어가요", hot: 1, go: function () { m[T] = k; m[k] = "-"; return "오늘 " + kd.part + " 운동으로 바꿨어요"; } });
+      else {
+        if (tom && (!tomD || tomD.rest) && !cur[tom]) opts.push({ t: "오늘(" + DAY_KO[T] + ") 하기", s: "오늘 " + td.part + "는 내일(" + DAY_KO[tom] + ")로 한 칸 밀려요", hot: 1,
+          go: function () { m[tom] = cur[T] || T; m[T] = k; m[k] = "-"; return "오늘 " + kd.part + ", 내일 " + td.part + "로 옮겼어요"; } });
+        opts.push({ t: "오늘 " + td.part + " 대신 하기", s: "오늘 " + td.part + "는 이번 주 쉬어요", hot: !opts.length,
+          go: function () { m[T] = k; m[k] = "-"; return "오늘은 " + kd.part + " 운동이에요"; } });
+      }
+      opts.push({ t: "이번 주는 건너뛰기", s: "다음 주 " + DAY_KO[k] + "요일에 다시 해요", go: function () { m[k] = "-"; return DAY_KO[k] + "요일은 이번 주 건너뛰었어요"; } });
+    } else if (Object.keys(cur).length) {
+      title = "옮긴 운동 되돌리기"; sub = "이번 주에 옮긴 요일을 원래 루틴으로 돌려요";
+    } else if (ik > it) { attToast("앞으로 올 날은 그날 그대로 해요"); return; }
+    else return;
+    if (Object.keys(cur).length) opts.push({ t: "이번 주 옮긴 것 모두 되돌리기", s: "월요일이면 어차피 원래대로 돌아와요", go: function () { m = {}; return "원래 루틴으로 되돌렸어요"; } });
+    var body = '<p class="rts-note">' + esc(sub) + '</p><div class="mv-opts">' + opts.map(function (o, i) {
+      return '<button type="button" class="mv-opt' + (o.hot ? ' hot' : '') + '" data-i="' + i + '"><b>' + esc(o.t) + '</b><small>' + esc(o.s) + '</small></button>';
+    }).join("") + '</div><p class="rts-note">옮긴 건 이번 주에만 · 다음 주 월요일이면 원래 루틴으로 돌아와요</p>';
+    var sh = rtSheet(title, body, function () {}, false);
+    sh.addEventListener("click", function (e) {
+      var b = e.target.closest(".mv-opt"); if (!b) return;
+      var msg = opts[+b.getAttribute("data-i")].go();
+      sh.close(); mvSave(m); attToast(msg);
+    });
+  }
+  (function () {   /* 요일 칸 꾹 누르기 (0.55초) */
+    var tm = 0, fired = 0, x0 = 0, y0 = 0, tile = null;
+    function stop() { clearTimeout(tm); if (tile) tile.classList.remove("holding"); tile = null; }
+    document.addEventListener("pointerdown", function (e) {
+      var t = e.target.closest && e.target.closest(".wk-cmp a.day-tile");
+      if (!t || ROT || RT_EDIT || DEMO) return;
+      var k = (t.getAttribute("href") || "").replace("#routine-", "");
+      x0 = e.clientX; y0 = e.clientY; tile = t; t.classList.add("holding");
+      tm = setTimeout(function () { stop(); fired = Date.now(); try { navigator.vibrate && navigator.vibrate(15); } catch (x) {} mvSheet(k); }, 550);
+    });
+    document.addEventListener("pointermove", function (e) { if (tile && (Math.abs(e.clientX - x0) > 10 || Math.abs(e.clientY - y0) > 10)) stop(); });
+    ["pointerup", "pointercancel"].forEach(function (ev) { document.addEventListener(ev, stop); });
+    document.addEventListener("click", function (e) {
+      if (Date.now() - fired < 900 && e.target.closest && e.target.closest(".wk-cmp a.day-tile")) { e.preventDefault(); e.stopPropagation(); }
+      var g = e.target.closest && e.target.closest(".mv-go"); if (g) mvSheet(g.getAttribute("data-mvk"));
+    }, true);
+    document.addEventListener("contextmenu", function (e) { if (e.target.closest && e.target.closest(".wk-cmp a.day-tile")) e.preventDefault(); });
+  })();
   function renderRoutine(sel) {
     var R = M.routine;
     if (!R) return (CAN_EDIT ? '<div class="rtbar"><div><b>선생님만 보여요</b><span>여기서 바로 루틴을 만들 수 있어요</span></div><div class="rtbar-b"><button type="button" class="rtb" data-rt="createcopy">다른 회원 루틴 복사</button><button type="button" class="rtb fill" data-rt="create">✎ 새 루틴 만들기</button></div></div>' : '') +
@@ -1967,14 +2504,18 @@
     var tk = todayKey(), ED = !!RT_EDIT;
     sel = sel || tk;
     view.setAttribute("data-day", sel);
-    var h = rtTopBar() + '<div class="hero"><div class="hero-main split"><div class="hero-l">' +
+    var h = wkSeg("routine") + rtTopBar() + '<div class="hero"><div class="hero-main split"><div class="hero-l">' +
       '<div class="eyebrow">' + (ROT ? 'ROTATION ROUTINE <b>· 순환 루틴 ' : 'WEEKLY ROUTINE <b>· 주간 루틴 ') + esc(R.version) + '</b></div><h1>' + esc(R.title) + '</h1>' +
       '<div class="who"><strong>' + esc(M.name) + ' 회원님</strong><span>' + esc(R.updated) + ' 업데이트</span></div></div>' +
       '<div class="hero-r"><div class="eyebrow">이번 주 계획</div><ul class="dots small">' +
       R.plan.map(function (p) { return '<li>' + esc(p) + '</li>'; }).join("") + '</ul></div></div>' +
       '<div class="keypoint"><small>KEY POINT</small><p>' + esc(R.key_point) + '</p></div></div>';
 
-    h += '<section>' + (ROT ? head("01", "순서 한눈에", "DAY 1부터 순서대로, 쉬고 오면 다음 DAY") : head("01", "일주일 한눈에", "요일을 누르면 그날 운동이 나와요")) + '<div class="week" role="tablist">';
+    /* 2026-11-14 장동욱 "1·2 항목 합치기, 종목은 스크롤 없이 한눈에": 일주일 줄을 그날 운동 칸 안 맨 위로, 종목 카드는 작게(.ex-list.cmp) */
+    var d = dayByKey(sel);
+    h += '<section id="day">' + head("01", dayName(sel) + " " + (d ? d.part : "휴식"), sel === tk ? (ROT ? "오늘 할 차례" : "오늘") : (d && !d.rest ? d.en : ""),
+      ED && d && !d.rest ? '<button type="button" class="rtb sm" data-rt="day">✎ 이날 정보</button>' : '');
+    h += '<div class="week wk-cmp" role="tablist">';
     if (ROT) {
       rotKeys().forEach(function (k) {
         var d = dayByKey(k);
@@ -1984,19 +2525,21 @@
       if (rotKeys().length < 7) h += '<div class="day-tile rest"><b class="rot"><small>OFF</small>휴</b>' + img("rest", "wk-ic") + '<span>근무표 따라</span></div>';
     } else
     ["mon", "tue", "wed", "thu", "fri", "sat", "sun"].forEach(function (k) {
-      var d = dayByKey(k);
-      var cls = "day-tile" + (!d || d.rest ? " rest" : "") + (k === tk ? " today" : "");
+      var d = dayByKey(k), mvs = mvMap()[k];
+      var cls = "day-tile" + (!d || d.rest ? " rest" : "") + (k === tk ? " today" : "") + (!ED && mvMissed(k) ? " missed" : "");
       h += '<a class="' + cls + '" href="#routine-' + k + '" role="tab" aria-current="' + (k === sel) + '"><b>' + DAY_KO[k] + '</b>' +
         img(dayIcon(d), "wk-ic", true) + '<span>' +
-        esc(d ? d.part : "휴식") + '</span></a>';
+        esc(d ? d.part : "휴식") + '</span>' + (ED || !mvs ? '' : '<em class="mv-tag' + (mvs === "-" ? ' off' : '') + '">' + (mvs === "-" ? '옮김' : DAY_KO[mvs] + '에서') + '</em>') + '</a>';
     });
-    h += '</div></section>';
-
-    var d = dayByKey(sel);
-    h += '<section id="day">' + head("02", dayName(sel) + " " + (d ? d.part : "휴식"), sel === tk ? (ROT ? "오늘 할 차례" : "오늘") : (d && !d.rest ? d.en : ""),
-      ED && d && !d.rest ? '<button type="button" class="rtb sm" data-rt="day">✎ 이날 정보</button>' : '');
+    h += '</div>';
+    if (!ROT && !ED && !DEMO) {
+      var td0 = dayByKey(tk), anyMiss = ["mon", "tue", "wed", "thu", "fri", "sat"].some(mvMissed), anyMv = Object.keys(mvMap()).length;
+      if (anyMiss || anyMv || !td0 || td0.rest) h += '<p class="mv-hint">' + (anyMiss ? '못 나온 날 칸을 <b>꾹</b> 누르면 이번 주 안에서 옮길 수 있어요' :
+        (!td0 || td0.rest) ? '쉬는 날인데 나왔다면 <b>오늘 칸을 꾹</b> 눌러 운동을 골라요' : '이번 주에 옮긴 운동이 있어요 · 칸을 꾹 누르면 되돌릴 수 있어요') + '</p>';
+    }
     if (!d || d.rest) {
-      h += '<div class="rest-card"><b>쉬는 날</b>푹 쉬고 잘 먹기! 근육은 쉬는 동안 자라요</div>';
+      h += '<div class="rest-card"><b>' + (d && d.mvSkip ? '이번 주는 옮겼어요' : '쉬는 날') + '</b>' + (d && d.mvSkip ? '다른 날로 옮긴 운동이에요' : '푹 쉬고 잘 먹기! 근육은 쉬는 동안 자라요') +
+        (!ED && !ROT && !DEMO && sel === tk ? '<button type="button" class="btn fill mv-go" data-mvk="' + tk + '">오늘 나왔어요 · 운동 고르기</button>' : '') + '</div>';
       if (ED && !ROT) h += '<button type="button" class="rtadd" data-rt="work">+ 이날 운동 넣기</button>';
     } else if (d.cardio_only) {
       h += '<div class="ex-list"><div class="ex cardio"' + (CAN_EDIT ? ' data-cardio="1"' : '') + '><div class="ex-top"><span class="ex-ic">' + img("treadmill") + '</span><div><h3>유산소만 ' + d.cardio_only + '분</h3>' +
@@ -2006,21 +2549,22 @@
       h += '<p class="note" style="margin:0 0 12px">' + esc(d.note || "이번 주에 아쉬웠던 부위 하나를 골라 그 요일 루틴 그대로 해요") + '</p>' + pickList(d) +
         (d.cardio && R.cardio ? '<div class="ex-list" style="margin-top:12px"><div class="ex cardio"' + (CAN_EDIT ? ' data-cardio="1"' : '') + '><div class="ex-top"><span class="ex-ic">' + img("treadmill") + '</span><div><h3>마무리 유산소 ' + R.cardio.minutes + '분</h3><div class="tip">' + esc(R.cardio.options) + '</div></div></div></div></div>' : '');
     } else {
-      h += '<div class="flow"><div>' + img("foam_roller", "fl-ic") + '<small>STEP 01</small><b>스트레칭</b><i>폼롤러 10분</i></div><span>›</span>' +
-        '<div>' + img("dumbbell", "fl-ic") + '<small>STEP 02</small><b>웨이트</b><i>' + d.items.length + '종목</i></div><span>›</span>' +
-        '<div' + (CAN_EDIT ? ' data-cardio="1"' : '') + '>' + img("treadmill", "fl-ic") + '<small>STEP 03</small><b>유산소</b><i>' + (d.cardio && R.cardio ? R.cardio.minutes + '분' : '이날은 없음') + '</i></div></div>';
-      h += '<div class="ex-list">' + d.items.map(function (it, i) {
+      h += '<div class="flow1"><span><b>①</b> 스트레칭 10분</span><i>›</i><span><b>②</b> 웨이트 ' + d.items.length + '종목</span><i>›</i><span' + (CAN_EDIT ? ' data-cardio="1"' : '') + '><b>③</b> 유산소 ' + (d.cardio && R.cardio ? R.cardio.minutes + '분' : '없음') + '</span></div>';
+      var ckD = ED ? null : chkDate(sel);
+      h += '<div class="ex-list cmp' + (ckD ? ' ck' : '') + '">' + d.items.map(function (it, i) {
         var main = it.tag === "메인";
         var sets = it.sets.map(function (s, j) {
           var reps = typeof s[0] === "string" ? esc(s[0]) : s[0] + '<i>회</i>';   /* "30초" 같은 글자도 됨 */
           var kg = s[1] == null ? '맨몸' : s[1] + 'kg';                              /* null = 맨몸 */
           return '<div class="set"><small>' + (j + 1) + '세트</small><b>' + reps + '</b><i>' + kg + '</i></div>';
         }).join("");
-        return '<div class="ex' + (main ? ' main' : '') + '"' + (CAN_EDIT ? ' data-exi="' + i + '"' : '') + '><div class="ex-top"><span class="ex-ic">' + img(iconOf(it)) + '<span class="ex-no">' + (i + 1) + '</span>' +
+        var dn = !!ckD && lgDone(it.name, ckD);
+        return '<div class="ex' + (main ? ' main' : '') + (it.tag === "워밍업" ? ' t-warm' : it.tag === "선행" ? ' t-pre' : '') + (dn ? ' done' : '') + '"' + (ED ? '' : ' data-exi="' + i + '" role="button" tabindex="0" aria-label="' + esc(it.name) + ' 자세히 보기"') + '><div class="ex-top"><span class="ex-ic">' + img(iconOf(it)) + '<span class="ex-no">' + (i + 1) + '</span>' +
           (main ? '<span class="main-badge">메인</span>' : '') + '</span><div>' +
           '<h3>' + esc(it.name) + '</h3><div class="meta">' + esc(it.en) + ' ' + tagChip(it.tag) + '</div>' +
-          '<div class="tip">' + esc(it.tip) + '</div></div></div><div class="sets">' + sets + '</div>' +
-          (itemForm(it) ? '<a class="formlink" href="#form-' + esc(itemForm(it).id) + '">▶ 자세 복습지 보기</a>' : '') + (ED ? rtItemCtl(i, d.items.length) : '') + '</div>';
+          '<div class="tip">' + esc(it.tip) + '</div><div class="sets">' + sets + '</div></div></div>' +
+          (itemForm(it) ? '<a class="formlink" href="#form-' + esc(itemForm(it).id) + '">▶ 복습지</a>' : '') +
+          (ED ? rtItemCtl(i, d.items.length) : !ckD ? '' : '<button type="button" class="exchk" data-chk="' + i + '" data-date="' + ckD + '" aria-pressed="' + dn + '" aria-label="' + esc(it.name) + ' 끝, 기록에 저장"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5 10 17l9-10"/></svg></button>') + '</div>';
       }).join("");
       if (ED) h += '<button type="button" class="rtadd" data-rt="add">+ 종목 추가</button>';
       if (d.cardio && R.cardio) {
@@ -2030,9 +2574,64 @@
       h += '</div>' + (R.note ? '<p class="note">' + esc(R.note) + '</p>' : '');
     }
     h += '</section>';
-    if (!ED) h += muscleSection("03");   /* 이번 달 근육 지도 (2026-11-08 "루틴 항목에 넣는 게 컨셉에 맞지") — 고치는 중엔 숨김 */
+    /* 근육 지도는 2026-11-14 기록 탭으로 옮김 */
     return h + remember();
   }
+
+  /* ---- 종목 자세히 보기 (2026-11-14 장동욱 "종목을 누르면 더 정확하게 + 루틴이랑 복습지를 한번에 합쳐서 부드럽게")
+     루틴 종목 카드를 누르면 아래에서 창이 올라옴: 큰 움직이는 아이콘·세트표·선생님 팁 + (연결된 복습지가 있으면) 영상·KEY POINT·O/X → "복습지 전체 보기" */
+  function exSheet(it, no) {
+    var f = itemForm(it), D = f ? f.dir : "";
+    var sets = it.sets.map(function (s, j) {
+      var reps = typeof s[0] === "string" ? esc(s[0]) : s[0] + '<small>회</small>';
+      return '<div class="xs-set"><span>' + (j + 1) + '세트</span><b>' + reps + '</b><em>' + (s[1] == null ? '맨몸' : s[1] + '<small>kg</small>') + '</em></div>';
+    }).join("");
+    var h = '<div class="xs-grab" aria-hidden="true"></div><button type="button" class="xs-x" data-xclose aria-label="닫기">×</button>' +
+      '<div class="xs-head"><span class="xs-ic' + (it.tag === "메인" ? ' main' : '') + '">' + img(iconOf(it)) + '</span><div>' +
+      '<small>' + no + '번째 종목' + (it.tag ? ' · ' + esc(it.tag) : '') + '</small><h2>' + esc(it.name) + '</h2><div class="xs-en">' + esc(it.en || "") + '</div></div></div>' +
+      '<div class="xs-sets' + (it.sets.length >= 5 ? ' many' : '') + '">' + sets + '</div>' +
+      (it.tip ? '<div class="xs-tip"><b>선생님 팁</b>' + esc(it.tip) + '</div>' : '');
+    if (f) {
+      h += '<div class="xs-form"><div class="xs-fh"><b>자세 복습지</b><span>' + esc(f.date) + ' 수업</span></div>' +
+        '<div class="xs-vid"><video poster="' + esc(D) + 'poster.jpg" src="' + esc(D) + 'form.mp4" autoplay muted loop playsinline webkit-playsinline disablepictureinpicture disableremoteplayback x-webkit-airplay="deny" preload="metadata"></video></div>' +
+        '<div class="xs-kp"><small>KEY POINT</small>' + esc(f.key_point) + '</div>' +
+        '<div class="xs-ox"><div class="o"><b>이렇게</b><ul>' + f.do.map(function (t) { return '<li>' + esc(t) + '</li>'; }).join("") + '</ul></div>' +
+        '<div class="x"><b>이건 피하기</b><ul>' + f.dont.map(function (t) { return '<li>' + esc(t) + '</li>'; }).join("") + '</ul></div></div>' +
+        '<a class="xs-go" href="#form-' + esc(f.id) + '" data-xgo>자극 부위 · 동작 3단계까지 전체 보기 →</a></div>';
+    }
+    var bg = document.createElement("div");
+    bg.className = "xsheet-bg";
+    bg.innerHTML = '<div class="xsheet" role="dialog" aria-modal="true" aria-label="' + esc(it.name) + '">' + h + '</div>';
+    document.body.appendChild(bg);
+    document.documentElement.classList.add("rts-open");
+    var sh = bg.firstChild;
+    requestAnimationFrame(function () { bg.classList.add("on"); });
+    var v = sh.querySelector("video"); if (v) { try { var p = v.play(); if (p && p.catch) p.catch(function () {}); } catch (e) {} }
+    function close(nav) {
+      if (bg.classList.contains("off")) return;
+      if (v) try { v.pause(); } catch (e) {}
+      bg.classList.add("off"); bg.classList.remove("on");
+      setTimeout(function () { bg.remove(); if (!document.querySelector(".rtsheet-bg, .xsheet-bg")) document.documentElement.classList.remove("rts-open"); }, nav ? 0 : 280);
+    }
+    bg.addEventListener("click", function (e) {
+      if (e.target === bg || e.target.closest("[data-xclose]")) close();
+      else if (e.target.closest("[data-xgo]")) close(true);
+    });
+    /* 위쪽(손잡이·제목)을 끌어내리면 닫힘 */
+    var y0 = null, dy = 0;
+    sh.addEventListener("touchstart", function (e) { if (sh.scrollTop > 0) { y0 = null; return; } y0 = e.touches[0].clientY; dy = 0; }, { passive: true });
+    sh.addEventListener("touchmove", function (e) { if (y0 == null) return; dy = e.touches[0].clientY - y0; if (dy > 0) { sh.style.transition = "none"; sh.style.transform = "translateY(" + dy + "px)"; } }, { passive: true });
+    sh.addEventListener("touchend", function () { if (y0 == null) return; y0 = null; sh.style.transition = ""; sh.style.transform = ""; if (dy > 90) close(); });
+  }
+  document.addEventListener("click", function (e) {
+    var c = e.target.closest && e.target.closest(".ex-list.cmp .ex[data-exi]");
+    if (!c || e.target.closest("a, button") || CAN_EDIT) return;   /* 선생님 보기는 누르면 고치기(터치해서 고치기) */
+    var d = dayByKey(view.getAttribute("data-day")), it = d && d.items && d.items[+c.getAttribute("data-exi")];
+    if (it) exSheet(it, +c.getAttribute("data-exi") + 1);
+  });
+  document.addEventListener("keydown", function (e) {
+    if ((e.key === "Enter" || e.key === " ") && e.target.matches && e.target.matches(".ex-list.cmp .ex[data-exi]")) { e.preventDefault(); e.target.click(); }
+  });
 
   /* ---------------- 식단 */
   /* M.diet: null = 준비 중 / 문자열 = 그대로 / 객체 = 종이 다이어트 식단표(2026-10-21 표준 틀)와 같은 구성 (2026-11-05) */
@@ -2163,14 +2762,16 @@
      선생님 보기(COACH_MODE)에서 루틴 탭 위 "✎ 루틴 고치기" → 종목·세트·팁·순서·부위 이름을 고치고
      "저장 · 바로 반영" → 출석 창고(POST routine_save, 선생님 열쇠 확인) → 회원님이 노트를 열면 바로 바뀜.
      열쇠는 선생님 페이지 주소 끝 #key=… 로 한 번 열면 그 휴대폰에 저장(localStorage ptkey). */
-  var RT_EN = {"고블릿 스쿼트":"Goblet Squat","이너타이":"Inner Thigh","아웃타이 머신":"Outer Thigh","레그프레스":"Leg Press","시티드 페이스풀":"Seated Face Pull","랫풀다운":"Lat Pulldown","뉴텍 시티드 로우 머신":"Seated Row","펙덱 플라이":"Pec Deck Fly","체스트 프레스 머신":"Chest Press","인클라인 덤벨 프레스":"Incline DB Press","케이블 푸쉬다운":"Cable Pushdown","플레이트 아웃타이":"Outer Thigh · Plate","힙쓰러스트 머신":"Hip Thrust","레그프레스 (발 높게)":"Leg Press · High","사이드 레터럴 레이즈 머신":"Standing Machine","숄더 프레스 머신":"Shoulder Press","사이드 레터럴 레이즈":"Lateral Raise","리버스 펙덱":"Reverse Pec Deck","케이블 시티드 로우":"Cable Seated Row","덤벨 컬":"Dumbbell Curl","오버헤드 익스텐션":"Overhead Ext.","벤치프레스":"Bench Press","체스트 프레스":"Chest Press","인클라인 프레스 머신":"Incline Machine Press","레그 익스텐션":"Leg Extension","스미스 스쿼트":"Smith Squat","라잉 레그컬":"Lying Leg Curl","스트레이트 암 풀다운":"Straight Arm Pulldown","원암 덤벨 로우":"One Arm DB Row","케이블 풀오버":"Cable Pullover","덤벨 슈러그":"DB Shrug","스미스 인클라인 프레스":"Smith Incline Press","덤벨 RDL":"Dumbbell RDL","힙 익스텐션":"Hip Extension","케이블 힙 킥백":"Cable Kickback","플랫 덤벨프레스":"Flat DB Press","핵스쿼트":"Hack Squat","해머 컬":"Hammer Curl","해머스트렝스 로우로우":"Low Row","언더그립 시티드 로우":"Underhand Seated Row","덤벨 숄더 프레스":"DB Shoulder Press","사이드 레터럴 레이즈 (덤벨)":"Lateral Raise","언더그립 랫풀다운":"Underhand Pulldown","뉴텍 체스트 프레스 머신":"Lying Chest Press","시티드 로우":"Seated Row","숄더 프레스":"Shoulder Press","플랭크":"Plank","스미스 슈러그":"Smith Shrug","스미스 숄더 프레스":"Smith Shoulder Press","인클라인 덤벨 컬":"Incline DB Curl","덤벨 오버헤드 익스텐션":"DB Overhead Ext","스미스 벤치프레스":"Smith Bench Press","랙 밴드 푸쉬업":"Rack Band Push-up"};
+  var RT_EN = {"고블릿 스쿼트":"Goblet Squat","이너타이":"Inner Thigh","아웃타이 머신":"Outer Thigh","레그프레스":"Leg Press","시티드 페이스풀":"Seated Face Pull","랫풀다운":"Lat Pulldown","뉴텍 시티드 로우 머신":"Seated Row","펙덱 플라이":"Pec Deck Fly","체스트 프레스 머신":"Chest Press","인클라인 덤벨 프레스":"Incline DB Press","케이블 푸쉬다운":"Cable Pushdown","플레이트 아웃타이":"Outer Thigh · Plate","힙쓰러스트 머신":"Hip Thrust","레그프레스 (발 높게)":"Leg Press · High","사이드 레터럴 레이즈 머신":"Standing Machine","숄더 프레스 머신":"Shoulder Press","사이드 레터럴 레이즈":"Lateral Raise","리버스 펙덱":"Reverse Pec Deck","케이블 시티드 로우":"Cable Seated Row","덤벨 컬":"Dumbbell Curl","오버헤드 익스텐션":"Overhead Ext.","벤치프레스":"Bench Press","체스트 프레스":"Chest Press","인클라인 프레스 머신":"Incline Machine Press","레그 익스텐션":"Leg Extension","스미스 스쿼트":"Smith Squat","라잉 레그컬":"Lying Leg Curl","스트레이트 암 풀다운":"Straight Arm Pulldown","원암 덤벨 로우":"One Arm DB Row","케이블 풀오버":"Cable Pullover","덤벨 슈러그":"DB Shrug","스미스 인클라인 프레스":"Smith Incline Press","덤벨 RDL":"Dumbbell RDL","힙 익스텐션":"Hip Extension","케이블 힙 킥백":"Cable Kickback","플랫 덤벨프레스":"Flat DB Press","핵스쿼트":"Hack Squat","해머 컬":"Hammer Curl","해머스트렝스 로우로우":"Low Row","언더그립 시티드 로우":"Underhand Seated Row","덤벨 숄더 프레스":"DB Shoulder Press","사이드 레터럴 레이즈 (덤벨)":"Lateral Raise","언더그립 랫풀다운":"Underhand Pulldown","뉴텍 체스트 프레스 머신":"Lying Chest Press","시티드 로우":"Seated Row","숄더 프레스":"Shoulder Press","플랭크":"Plank","스미스 슈러그":"Smith Shrug","스미스 숄더 프레스":"Smith Shoulder Press","인클라인 덤벨 컬":"Incline DB Curl","덤벨 오버헤드 익스텐션":"DB Overhead Ext","스미스 벤치프레스":"Smith Bench Press","랙 밴드 푸쉬업":"Rack Band Push-up","어시스트 친업":"Assisted Chin-up","리버스 펙덱 플라이":"Reverse Pec Deck Fly","케이블 체스트 프레스":"Cable Chest Press","뉴텍 엠토처 시티드 로우":"Seated Row Machine","핵프레스":"Hack Press"};
   var RT_PART_EN = {"하체":"Legs","등":"Back","가슴":"Chest","엉덩이":"Glute","어깨":"Shoulder","등 · 팔":"Back & Arms","가슴 · 팔":"Chest & Arms","로테이션":"Free Pick","휴식":"Rest","힙 A":"Glute A","가슴·어깨":"Chest · Shoulder","힙 B":"Glute B","힙 C":"Glute C","어깨·팔":"Shoulder · Arm","가슴·등":"Chest · Back","하체 B":"Legs B","등 A":"Back A","하체 A":"Legs A","등 B":"Back B","어깨 · 팔":"Shoulder & Arms","유산소":"Cardio","등·팔":"Back · Arms","팔":"Arm","가슴·삼두":"Chest · Triceps"};
   var CAN_EDIT = COACH_MODE && !DEMO;
+  if (CAN_EDIT) document.documentElement.classList.add("can-edit");
   var RT_EDIT = null;   /* 고치는 중이면 { saved: 고치기 전 루틴, dirty: 고친 횟수 } */
   var RT_STALE = null;  /* data.js 루틴이 새로 올라와서 꺼진 '폰에서 고친 루틴' */
   function rtKey() { try { return localStorage.getItem("ptkey") || ""; } catch (e) { return ""; } }
   function rtToday() { var d = new Date(); return d.getFullYear() + ". " + (d.getMonth() + 1) + ". " + d.getDate(); }
-  function rerender() { var y = window.scrollY; route(); window.scrollTo(0, y); }
+  function vSig() { try { return attLoad().join(",") + JSON.stringify(attTimes); } catch (e) { return ""; } }
+  function rerender() { VCACHE = {}; var y = window.scrollY; route(); window.scrollTo(0, y); }
   function rtServer(rec) {   /* 창고에서 받은 '폰에서 고친 루틴' (null = 없음) */
     var ok = rec && rec.routine && rec.base === RT_BASE ? rec : null;
     RT_STALE = rec && !ok ? rec : null;
@@ -2290,11 +2891,11 @@
 
   /* 아이콘 눌러서 종목 고르기 (2026-11-11 "아이콘을 눌러서 추가하는 방식") — 도당점 종목 이름 그대로 */
   var RT_CAT = [
-    ["가슴", ["벤치프레스", "플랫 덤벨프레스", "인클라인 덤벨 프레스", "스미스 벤치프레스", "스미스 인클라인 프레스", "인클라인 프레스 머신", "체스트 프레스 머신", "뉴텍 체스트 프레스 머신", "펙덱 플라이", "랙 밴드 푸쉬업"]],
-    ["등", ["랫풀다운", "언더그립 랫풀다운", "뉴텍 버티컬 풀다운", "뉴텍 시티드 로우 머신", "케이블 시티드 로우", "언더그립 시티드 로우", "해머스트렝스 로우로우", "티바 로우", "원암 덤벨 로우", "스미스 벤트오버 로우", "스트레이트 암 풀다운", "케이블 풀오버", "덤벨 슈러그", "스미스 슈러그", "백 익스텐션"]],
+    ["가슴", ["벤치프레스", "플랫 덤벨프레스", "인클라인 덤벨 프레스", "스미스 벤치프레스", "스미스 인클라인 프레스", "인클라인 프레스 머신", "체스트 프레스 머신", "뉴텍 체스트 프레스 머신", "펙덱 플라이", "랙 밴드 푸쉬업", "케이블 체스트 프레스"]],
+    ["등", ["랫풀다운", "언더그립 랫풀다운", "뉴텍 버티컬 풀다운", "뉴텍 시티드 로우 머신", "케이블 시티드 로우", "언더그립 시티드 로우", "해머스트렝스 로우로우", "티바 로우", "원암 덤벨 로우", "스미스 벤트오버 로우", "스트레이트 암 풀다운", "케이블 풀오버", "덤벨 슈러그", "스미스 슈러그", "백 익스텐션", "어시스트 친업", "뉴텍 엠토처 시티드 로우"]],
     ["어깨", ["숄더 프레스 머신", "덤벨 숄더 프레스", "스미스 숄더 프레스", "사이드 레터럴 레이즈 머신", "사이드 레터럴 레이즈", "시티드 레터럴 레이즈", "시티드 페이스풀", "리버스 펙덱"]],
     ["팔", ["덤벨 컬", "머신 암 컬", "해머 컬", "인클라인 덤벨 컬", "케이블 푸쉬다운", "오버헤드 익스텐션", "덤벨 오버헤드 익스텐션"]],
-    ["하체", ["레그 익스텐션", "이너타이", "아웃타이 머신", "스탠딩 아웃타이", "플레이트 아웃타이", "레그프레스", "파워 레그프레스", "핵스쿼트", "스미스 스쿼트", "고블릿 스쿼트", "라잉 레그컬", "덤벨 RDL"]],
+    ["하체", ["레그 익스텐션", "이너타이", "아웃타이 머신", "스탠딩 아웃타이", "플레이트 아웃타이", "레그프레스", "파워 레그프레스", "핵스쿼트", "스미스 스쿼트", "고블릿 스쿼트", "라잉 레그컬", "덤벨 RDL", "핵프레스"]],
     ["엉덩이", ["힙쓰러스트 머신", "케이블 힙 킥백", "힙 익스텐션"]],
     ["복근", ["플랭크"]]
   ];
@@ -2647,6 +3248,7 @@
         if (!j || !j.ok || !j.routine) { ok.disabled = false; ok.textContent = "반영하기"; rtErr(j && j.ok ? { error: "action" } : j, sh); return; }
         try { localStorage.setItem("ptkey", key); localStorage.setItem(RT_LS, JSON.stringify(j.routine)); } catch (x) {}
         RT_EDIT = null; rtUse(j.routine); RT_STALE = null;
+        grSeed(key);
         sh.close(); rerender();
         attToast("회원님 노트에 바로 반영됐어요");
       }).catch(function () { ok.disabled = false; ok.textContent = "반영하기"; sh.msg(rtNetMsg()); });
@@ -2731,13 +3333,399 @@
     window.addEventListener("beforeunload", function (e) { if (RT_EDIT && RT_EDIT.dirty) { e.preventDefault(); e.returnValue = ""; } });
   }
 
+  /* ---------------- 칸 접기·펼치기 (2026-11-11 "회원 PT노트도 숨기기 펼치기 — 목표 그래프만 빼고")
+     제목 줄(.head)이 있는 칸마다 오른쪽 ⌄ 버튼(제목 눌러도 됨). 접은 상태는 그 폰에 기억(ptnote:<주소>:fold, 탭+칸 이름).
+     여정 그래프(.jpanel)가 든 칸은 빼고, 주소로 바로 찾아온 칸(#muscle·#goal-badges·요일)은 접혀 있어도 그 순간엔 펼침 */
+  var FOLD_LS = "ptnote:" + SLUG + ":fold";
+  function foldGet() { try { return JSON.parse(localStorage.getItem(FOLD_LS) || "{}") || {}; } catch (e) { return {}; } }
+  function setupFold(tab, openId) {
+    var F = foldGet();
+    Array.prototype.forEach.call(view.querySelectorAll("section"), function (sec) {
+      var head = sec.firstElementChild;
+      if (!head || !head.classList.contains("head") || sec.querySelector(".jpanel") || head.querySelector(".fold-btn")) return;
+      var h2 = head.querySelector("h2");
+      var k = tab + ":" + (sec.id || (h2 ? h2.textContent : "")).replace(/\s+/g, " ").trim();
+      var body = document.createElement("div");
+      body.className = "fbody";
+      while (head.nextSibling) body.appendChild(head.nextSibling);
+      sec.appendChild(body);
+      sec.setAttribute("data-fold", "");
+      var btn = document.createElement("button");
+      btn.type = "button"; btn.className = "fold-btn";
+      btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>';
+      head.appendChild(btn);
+      function set(f, save) {
+        sec.classList.toggle("folded", f);
+        btn.setAttribute("aria-expanded", String(!f));
+        btn.setAttribute("aria-label", (h2 ? h2.textContent : "칸") + (f ? " 펼치기" : " 접기"));
+        if (save) { var G = foldGet(); if (f) G[k] = 1; else delete G[k]; try { localStorage.setItem(FOLD_LS, JSON.stringify(G)); } catch (e) {} }
+      }
+      set(!!F[k] && !(openId && sec.id === openId), false);
+      function tg(e) { if (e.target.closest("a")) return; set(!sec.classList.contains("folded"), true); }
+      btn.addEventListener("click", tg);
+      if (h2) { h2.style.cursor = "pointer"; h2.addEventListener("click", tg); }
+    });
+  }
+
   /* ---------------- 라우터 */
   var TAB_OF = { home: "home", forms: "forms", form: "forms", routine: "routine", diet: "diet", notice: "notice" };
+  /* 뒤로 가기 (2026-11-12 장동욱 "태블릿·PC에서 종목 보다가 자세 복습지 누르면 뒤로가기가 없어서 다시 루틴 들어가야 함")
+     본문 속 링크(루틴 → 복습지, 홈 → 루틴 요일, 리포트·배지 등)로 넘어가면 화면 위에 "‹ 뒤로 · 루틴" 버튼이 붙어 다님.
+     누르면 직전 화면 + 보던 위치(스크롤)로 돌아감. 아래 탭·위 막대·나 탭 전환 칸을 누르면 새 출발이라 기록을 비움. */
+  var NAVS = [], NAV_BACK = null, ZOOM = null, SOFT = 0, LINKAT = 0, SCR = {}, VCACHE = {};
+  /* 화면마다 보던 스크롤 위치 기억 — 뒤로 오면 그 자리 그대로.
+     history.scrollRestoration = "manual"은 쓰지 않음: 아이폰에서 밀어서 뒤로 갈 때 이전 화면 그림 대신 백지가 보였음(2026-11-12) */
+  window.addEventListener("scroll", function () { if (route.lastH && Date.now() - (route.at || 0) > 400) SCR[route.lastH] = window.scrollY; }, { passive: true });
+  function zoomRun(view) {   /* 화면(view) 중 지금 보이는 부분을 누른 칸 크기·자리에서 시작해 화면 가득 커지게 */
+    var z = ZOOM; ZOOM = null;
+    /* 2026-11-12 원래 B안(줄였다 키우기)으로 복구 — 시작 칸이 화면 밖에 걸쳐 있으면(옆으로 넘기는 아이콘) 화면 안으로 당겨서 시작 */
+    if (z) { var cw = document.documentElement.clientWidth; z = { l: Math.max(0, Math.min(z.l, cw - z.w)), t: z.t, w: Math.min(z.w, cw), h: z.h, at: z.at }; }
+    if (!z || Date.now() - z.at > 1500 || !view.animate) return false;
+    try { if (window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches) return false; } catch (e) {}
+    var W = window.innerWidth, H = window.innerHeight, vr = view.getBoundingClientRect();
+    var ox = -vr.left, oy = -vr.top;
+    var clip0 = "inset(" + Math.max(0, oy) + "px " + Math.max(0, vr.width - (W - vr.left)) + "px " + Math.max(0, vr.height - (H - vr.top)) + "px " + Math.max(0, ox) + "px round ";
+    view.style.transformOrigin = ox + "px " + oy + "px";
+    var an = view.animate([
+      { transform: "translate(" + z.l + "px," + z.t + "px) scale(" + (z.w / W).toFixed(4) + "," + (z.h / H).toFixed(4) + ")", clipPath: clip0 + "60px)", opacity: 0.35 },
+      { opacity: 1, offset: 0.45 },
+      { transform: "none", clipPath: clip0 + "0px)", opacity: 1 }
+    ], { duration: 460, easing: "cubic-bezier(.2,.85,.25,1)" });
+    an.onfinish = an.oncancel = function () { view.style.transformOrigin = ""; };
+    /* 2026-11-13 "복습지 종목 들어갔다 나오면 또 짤림": 아이폰에서 이 움직임이 끝나지 않고 중간(작게 줄어든 상태)에 멈춰
+       화면 본문만 왼쪽에 작게 남는 일이 있었음 → 0.6초 뒤엔 무조건 끝내기 */
+    setTimeout(function () { try { if (an.playState !== "finished") an.cancel(); } catch (e) {} view.style.transformOrigin = ""; }, 620);
+    return true;
+  }
+  /* ---- 앱으로 설치 안내 (#app, 2026-11-12 장동욱 "회원들이 아이폰·갤럭시에서 주소를 어플화할 수 있게 튜토리얼") ----
+     기기·브라우저를 알아서 골라 그림으로 단계 안내. 카톡 안에서 열었으면 먼저 사파리/크롬으로 열기. 안드로이드 크롬은 '앱 설치' 버튼 한 번(beforeinstallprompt). */
+  var INST_EVT = null, INST_X = "ptnote:" + SLUG + ":instx";
+  window.addEventListener("beforeinstallprompt", function (e) {
+    e.preventDefault(); INST_EVT = e;
+    var b = document.getElementById("instGo"); if (b) b.hidden = false;
+  });
+  window.addEventListener("appinstalled", function () { INST_EVT = null; try { localStorage.setItem(INST_X, "1"); } catch (e) {} });
+  function instEnv() {
+    var ua = navigator.userAgent || "";
+    var ios = /iPhone|iPad|iPod/.test(ua) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+    var and = /Android/i.test(ua);
+    var kakao = /KAKAOTALK/i.test(ua);
+    var inapp = kakao || /NAVER\(inapp|Instagram|FBAN|FBAV|Line\/|DaumApps|everytimeApp/i.test(ua);
+    var sam = /SamsungBrowser/i.test(ua);
+    var standalone = !!((window.matchMedia && matchMedia("(display-mode: standalone)").matches) || navigator.standalone === true);
+    return { ios: ios, and: and, kakao: kakao, inapp: inapp, sam: sam, standalone: standalone, mobile: ios || and };
+  }
+  function instIcon() { return BASE + "icon-" + (THEME === "F" ? "f" : "m") + "-192.png"; }
+  var IN_SV = {
+    share: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="m7 8 5-5 5 5"/><path d="M6 11H5a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-8a1 1 0 0 0-1-1h-1"/></svg>',
+    plus: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3.5" y="3.5" width="17" height="17" rx="4"/><path d="M12 8v8M8 12h8"/></svg>',
+    dots: '<svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="12" cy="19" r="2"/></svg>',
+    hdots: '<svg viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg>',
+    menu: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>',
+    home: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11 12 4l9 7"/><path d="M5 10v10h14V10"/></svg>',
+    ext: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="m15 9-2 4-4 2 2-4z"/></svg>'
+  };
+  /* 작은 폰 화면 그림: where = "bot"(아래 막대) / "top"(위 막대) / "sheet"(메뉴 목록) / "dlg"(확인 창) / "home"(홈 화면) */
+  function instMock(kind, o) {
+    var h = '<div class="imk k-' + kind + '" aria-hidden="true"><div class="imk-scr">';
+    if (kind === "bot") h += '<div class="imk-page"><i></i><i></i><i class="s"></i></div><div class="imk-bar">' + o.items.map(function (x) { return '<span' + (x.on ? ' class="on"' : '') + '>' + x.ic + '</span>'; }).join("") + '</div>';
+    else if (kind === "top") h += '<div class="imk-bar t"><span class="url">' + esc(location.host) + '</span>' + o.items.map(function (x) { return '<span' + (x.on ? ' class="on"' : '') + '>' + x.ic + '</span>'; }).join("") + '</div><div class="imk-page"><i></i><i></i><i class="s"></i></div>';
+    else if (kind === "sheet") h += '<div class="imk-page dim"><i></i><i></i></div><div class="imk-list' + (o.top ? ' t' : '') + '">' + o.rows.map(function (r) { return '<div' + (r.on ? ' class="on"' : '') + '><b>' + esc(r.t) + '</b>' + (r.ic || '') + '</div>'; }).join("") + '</div>';
+    else if (kind === "dlg") h += '<div class="imk-page dim"><i></i><i></i></div><div class="imk-dlg"><div class="dt">' + esc(o.title) + '</div><div class="dr"><img src="' + instIcon() + '" alt=""><span>PT노트</span></div><div class="db">' + (o.cancel ? '<em>' + esc(o.cancel) + '</em>' : '') + '<em class="on">' + esc(o.ok) + '</em></div></div>';
+    else if (kind === "home") h += '<div class="imk-home"><i></i><i></i><i></i><span class="on"><img src="' + instIcon() + '" alt=""><b>PT노트</b></span><i></i><i></i><i></i><i></i></div>';
+    return h + '</div></div>';
+  }
+  function instStep(n, title, desc, mock) {
+    return '<li class="ist"><div class="ist-t"><span class="ist-n">' + n + '</span><div><b>' + title + '</b><p>' + desc + '</p></div></div>' + mock + '</li>';
+  }
+  var INST_GUIDES = {
+    ios: function () {
+      return instStep(1, '아래 <u>공유 버튼</u> 누르기', '사파리 아래 막대의 네모에 화살표(' + '<i class="iic">' + IN_SV.share + '</i>) 버튼이에요. 안 보이면 <b>···</b> 를 먼저 누르면 나와요.',
+          instMock("bot", { items: [{ ic: '‹' }, { ic: '›' }, { ic: IN_SV.share, on: 1 }, { ic: '□' }, { ic: IN_SV.hdots }] })) +
+        instStep(2, '<u>홈 화면에 추가</u> 누르기', '메뉴를 위로 조금 올리면 있어요.',
+          instMock("sheet", { rows: [{ t: "복사" }, { t: "즐겨찾기에 추가" }, { t: "홈 화면에 추가", ic: '<i class="iic">' + IN_SV.plus + '</i>', on: 1 }, { t: "페이지에서 찾기" }] })) +
+        instStep(3, '오른쪽 위 <u>추가</u> 누르기', '"웹 앱으로 열기"가 보이면 켜 둔 그대로 두세요.',
+          instMock("dlg", { title: "홈 화면에 추가", cancel: "취소", ok: "추가" })) +
+        instStep(4, '홈 화면의 <u>PT노트</u> 아이콘으로 열기', '이제 주소창 없이 앱처럼 열려요. 출석 도장도 여기서 꾹!', instMock("home", {}));
+    },
+    chrome: function () {
+      return instStep(1, '오른쪽 위 <u>⋮</u> 누르기', '크롬 주소창 오른쪽 점 세 개 버튼이에요.',
+          instMock("top", { items: [{ ic: '⌂' }, { ic: IN_SV.dots, on: 1 }] })) +
+        instStep(2, '<u>홈 화면에 추가</u> (또는 앱 설치) 누르기', '메뉴를 조금 내리면 있어요.',
+          instMock("sheet", { top: 1, rows: [{ t: "새 탭" }, { t: "북마크" }, { t: "홈 화면에 추가", ic: '<i class="iic">' + IN_SV.home + '</i>', on: 1 }, { t: "설정" }] })) +
+        instStep(3, '<u>설치</u> (또는 추가) 누르기', '', instMock("dlg", { title: "앱 설치", cancel: "취소", ok: "설치" })) +
+        instStep(4, '홈 화면의 <u>PT노트</u> 아이콘으로 열기', '이제 주소창 없이 앱처럼 열려요. 출석 도장도 여기서 꾹!', instMock("home", {}));
+    },
+    samsung: function () {
+      return instStep(1, '오른쪽 아래 <u>≡ 메뉴</u> 누르기', '삼성 인터넷 아래 막대 맨 오른쪽이에요.',
+          instMock("bot", { items: [{ ic: '‹' }, { ic: '›' }, { ic: '⌂' }, { ic: '☆' }, { ic: IN_SV.menu, on: 1 }] })) +
+        instStep(2, '<u>현재 페이지 추가</u> 누르기', '(버전에 따라 "페이지 추가"로 보여요)',
+          instMock("sheet", { rows: [{ t: "북마크" }, { t: "현재 페이지 추가", ic: '<i class="iic">' + IN_SV.plus + '</i>', on: 1 }, { t: "방문 기록" }, { t: "설정" }] })) +
+        instStep(3, '<u>홈 화면</u> 고르고 <u>추가</u>', '', instMock("dlg", { title: "홈 화면에 추가", cancel: "취소", ok: "추가" })) +
+        instStep(4, '홈 화면의 <u>PT노트</u> 아이콘으로 열기', '이제 주소창 없이 앱처럼 열려요. 출석 도장도 여기서 꾹!', instMock("home", {}));
+    }
+  };
+  function instUrl() { return location.origin + location.pathname; }
+  function renderInstall() {
+    var E = instEnv(), pick = E.ios ? "ios" : (E.sam ? "samsung" : "chrome");
+    var h = '<div class="ins-hero"><img src="' + instIcon() + '" alt=""><div><small>PT노트 앱으로 쓰기</small><h1>홈 화면에 PT노트 만들기</h1><p>한 번만 해 두면 카톡에서 링크 찾을 필요 없이<br>아이콘 하나로 바로 열려요. 1분이면 돼요.</p></div></div>';
+    if (E.standalone) {
+      h += '<section><div class="ins-done"><b>✓ 이미 앱으로 쓰고 있어요</b><p>지금 홈 화면 PT노트 아이콘으로 열었어요. 이대로 쓰시면 돼요!</p></div></section>';
+      return h + remember();
+    }
+    if (E.inapp) {
+      var ext = E.kakao ? "kakaotalk://web/openExternal?url=" + encodeURIComponent(instUrl()) :
+        (E.and ? "intent://" + location.host + location.pathname + "#Intent;scheme=https;package=com.android.chrome;end" : "");
+      h += '<section class="ins-warn">' + head("", "먼저 " + (E.ios ? "사파리" : "크롬") + "로 열어 주세요", (E.kakao ? "카톡" : "앱") + " 안에서는 홈 화면에 추가가 안 돼요") +
+        (ext ? '<a class="btn fill ins-ext" href="' + esc(ext) + '">' + IN_SV.ext + (E.ios ? '사파리로 열기' : '크롬으로 열기') + '</a>' : '') +
+        '<p class="ins-alt">버튼이 안 되면: ' + (E.ios ? '오른쪽 아래 <b>···</b> 또는 공유 버튼 → <b>Safari로 열기</b>' : '오른쪽 위 <b>⋮</b> → <b>다른 브라우저로 열기</b>') + '</p>' +
+        '<p class="ins-alt">그래도 안 되면 주소를 복사해서 ' + (E.ios ? '사파리' : '크롬') + ' 주소창에 붙여 넣어요.</p>' +
+        '<button type="button" class="btn ins-copy" id="instCopy">주소 복사하기</button></section>';
+    }
+    h += '<section>' + head("", "따라 하기", "내 폰에 맞는 걸 골라요") +
+      '<div class="ins-seg" role="tablist">' + [["ios", "아이폰"], ["chrome", "갤럭시 · 크롬"], ["samsung", "삼성 인터넷"]].map(function (t) {
+        return '<button type="button" role="tab" data-g="' + t[0] + '" aria-selected="' + (t[0] === pick) + '">' + t[1] + '</button>';
+      }).join("") + '</div>' +
+      (E.and && !E.inapp ? '<button type="button" class="btn fill ins-go" id="instGo"' + (INST_EVT ? '' : ' hidden') + '>' + IN_SV.plus + '한 번에 앱 설치하기</button>' : '') +
+      '<ol class="ins-steps" id="instSteps">' + INST_GUIDES[pick]() + '</ol>' +
+      (E.ios ? '<p class="ins-alt">아이폰은 <b>사파리</b>에서 하는 게 제일 확실해요. 크롬에서도 공유 버튼 → 홈 화면에 추가가 돼요.</p>' : '') +
+      '</section>';
+    h += '<section>' + head("", "알아 두면 좋아요") + '<ul class="ins-tip">' +
+      '<li>아이콘으로 열어도 <b>출석·루틴·복습지</b>는 그대로예요.</li>' +
+      '<li>선생님이 루틴·복습지를 올리면 <b>열 때마다 자동으로 최신</b>이 돼요. 따로 업데이트할 필요 없어요.</li>' +
+      '<li>아이콘을 지워도 기록은 안 사라져요. 다시 추가하면 돼요.</li></ul>' +
+      '<button type="button" class="btn ins-copy" id="instCopy2">내 PT노트 주소 복사</button></section>';
+    return h + remember();
+  }
+  function setupInstall() {
+    var seg = view.querySelector(".ins-seg"), box = document.getElementById("instSteps");
+    if (seg && box) seg.addEventListener("click", function (e) {
+      var b = e.target.closest("button[data-g]"); if (!b) return;
+      Array.prototype.forEach.call(seg.children, function (x) { x.setAttribute("aria-selected", x === b ? "true" : "false"); });
+      box.innerHTML = INST_GUIDES[b.getAttribute("data-g")]();
+    });
+    var go = document.getElementById("instGo");
+    if (go) go.addEventListener("click", function () {
+      if (!INST_EVT) return;
+      INST_EVT.prompt();
+      (INST_EVT.userChoice || Promise.resolve({})).then(function (c) { if (c && c.outcome === "accepted") { go.hidden = true; attToast("PT노트 앱이 설치됐어요!"); } });
+      INST_EVT = null;
+    });
+    ["instCopy", "instCopy2"].forEach(function (id) {
+      var b = document.getElementById(id); if (!b) return;
+      b.addEventListener("click", function () {
+        var u = instUrl();
+        function ok() { attToast("주소를 복사했어요"); }
+        if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(u).then(ok, function () { window.prompt("주소를 길게 눌러 복사하세요", u); });
+        else window.prompt("주소를 길게 눌러 복사하세요", u);
+      });
+    });
+  }
+  function instHomeCard() {   /* 홈: 아직 앱으로 안 쓰는 회원 폰에만 (닫으면 안 뜸) */
+    var E = instEnv();
+    if (E.standalone || !E.mobile || DEMO || COACH_MODE) return "";
+    try { if (localStorage.getItem(INST_X)) return ""; } catch (e) {}
+    return '<div class="ins-card"><a href="#app"><img src="' + instIcon() + '" alt=""><span><b>홈 화면에 PT노트 앱 만들기</b><em>아이콘 하나로 바로 열려요 · 1분</em></span><i aria-hidden="true">›</i></a>' +
+      '<button type="button" class="ins-x" aria-label="닫기" onclick="try{localStorage.setItem(\'' + INST_X + '\',\'1\')}catch(e){};this.parentNode.remove()">×</button></div>';
+  }
+  function instLink() {   /* 나 탭 */
+    if (instEnv().standalone || DEMO) return "";
+    return '<a class="rp-home ins-link" href="#app"><span class="rh-ic" aria-hidden="true">' + IN_SV.plus + '</span><span class="rh-t"><small>APP</small><b>PT노트를 앱처럼 쓰기</b><em>홈 화면에 아이콘 추가하는 법</em></span><span class="rh-go" aria-hidden="true">›</span></a>';
+  }
+  function navName(h) {
+    h = String(h || "").replace(/^#/, "") || "home";
+    if (/^routine/.test(h)) return "루틴"; if (/^form-/.test(h)) return "자세 복습지"; if (h === "forms") return "복습지";
+    if (h === "diet") return "식단"; if (/^goal/.test(h)) return "목표"; if (h === "body") return "몸변화"; if (h === "notice") return "공지";
+    if (/^report/.test(h)) return "리포트"; if (h === "growth") return "성장 기록"; if (h === "app") return "앱으로 쓰기"; if (h === "muscle") return "근육 지도"; return "홈";
+  }
+  document.addEventListener("touchstart", function () {}, { passive: true });   /* 아이폰에서 :active(살짝 눌림)가 먹게 */
+  document.addEventListener("click", function (e) {
+    var a = e.target.closest && e.target.closest('a[href^="#"]'); if (!a) return;
+    LINKAT = Date.now();
+    var to = a.getAttribute("href"), cur = location.hash || "#home";
+    if (to === "#" || to === cur) return;
+    if (a.closest(".tabs") || a.closest(".bar") || a.closest(".meseg")) { NAVS = []; return; }
+    /* 루틴 안에서 요일 바꾸기(일주일 한눈에 칸·로테이션 고르기)는 뒤로 버튼·커지는 효과 없이 그날 칸만 은은하게 (2026-11-12 "요일별 눌러서 들어가는 칸은 별로 — 은은하게") */
+    if (/^#routine/.test(cur) && /^#routine/.test(to)) { SOFT = Date.now(); return; }
+    NAVS.push({ h: cur, y: window.scrollY });
+    /* B안 (2026-11-12 "아이콘이 퍼지며 화면 들어가기 — B안으로"): 누른 칸 자리에서 다음 화면이 커지며 열림 → 그 칸 위치를 기억 */
+    var zEl = a.closest(".th-tile, .card-link, .hw, .ex, .thero, .stamp, .ibstrip, .rp-home") || ((a.offsetHeight < 56) && a.closest(".panel, section")) || a;
+    var zr = zEl.getBoundingClientRect();
+    /* 커지며 열리기(B안) — 2026-11-12 다시 켬: transform 없이 clip-path만 써서 화면 폭에 영향 없음 */
+    /* 2026-11-14 끔: 아이폰에서 다음 화면이 작게·왼쪽으로 쏠린 채 시작해 커지는 게 "화면 쏠림"으로 보임 → 다른 화면처럼 차례로 올라오기(D안)만 */
+    void zr;
+    if (NAVS.length > 20) NAVS.shift();
+  }, true);
+  function navBackDraw(view) {
+    if (!NAVS.length) return;
+    var top = NAVS[NAVS.length - 1], bar = document.querySelector(".bar");
+    view.insertAdjacentHTML("afterbegin", '<button type="button" class="navback" id="navBack" aria-label="' + navName(top.h) + '(으)로 돌아가기"><span aria-hidden="true">‹</span> 뒤로 <b>· ' + navName(top.h) + '</b></button>');
+    var nb = document.getElementById("navBack");
+    if (bar) nb.style.top = (Math.round(bar.getBoundingClientRect().height) + 8) + "px";
+    nb.addEventListener("click", function () {
+      var want = NAVS[NAVS.length - 1].h, was = location.hash;
+      history.back();
+      setTimeout(function () { if (location.hash === was) location.hash = want; }, 350);
+    });
+  }
+  function tabInd() {   /* 아래 탭 밑 빨간 막대 — 고른 탭으로 미끄러져 감 (D안) */
+    var tin = document.querySelector(".tabs-in"); if (!tin) return;
+    var bar = tin.querySelector(".tind"); if (!bar) { bar = document.createElement("i"); bar.className = "tind"; bar.setAttribute("aria-hidden", "true"); tin.appendChild(bar); }
+    var a = tin.querySelector('a[aria-current="page"]');
+    if (!a) { bar.style.opacity = "0"; return; }
+    bar.style.opacity = "1"; bar.style.transform = "translateX(" + Math.round(a.offsetLeft + a.offsetWidth / 2 - 11) + "px)";
+  }
+  window.addEventListener("resize", function () { tabInd(); });
+  /* ---------------- 처음 쓰는 회원 둘러보기(튜토리얼) (2026-11-13 장동욱 "처음 들어가면 튜토리얼, 다시 필요하면 옵션 칸에서")
+     처음 연 폰에서 홈 화면일 때 한 번 — 실제 화면의 그 자리를 동그랗게 비춰 주며 차례로 설명. 끝나면 기억(ptnote:<주소>:tour).
+     '나' 탭 맨 아래 "설정" 칸의 "앱 사용법 다시 보기"로 언제든 다시. 선생님 보기·안내서 데모·아이패드 칸 안에선 저절로 안 뜸. */
+  var TOUR_K = "ptnote:" + SLUG + ":tour", TOUR_ON = false, TOUR_WANT = false;
+  try { TOUR_WANT = !localStorage.getItem(TOUR_K) && !COACH_MODE && !DEMO && window.self === window.top; } catch (e) {}
+  if (/[?&]tour\b/.test(location.search)) TOUR_WANT = true;
+  function tourName() { var n = String(M.name || "").split("·")[0].trim(); return /·/.test(M.name || "") ? M.name.replace(/\s*·\s*/g, "·") : (n.length >= 3 ? n.slice(1) : n); }
+  function tourSteps() {
+    var E = typeof instEnv === "function" ? instEnv() : { standalone: true, mobile: false };
+    var S = [
+      { c: 1, t: tourName() + "님, 환영해요! 👋", b: TRN + " " + TRL() + "님과 함께하는 나만의 PT노트예요.\n어디에 뭐가 있는지 30초만 둘러볼까요?", ok: "둘러보기" },
+      { s: "#attBtn", t: "운동 온 날엔 출석 도장 꾹", b: "헬스장에 온 날 여기를 꾹 누르면 출석이 찍혀요.\n출석이 쌓이면 배지와 월간 리포트가 생겨요." },
+      { s: ".thero", t: "오늘 할 운동", b: "요일마다 오늘 할 운동이 여기 떠요.\n누르면 세트·무게까지 자세히 볼 수 있어요." },
+      { s: '.tabs a[data-tab="routine"]', t: "운동", b: "루틴과 자세 복습지가 한 곳에 있어요.\n한 종목이 끝나면 ✓를 눌러 기록해요." },
+      { s: '.tabs a[data-tab="diet"]', t: "식단", b: M.diet ? "선생님이 짜 준 식단이 여기 있어요." : "식단을 받으면 여기서 볼 수 있어요." },
+      { s: '.tabs a[data-tab="log"]', t: "기록", b: "✓한 운동 · 첫날 vs 오늘 · 근육 지도 · 인바디가\n여기 쌓여요." },
+      { s: '.tabs a[data-tab="me"]', t: "나", b: "출석률 · 배지 · PT 여정을\n한눈에 볼 수 있어요." },
+      { s: ".bell", t: "선생님 공지", b: "선생님 소식이 오면 빨간 점이 떠요." },
+      { c: 1, t: "준비 끝! 💪", b: "새 루틴이나 복습지가 올라오면 아래 아이콘에 불이 켜져요.\n사용법은 오른쪽 위 ⚙️ 설정에서 언제든 다시 볼 수 있어요.", ok: "시작하기", app: E.mobile && !E.standalone }
+    ];
+    return S.filter(function (x) { if (!x.s) return true; var el = document.querySelector(x.s); return el && el.getBoundingClientRect().width > 0; });
+  }
+  function tourStart() {
+    if (TOUR_ON || !document.querySelector(".stamp, .thero")) return;
+    TOUR_ON = true; TOUR_WANT = false;
+    document.querySelectorAll(".npop-wrap").forEach(function (x) { x.remove(); });
+    var S = tourSteps(), i = 0;
+    var w = document.createElement("div"); w.className = "tour"; w.setAttribute("role", "dialog"); w.setAttribute("aria-modal", "true");
+    w.innerHTML = '<div class="tour-hole"></div><div class="tour-card"><button type="button" class="tour-skip">건너뛰기</button><div class="tour-dots"></div><b class="tour-t"></b><p class="tour-b"></p><div class="tour-btns"></div></div>';
+    document.body.appendChild(w);
+    var hole = w.querySelector(".tour-hole"), card = w.querySelector(".tour-card");
+    function end() {
+      try { localStorage.setItem(TOUR_K, "1"); } catch (e) {}
+      w.classList.remove("on"); setTimeout(function () { w.remove(); }, 260);
+      TOUR_ON = false; setTimeout(function () { if (!DEMO) showNoticePop(); }, 600);
+    }
+    function place() {
+      var x = S[i], vw = window.innerWidth, vh = window.innerHeight;
+      if (x.c) { hole.style.cssText = "left:" + vw / 2 + "px;top:" + vh / 2 + "px;width:0;height:0;border-radius:50%"; card.style.top = Math.max(80, vh / 2 - card.offsetHeight / 2) + "px"; card.classList.add("mid"); return; }
+      var el = document.querySelector(x.s); if (!el) return;
+      var r = el.getBoundingClientRect(), pad = el.closest(".tabs") ? 4 : 8, rad = getComputedStyle(el).borderRadius;
+      hole.style.cssText = "left:" + (r.left - pad) + "px;top:" + (r.top - pad) + "px;width:" + (r.width + pad * 2) + "px;height:" + (r.height + pad * 2) + "px;border-radius:" + (el.closest(".tabs") ? "18px" : (parseFloat(rad) ? (parseFloat(rad) + pad) + "px" : "18px"));
+      card.classList.remove("mid");
+      var ch = card.offsetHeight, below = r.bottom + pad + 14;
+      card.style.top = (below + ch < vh - 12 ? below : Math.max(12, r.top - pad - 14 - ch)) + "px";
+    }
+    function show() {
+      var x = S[i];
+      card.querySelector(".tour-dots").innerHTML = S.map(function (_, k) { return '<i' + (k === i ? ' class="on"' : '') + '></i>'; }).join("");
+      card.querySelector(".tour-t").textContent = x.t;
+      card.querySelector(".tour-b").textContent = x.b;
+      card.querySelector(".tour-skip").hidden = i === S.length - 1;
+      card.querySelector(".tour-btns").innerHTML = (x.app ? '<a class="tb-app" href="#app">📲 홈 화면에 앱으로 추가하기</a>' : '') +
+        (i > 0 && !x.c ? '<button type="button" class="tb-prev">이전</button>' : '') +
+        '<button type="button" class="tb-next">' + (x.ok || (i === S.length - 2 ? "마지막" : "다음") + ' <small>' + i + '/' + (S.length - 2) + '</small>') + '</button>';
+      card.classList.remove("in"); void card.offsetWidth; card.classList.add("in");
+      if (x.s) {
+        var el = document.querySelector(x.s);
+        if (el && !el.closest(".tabs, .bar")) {
+          var r = el.getBoundingClientRect();
+          if (r.top < 70 || r.bottom > window.innerHeight - 220) { window.scrollTo({ top: window.scrollY + r.top - 110, behavior: "smooth" }); setTimeout(place, 420); return; }
+        }
+      }
+      place();
+    }
+    w.addEventListener("click", function (e) {
+      if (e.target.closest(".tour-skip")) return end();
+      if (e.target.closest(".tb-app")) return end();
+      if (e.target.closest(".tb-prev")) { i = Math.max(0, i - 1); return show(); }
+      if (e.target.closest(".tb-next") || e.target === hole || e.target === w) { if (i >= S.length - 1) return end(); i++; show(); }
+    });
+    window.addEventListener("resize", function rs() { if (!w.isConnected) return window.removeEventListener("resize", rs); place(); });
+    requestAnimationFrame(function () { w.classList.add("on"); show(); });
+  }
+  function tourMaybe() {   /* route()가 홈을 그린 뒤 */
+    if (!TOUR_WANT || TOUR_ON) return;
+    var h = location.hash.replace("#", "");
+    if (h && h !== "home") return;
+    setTimeout(function () { if (TOUR_WANT && (!location.hash || location.hash === "#home")) tourStart(); }, document.body.classList.contains("ready") ? 450 : 1300);
+  }
+  /* 위 막대 ⚙️ 설정 (2026-11-13 "상단 지수 아이콘 옆에 설정 아이콘 — 앱 사용법·홈 화면 앱 추가, 기존 항목 없애고") */
+  function gearMenu() {
+    var old = document.getElementById("gearMenu"); if (old) { old.remove(); return; }
+    var E = typeof instEnv === "function" ? instEnv() : { standalone: true }, g = document.getElementById("gearBtn");
+    var m = document.createElement("div"); m.id = "gearMenu"; m.className = "gmenu"; m.setAttribute("role", "menu");
+    m.innerHTML = '<a href="#home" role="menuitem" data-tour="1"><span>🧭</span><b>앱 사용법 다시 보기</b></a>' +
+      '<a href="#app" role="menuitem"><span>📲</span><b>' + (E.standalone ? '홈 화면 앱 설치 안내' : '홈 화면에 앱으로 추가하기') + '</b></a>';   /* 2026-11-13 "앱아이콘 설치 옵션 왜 뺐냐" — 앱으로 열었어도 항상 보이게 */
+    document.body.appendChild(m);
+    var r = g.getBoundingClientRect();
+    m.style.top = (r.bottom + 8) + "px"; m.style.right = Math.max(10, window.innerWidth - r.right - 40) + "px";
+    requestAnimationFrame(function () { m.classList.add("on"); });
+    setTimeout(function () {
+      document.addEventListener("click", function cl(e) { if (!e.target.closest("#gearMenu a")) { m.remove(); } else setTimeout(function () { m.remove(); }, 50); document.removeEventListener("click", cl, true); }, true);
+    }, 0);
+  }
+  (function () { var g = document.getElementById("gearBtn"); if (g) g.addEventListener("click", function (e) { e.stopPropagation(); gearMenu(); }); })();
+  document.addEventListener("click", function (e) {
+    var a = e.target.closest("[data-tour]"); if (!a) return;
+    TOUR_WANT = true;
+    if (!location.hash || location.hash === "#home") { e.preventDefault(); window.scrollTo(0, 0); tourMaybe(); }
+  });
+
+  function zoomReset() {   /* 화면이 바뀔 때 남아 있는 확대·축소 움직임은 모두 지움 */
+    var v = document.getElementById("view"); if (!v) return;
+    try { if (v.getAnimations) v.getAnimations().forEach(function (a) { a.cancel(); }); } catch (e) {}
+    v.style.transform = ""; v.style.transformOrigin = ""; v.style.clipPath = "";
+  }
+  document.addEventListener("visibilitychange", function () { if (!document.hidden) zoomReset(); });
+  window.addEventListener("pageshow", zoomReset);
   function route() {
+    zoomReset();
     var hsh = (location.hash || "").replace(/^#/, "");
+    var navTop = NAVS[NAVS.length - 1];
+    if (navTop && navTop.h === (location.hash || "#home")) NAV_BACK = NAVS.pop();
+    /* 뒤로 가기(뒤로 버튼·아이폰 밀어서 뒤로·브라우저 뒤로)는 새로고침처럼 보이지 않게 차례 등장 없이 그대로 (2026-11-12 "눌렀을 때 어쩔 땐 새로고침") */
+    var goingBack = !!NAV_BACK || (route.lastH !== undefined && Date.now() - LINKAT > 1000);
+    /* 뒤로 갈 땐 다시 그리지 않고 아까 그 화면(DOM)을 그대로 다시 붙임 (2026-11-12 "특정 아이콘만 들어갔다 돌아오면 깜빡임")
+       — 새로 그리면 아이폰이 그림·움직이는 아이콘을 처음부터 다시 칠하느라 한 순간 하얗게 비었음 */
+    var curH0 = location.hash || "#home", prevH = route.lastH;
+    if (prevH !== undefined && prevH !== curH0 && view.firstChild) {
+      /* 2026-11-13 "복습지 종목 들어갔다 나오면 화면 짤림": 떼어 둔 화면의 영상이 계속 재생돼서 아이폰이 PiP(옆에 회색 손잡이)로 빼고 화면 배율이 꼬였음
+         → 떼어 둘 땐 영상을 멈추고, 다시 붙일 때 이어서 재생 */
+      Array.prototype.forEach.call(view.querySelectorAll("video"), function (v) { try { v.setAttribute("data-was", v.paused ? "" : "1"); v.pause(); } catch (e) {} });
+      var fr = document.createDocumentFragment(); while (view.firstChild) fr.appendChild(view.firstChild);
+      VCACHE[prevH] = { fr: fr, tab: view.getAttribute("data-tab"), day: view.getAttribute("data-day"), at: Date.now(), sig: vSig() };
+      Object.keys(VCACHE).forEach(function (k) { if (Date.now() - VCACHE[k].at > 180000) delete VCACHE[k]; });
+    }
+    var hit = goingBack && prevH !== undefined && prevH !== curH0 && VCACHE[curH0];
+    if (hit) {
+      delete VCACHE[curH0];
+      view.appendChild(hit.fr);
+      Array.prototype.forEach.call(view.querySelectorAll('video[data-was="1"]'), function (v) { try { var p = v.play(); if (p && p.catch) p.catch(function () {}); } catch (e) {} });
+      var ob = view.querySelector("#navBack"); if (ob) ob.remove();
+      view.setAttribute("data-tab", hit.tab || "home");
+      if (hit.day) view.setAttribute("data-day", hit.day); else view.removeAttribute("data-day");
+      route.lastH = curH0; route.at = Date.now();
+      view.classList.remove("enter"); view.classList.add("back");
+      var t0 = tabOf(hit.tab);
+      Array.prototype.forEach.call(document.querySelectorAll(".tabs a"), function (a) {
+        if (a.getAttribute("data-tab") === t0) a.setAttribute("aria-current", "page"); else a.removeAttribute("aria-current");
+      });
+      tabInd(); litApply(hit.tab); navBackDraw(view);
+      if (hit.sig !== vSig()) attRefresh();   /* 그사이 출석 기록이 바뀌었으면 그 부분만 새로 */
+      var by0 = NAV_BACK ? NAV_BACK.y : SCR[curH0]; NAV_BACK = null; ZOOM = null;
+      if (by0 != null) window.scrollTo(0, by0);
+      return;
+    }
     var html, tab = "home", after = null, scrollDay = false, jumpTo = null;
     if (!hsh || hsh === "home") { html = renderHome(); }
-    else if (hsh === "forms") { html = renderForms(); tab = "forms"; }
+    else if (hsh === "forms") { html = renderForms(); tab = "forms"; after = setupForms; }
     else if (hsh.indexOf("form-") === 0) {
       var f = findForm(hsh.slice(5));
       html = f ? renderForm(f) : renderForms(); tab = "forms"; if (f) after = setupPlayer;
@@ -2748,8 +3736,11 @@
     else if (hsh === "notice") { html = renderNotice(); tab = "notice"; }
     else if (hsh === "goal" || hsh === "journey") { html = renderGoal(); tab = "goal"; }
     else if (hsh === "goal-badges" || hsh === "badges") { html = renderGoal(); tab = "goal"; jumpTo = "badges"; }
-    else if (hsh === "muscle") { html = renderRoutine(); tab = "routine"; jumpTo = "muscle"; }
-    else if (hsh === "report" || /^report-\d{4}-\d{2}$/.test(hsh)) { html = renderReport(hsh.slice(7)); tab = "routine"; after = setupReport; }
+    else if (hsh === "log") { html = renderLog(); tab = "log"; }
+    else if (hsh === "muscle") { html = renderLog(); tab = "log"; jumpTo = "muscle"; }
+    else if (hsh === "growth") { html = renderGrowth(); tab = "log"; after = setupGrowth; }
+    else if (hsh === "app") { html = renderInstall(); tab = "home"; after = setupInstall; }
+    else if (hsh === "report" || /^report-\d{4}-\d{2}$/.test(hsh)) { html = renderReport(hsh.slice(7)); tab = "log"; after = setupReport; }
     else if ((hsh === "body" || hsh === "inbody") && IB_ON) { html = renderBody(); tab = "body"; }
     else { html = renderHome(); }
     var prevTab = view.getAttribute("data-tab");
@@ -2757,13 +3748,24 @@
     if (tab !== "routine") view.removeAttribute("data-day");
     view.innerHTML = html + rtSaveBar();
     view.setAttribute("data-tab", tab);
-    appAnim(prevTab, tab);
+    /* 화면 넘어갈 때 효과 D안 (2026-11-12 "D안으로 가자"): 칸들이 위에서부터 차례로 톡톡 올라옴 — 주소가 바뀔 때만(같은 화면 다시 그리기는 X) */
+    var curH = location.hash || "#home";
+    var hashChanged = route.lastH !== undefined && route.lastH !== curH;
+    var soft = SOFT && Date.now() - SOFT < 1500; SOFT = 0;
+    if (route.lastH !== undefined && route.lastH !== curH && !soft && !goingBack && !(ZOOM && Date.now() - ZOOM.at < 1500)) {
+      view.classList.remove("enter"); void view.offsetWidth; view.classList.add("enter");
+      clearTimeout(route.enterT); route.enterT = setTimeout(function () { view.classList.remove("enter"); }, 900);
+    }
+    route.lastH = curH; route.at = Date.now();
+    view.classList.toggle("back", !!(goingBack && hashChanged));
     Array.prototype.forEach.call(document.querySelectorAll(".tabs a"), function (a) {
-      if (a.getAttribute("data-tab") === tab) a.setAttribute("aria-current", "page"); else a.removeAttribute("aria-current");
+      if (a.getAttribute("data-tab") === tabOf(tab)) a.setAttribute("aria-current", "page"); else a.removeAttribute("aria-current");
     });
+    tabInd();
     alignText(document);
     if (/^form-/.test(hsh) && !DEMO) lsAdd(FOPEN_KEY, [hsh.slice(5)]);
     litApply(tab);
+    setupFold(tab, jumpTo || (scrollDay ? "day" : null));
     setupAttCheck(); setupCal(); setupIb(); setupBadges(); setupMuscle(); setupRtEdit();
     if (after) after();
     setupFold(hsh, jumpTo);
@@ -2777,8 +3779,12 @@
         pendingNotice = null;
       }
     }
+    navBackDraw(view);
     var jumpEl = jumpTo && document.getElementById(jumpTo);
-    if (jumpEl) {
+    if (NAV_BACK || (goingBack && hashChanged && SCR[curH] != null)) {
+      var by = NAV_BACK ? NAV_BACK.y : SCR[curH]; NAV_BACK = null;
+      window.scrollTo(0, by); setTimeout(function () { window.scrollTo(0, by); }, 60);
+    } else if (jumpEl) {
       jumpEl.scrollIntoView({ block: "start" });
     } else if (flashEl) {
       flashEl.scrollIntoView({ block: "center" });
@@ -2789,44 +3795,58 @@
     } else {
       window.scrollTo(0, 0);
     }
+    if (ZOOM) { if (hashChanged) zoomRun(view); else ZOOM = null; }
+    if (soft && hashChanged) {
+      var dEl = document.getElementById("day");
+      if (dEl && dEl.animate) { try { if (!matchMedia("(prefers-reduced-motion: reduce)").matches) dEl.animate([{ opacity: 0, transform: "translateY(6px)" }, { opacity: 1, transform: "none" }], { duration: 280, easing: "ease-out" }); } catch (e) {} }
+    }
   }
-  /* ---------------- 칸 접기·펼치기 (2026-11-12 트레이너 "항목들 펼치고 접을 수 있는 토글")
-     번호 제목(.head)이 있는 칸마다 제목이나 오른쪽 ⌄ 를 누르면 접힘/펼침. 이 폰에 기억(localStorage ptnote:<주소>:fold, 키 = 화면:제목).
-     주소로 바로 찾아간 칸(#goal-badges 등)은 접혀 있어도 펼쳐서 보여 줌. 월간 리포트(#report)는 그대로. */
-  var FOLD_LS = "ptnote:" + SLUG + ":fold";
-  function foldGet() { try { return JSON.parse(localStorage.getItem(FOLD_LS) || "{}") || {}; } catch (e) { return {}; } }
-  var foldJump = null;
-  function foldSet(o) { try { localStorage.setItem(FOLD_LS, JSON.stringify(o)); } catch (e) {} }
-  function setupFold(hsh, jumpTo) {
-    if (/^report/.test(hsh)) return;
-    if (jumpTo === undefined) jumpTo = foldJump; else foldJump = jumpTo;
-    var page = (hsh || "home").replace(/^(routine)-.*/, "$1").replace(/^form-.*/, "form").replace(/^(goal-badges|badges|journey)$/, "goal");
-    var st = foldGet();
-    Array.prototype.forEach.call(document.querySelectorAll("#view section"), function (sec) {
-      var hd = sec.firstElementChild;
-      if (!hd || !hd.classList.contains("head") || !hd.querySelector("h2") || !hd.nextElementSibling || sec.querySelector(".fbody")) return;
-      var key = page + ":" + hd.querySelector("h2").textContent.trim();
-      var body = document.createElement("div"); body.className = "fbody";
-      while (hd.nextSibling) body.appendChild(hd.nextSibling);
-      sec.appendChild(body);
-      var btn = document.createElement("button");
-      btn.type = "button"; btn.className = "fold-btn";
-      btn.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>';
-      hd.appendChild(btn);
-      sec.classList.add("foldable");
-      function apply(f) { sec.classList.toggle("folded", f); btn.setAttribute("aria-expanded", f ? "false" : "true"); btn.setAttribute("aria-label", (f ? "펼치기 · " : "접기 · ") + key.split(":")[1]); }
-      var jumped = jumpTo && (sec.id === jumpTo || sec.querySelector("#" + jumpTo));
-      apply(!!st[key] && !jumped);
-      hd.addEventListener("click", function (e) {
-        if (e.target.closest("a, button:not(.fold-btn), input, select, label")) return;
-        var o = foldGet(), f = !sec.classList.contains("folded");
-        if (f) o[key] = 1; else delete o[key];
-        foldSet(o); apply(f);
-        if (!f) alignText(sec);
-      });
+  /* vpFix(뷰포트 다시 맞추기)는 2026-11-12 뺐음 — 아이폰에서 오히려 화면이 옆으로 점점 늘어났음. 뷰포트 meta를 코드로 건드리지 말 것 */
+  /* 화면 잘림 진단 (2026-11-12) — 선생님 보기에서만: 페이지 폭이 폰 화면보다 넓어지면 위에 빨간 띠로 범인 칸을 알려 줌 + 맨 아래 버전 표시 */
+  function ovDiag() {
+    if (!COACH_MODE || DEMO) return;
+    var sw = Math.min(screen.width, screen.height) <= 500 && window.matchMedia("(orientation: portrait)").matches ? screen.width : window.innerWidth;
+    var cw = document.documentElement.clientWidth, bad = [];
+    Array.prototype.forEach.call(document.querySelectorAll("body *"), function (e) {
+      var r = e.getBoundingClientRect(); if (!r.width || r.right <= sw + 1) return;
+      var p = e.parentElement, clipped = false;
+      while (p && p !== document.body) { var cs = getComputedStyle(p); if (cs.overflowX !== "visible" && p.getBoundingClientRect().right <= sw + 1) { clipped = true; break; } p = p.parentElement; }
+      if (!clipped) bad.push(e);
     });
+    var box = document.getElementById("ovdiag");
+    if (cw <= sw + 1 && !bad.length) { if (box) box.remove(); return; }
+    if (!box) { box = document.createElement("div"); box.id = "ovdiag"; box.style.cssText = "position:fixed;left:8px;right:8px;top:calc(env(safe-area-inset-top,0px) + 6px);z-index:999;background:#C9A227;color:#fff;font:700 11px/1.4 sans-serif;padding:6px 9px;border-radius:10px;word-break:break-all"; document.body.appendChild(box); box.addEventListener("click", function () { box.remove(); }); }
+    box.textContent = "[선생님만 보임] 화면 넘침: 페이지 " + cw + " / 폰 " + sw + " · " + bad.slice(0, 4).map(function (e) {
+      var c = typeof e.className === "string" ? e.className : (e.className && e.className.baseVal) || "";
+      return e.tagName.toLowerCase() + (c ? "." + c.split(" ").join(".") : "") + "(" + Math.round(e.getBoundingClientRect().right) + ")";
+    }).join(", ") + " — 이 화면 캡처해서 보내 주세요";
   }
-
+  window.addEventListener("hashchange", function () { setTimeout(ovDiag, 900); });
+  [1500, 4000, 8000].forEach(function (t) { setTimeout(ovDiag, t); });
+  if (COACH_MODE && !DEMO) {
+    var vm = (SCRIPT && SCRIPT.src.match(/[?&]v=(\w+)/) || [])[1] || "?";
+    var vt = document.createElement("div"); vt.style.cssText = "text-align:center;font-size:10px;color:#B4B4BE;padding:4px 0 110px;white-space:pre-line"; vt.textContent = "PT노트 버전 " + vm;
+    document.body.appendChild(vt);
+  }
+  /* 2026-11-13 "또 짤림": 본문(view)이 화면 가운데 자리에서 벗어나 있으면(오른쪽만 비거나 넘침) 남은 움직임을 지우고 다시 그리게 함.
+     선생님 폰엔 맨 아래 회색 글씨로 화면 숫자를 같이 보여 줌 → 또 생기면 그 줄을 캡처해서 원인 확인 */
+  var HEAL = 0;
+  function viewHeal(why) {
+    var v = document.getElementById("view"); if (!v) return;
+    var w = document.documentElement.clientWidth, r = v.getBoundingClientRect(), vv = window.visualViewport;
+    var off = r.left < -1 || r.right > w + 1 || Math.abs((w - r.right) - r.left) > 8;
+    if (off) {
+      HEAL++;
+      try { if (v.getAnimations) v.getAnimations().forEach(function (a) { a.cancel(); }); } catch (e) {}
+      v.style.transform = ""; v.style.transformOrigin = ""; v.style.clipPath = "";
+      void v.offsetWidth;   /* (2026-11-14) display none 껐다 켜기는 뺌 — 아이폰에서 본문 폭이 줄어든 채 남는 원인 후보 */
+    }
+    if (COACH_MODE && !DEMO && vt) {
+      var r2 = v.getBoundingClientRect(), tb = document.querySelector(".tabs");
+      vt.textContent = "PT노트 버전 " + vm + "\n화면 " + window.innerWidth + "/" + w + "/" + screen.width + (vv ? " · 배율 " + vv.scale.toFixed(2) + " " + Math.round(vv.width) : "") +
+        " · 본문 " + Math.round(r2.left) + "~" + Math.round(r2.right) + " · 아래탭 " + (tb ? Math.round(tb.getBoundingClientRect().width) : "-") + " · 고침 " + HEAL + (off ? " (" + why + ": " + Math.round(r.left) + "~" + Math.round(r.right) + ")" : "");
+    }
+  }
   /* ---------------- 터치해서 고치기 (2026-11-12 트레이너 "루틴이랑 식단도 그 항목 터치해서 그 부분 고치는 식으로") — 선생님 보기(CAN_EDIT)에서만
      루틴: 종목 카드를 누르면 고치기 모드로 들어가며 그 종목 고치기 창 / 제목 카드를 누르면 제목·계획 창 → 저장은 아래 "저장 · 바로 반영"(기존 그대로).
      식단: 표 식단은 보이는 글자를 누르면 식단 데이터에서 같은 글자를 찾아 그 칸만 고침(dPaths) → 창고 pub:m:<주소>:diet 에 바로 저장. 글 식단은 통째로 쓰기. */
@@ -3082,76 +4102,19 @@
     if (fi) fi.addEventListener("change", function () { var f = fi.files[0]; document.getElementById("fmName").textContent = f ? "고른 파일: " + f.name + " (" + (f.size / 1048576).toFixed(1) + "MB)" : ""; });
   });
 
-  /* ---------------- 앱처럼 (2026-11-12 트레이너 "앱처럼 — 2번") — 화면 넘김 애니메이션 · 옆으로 밀어 탭 이동 · 당겨서 새로고침 · 시작 화면 · 눌림 효과(style.css)
-     휴대폰 '동작 줄이기'면 애니메이션 없음. 고치기 창(.rtsheet)·팝업이 떠 있을 때와 가로로 밀리는 칸 안에서는 밀기·당기기 안 함. */
-  var RM = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  function tabOrder() { return Array.prototype.map.call(document.querySelectorAll(".tabs a[data-tab]"), function (a) { return a.getAttribute("data-tab"); }); }
-  function appAnim(prev, tab) {
-    if (RM || !prev) return;
-    var o = tabOrder(), a = o.indexOf(prev), b = o.indexOf(tab);
-    var cls = prev === tab ? "v-in" : (a > -1 && b > -1 && b < a ? "v-in-l" : "v-in-r");
-    view.classList.remove("v-in", "v-in-l", "v-in-r"); void view.offsetWidth; view.classList.add(cls);
-    var cur = document.querySelector('.tabs a[aria-current="page"]');
-    if (cur && prev !== tab) { cur.classList.remove("tab-pop"); void cur.offsetWidth; cur.classList.add("tab-pop"); }
-  }
-  view.addEventListener("animationend", function (e) { if (e.target === view) view.classList.remove("v-in", "v-in-l", "v-in-r"); });
-  function blocked(t) {
-    if (document.querySelector(".rtsheet-bg, .bgpop-wrap.in, .ibsheet") || document.documentElement.classList.contains("rts-open")) return true;
-    for (var el = t; el && el !== document.body; el = el.parentElement) {
-      if (/^(INPUT|TEXTAREA|SELECT|VIDEO)$/.test(el.tagName)) return true;
-      if (el.scrollWidth > el.clientWidth + 4) { var ox = getComputedStyle(el).overflowX; if (ox === "auto" || ox === "scroll") return true; }
-    }
-    return false;
-  }
-  var tx = 0, ty = 0, tOn = false, pull = 0, pullEl = null, tStart = 0;
-  function pullBox() {
-    if (!pullEl) { pullEl = document.createElement("div"); pullEl.className = "ptr"; pullEl.innerHTML = '<span class="ptr-i"><svg viewBox="0 0 24 24"><path d="M20 12a8 8 0 1 1-2.3-5.6M20 4v4.5h-4.5" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span>'; document.body.appendChild(pullEl); }
-    return pullEl;
-  }
-  document.addEventListener("touchstart", function (e) {
-    if (e.touches.length !== 1 || blocked(e.target)) { tOn = false; return; }
-    tOn = true; tx = e.touches[0].clientX; ty = e.touches[0].clientY; pull = 0; tStart = Date.now();
-  }, { passive: true });
-  document.addEventListener("touchmove", function (e) {
-    if (!tOn) return;
-    var dy = e.touches[0].clientY - ty, dx = e.touches[0].clientX - tx;
-    if (window.scrollY <= 0 && dy > 0 && Math.abs(dy) > Math.abs(dx) * 1.4) {
-      pull = Math.min(110, dy * 0.5);
-      var b = pullBox(); b.classList.add("on"); b.classList.toggle("ready", pull >= 64);
-      b.style.transform = "translate(-50%," + (pull - 48) + "px) rotate(" + (pull * 3) + "deg)";
-    } else if (pull) { pull = 0; if (pullEl) pullEl.classList.remove("on", "ready"); }
-  }, { passive: true });
-  document.addEventListener("touchend", function (e) {
-    if (!tOn) return; tOn = false;
-    var t = e.changedTouches[0], dx = t.clientX - tx, dy = t.clientY - ty;
-    if (pull) {
-      var go = pull >= 64; pull = 0;
-      if (go) {
-        pullEl.classList.add("spin"); pullEl.style.transform = "translate(-50%,24px)";
-        try { attSync(); ibSync(); } catch (x) {}
-        setTimeout(function () { route(); pullEl.classList.remove("on", "ready", "spin"); pullEl.style.transform = ""; attToast("새로 불러왔어요"); }, 900);
-      } else { pullEl.classList.remove("on", "ready"); pullEl.style.transform = ""; }
-      return;
-    }
-    if (Math.abs(dx) > 70 && Math.abs(dx) > Math.abs(dy) * 1.8 && Date.now() - tStart < 700) {
-      var o = tabOrder(), cur = view.getAttribute("data-tab"), i = o.indexOf(cur);
-      if (i < 0) return;
-      var n = dx < 0 ? i + 1 : i - 1;
-      if (n >= 0 && n < o.length) location.hash = o[n];
-    }
-  }, { passive: true });
-  /* 시작 화면 — 이 창에서 처음 열 때 한 번(로고 + 회원 이름), 0.9초 뒤 사라짐. 선생님 아이패드 안 칸(iframe)·PT 안내서 데모에선 안 띄움 */
-  (function () {
-    var seen = false; try { seen = sessionStorage.getItem("ptsplash:" + SLUG) === "1"; sessionStorage.setItem("ptsplash:" + SLUG, "1"); } catch (e) {}
-    if (seen || DEMO || window.self !== window.top) return;
-    var sp = document.createElement("div"); sp.className = "splash";
-    sp.innerHTML = (THM === "chihuahua" ? '<i class="sp-bark">왈!</i>' : THM ? mascot() : '<img src="' + BASE + 'logo.png" alt="">') + '<b>' + esc(M.name) + ' 회원님</b><span>MY PT NOTE</span>';
-    document.body.appendChild(sp);
-    setTimeout(function () { sp.classList.add("out"); setTimeout(function () { sp.remove(); }, 450); }, RM ? 300 : 900);
+  window.addEventListener("hashchange", function () { setTimeout(function () { viewHeal("주소"); }, 700); });
+  window.addEventListener("pageshow", function () { setTimeout(function () { viewHeal("열기"); }, 300); });
+  window.addEventListener("resize", function () { viewHeal("크기"); });
+  document.addEventListener("visibilitychange", function () { if (!document.hidden) setTimeout(function () { viewHeal("돌아옴"); }, 300); });
+  [800, 2500].forEach(function (t) { setTimeout(function () { viewHeal("처음"); }, t); });
+  window.addEventListener("hashchange", function () { route(); tourMaybe(); });
+  route(); tourMaybe();
+  cmemoFill();
+  (function () {   /* 로딩 화면 걷기 — 앱 아이콘으로 열었을 때 0.6초는 보이게, 그 밖(아이패드 칸 안·안내서 데모)은 바로 */
+    var t0 = (window.performance && performance.timing && performance.timing.navigationStart) || Date.now();
+    var wait = window.self !== window.top || DEMO ? 0 : Math.max(0, 1000 - (Date.now() - t0));
+    setTimeout(function () { document.body.classList.add("ready"); }, wait);
   })();
-
-  window.addEventListener("hashchange", route);
-  route();
   nDot();
   if (!DEMO) setTimeout(showNoticePop, 800);
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { alignText(document); });

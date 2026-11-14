@@ -104,7 +104,7 @@ _tools/anatomy_v3.py  인체모형 v3 (자극 부위 그림). build(경로, 앞 
 ## 새 회원 PT 노트 만들기
 0. **PT 시작일을 꼭 받기** (트레이너이 말해줌, "10월"처럼 달만 주면 그 달 15일로). 안 알려주면 물어볼 것. → data.js journey.start
 1. 주소: `m/<이름 로마자>-<랜덤 소문자·숫자 6자>/` (예: jisu-k3x9qa). 추측하기 어렵게.
-2. `m/sample-k7d2qx/index.html` 복사(site.js·exicons.js·app.js 스크립트 태그 그대로) → 제목·og:title·헤더 문구의 이름, og:image 경로, theme-color(여 #C2185B) 바꾸기.
+2. `m/sample-k7d2qx/index.html`·`manifest.webmanifest` 복사(스크립트 태그 그대로) → 제목·og:title·헤더 문구의 이름, og:image 경로, `<html data-sex>`, theme-color(남 #1C1C1E / 여 #D35C14), 아이콘 icon-m|f, manifest 색·아이콘 바꾸기.
 3. data.js 작성 (아래 형식). sex "F"면 핑크 테마·핑크 아이콘 자동.
 4. og.jpg 생성: `python3 _tools/make_og.py m/<주소>/og.jpg "<이름>" M|F "<담당 이름> <직함>"` (2026-11-12 — 남 블랙+골드 / 여 오렌지+브라운, 박현규는 "박현규 팀장", 다른 선생님은 "OOO 트레이너", 그룹 PT면 끝에 group).
 5. 위 회원 목록 표에 추가하고, coach-co8rde/members.js에도 주소 추가.
@@ -285,6 +285,15 @@ _tools/anatomy_v3.py  인체모형 v3 (자극 부위 그림). build(경로, 앞 
 - **헬로키티 등 남의 캐릭터를 따라 그리거나 닮게 만들지 않음**(흰 고양이·귀 리본 X). 회원이 캐릭터를 원하면 새로 만든 캐릭터로.
 - `"theme": "chihuahua"` (2026-11-13 채와와 회원님): **트레이너가 준 성난 치와와 그림**으로 — assets/theme/chihuahua/ splash.webp(시작 화면 통째, 이름은 위쪽) · face.webp(홈 히어로 오른쪽 아래 동그란 얼굴 — 부들부들 떨다 폴짝 + 💢 커졌다 작아짐 + 콧김 두 개 + "왈!" 톡, 2.6초 반복 · 시작 화면도 그림이 부들부들 + "왈!") · tile.webp(그림 왼쪽 위 발바닥·뼈다귀를 연하게 한 배경 무늬, 180px). 색 = 그림의 베이지 #F7E8D9 + 모카 #A97E5D + 브라운 #5E4334, exicons STY.C, theme-color #A97E5D. (처음엔 직접 그린 SVG 치와와였는데 트레이너가 그림을 줘서 바꿈)
 - 지금 쓰는 회원: 이다혜 pinkcheck(m/dahye-dfpttw) · 채와와 chihuahua(m/chaewon-ryfvmy). 다른 여성 회원은 오렌지 테마 그대로. 코드 style.css 맨 아래 테마 블록, app.js THM·mascot() — 새 테마는 THM 허용 목록·mascot()·exicons STY·style.css 블록 넷 다.
+
+## 동욱쌤 사이트 기능 합침 (2026-11-14 팀장 "내 것도 동욱쌤 거처럼, 테마는 그대로")
+- 장동욱 사이트(gymtos-dodang.github.io, GitHub gymtos-dodang/gymtos-dodang.github.io)의 회원 노트 앱 화면을 이 사이트에 합침. 두 사이트 공통 조상 = 그쪽 커밋 e550a3b(2026-11-11 site.js) → app.js·style.css·exicons.js를 3-way 합치기(git merge-file)하고 충돌은 손으로 정리.
+- 들어온 것(설명은 그쪽 CLAUDE.md와 같음): 앱 화면 A안(떠 있는 아래 탭 홈·운동·식단·기록·나, 위 종·⚙️ 설정·이름 동그라미) · 출석 도장 · 오늘 운동 큰 카드·위젯 · 운동 탭(루틴 | 자세 복습지 전환) · 루틴 한눈에·종목 자세히 보기 창(회원 폰에서 종목 카드 누르면) · ✓ 운동 기록·기록 탭(#log, mw:<주소>:log) · 첫날 vs 오늘(#growth) · 이번 주 요일 옮기기(mw:<주소>:mv) · 복습지 부위별 칩 · 처음 둘러보기(튜토리얼)·⚙️ 설정 · 앱으로 설치 안내(#app) · 뒤로 가기 버튼 · 화면 넘김 D안 · 로딩 화면(앱 아이콘) · 선생님 메모(assets/memo.js, 창고 coach:memo:<주소>) · 회원별 스킨(data.js skin: bunny/sheep, assets/theme/bunny·sheep).
+- **이 사이트 것 그대로 둔 것**: 색(남 블랙+골드 / 여 오렌지+브라운 — 그쪽 빨강·핑크는 전부 우리 색으로 바꿈, 도장 --seal 남 금색·여 오렌지) · 담당 선생님 이름(TRN·TRL, 박현규 팀장) · 회원별 테마 pinkcheck·chihuahua(마스코트는 홈 '오늘' 제목 오른쪽 .hlead .mascot, 큰 카드·도장 색도 테마색) · 복습지 날짜별 묶음 + 그날 더 한 운동(부위 칩과 같이 — 칩을 고르면 그 부위 없는 날짜 칸은 숨김) · 사진·영상 복습지 · 회원 정보·불편한 곳 · 터치해서 고치기(선생님 보기에선 종목 카드 누르면 고치기 창, 회원 폰에선 자세히 보기 창 — html.can-edit) · 식단 고치기 · 선생님 페이지(coach-co8rde/)는 그대로(우리 팀장·선생님 여러 명 화면) · 404.html(폰에서 만든 회원 = pub:m:<주소>:profile).
+- 빠진 것: 이 사이트의 옛 '앱처럼' 화면 넘김·옆으로 밀기·당겨서 새로고침·시작 화면(로고+이름)·채와와 치와와 시작 화면 그림 → 그쪽 D안·로딩 화면으로 바뀜.
+- 홈 화면 앱 아이콘: `python3 _tools/make_member_icon.py`(노트 표지 + GYMTOS 로고, 남 블랙·금색 책갈피 / 여 오렌지·흰 책갈피) → assets/icon-m|f-180·192·512.png. 회원 폴더마다 manifest.webmanifest, index.html `<html data-sex>`·홈 화면 앱 메타. **새 회원 껍데기도 이 모양으로**(sample 복사).
+- 코드 고친 뒤 커밋 전에 `python3 _tools/bump_ver.py`(아이폰 홈 화면 앱 캐시 — 주소 끝 ?v= 바꿈).
+- 앞으로 동욱쌤 쪽에 새 기능이 생겨 또 가져오려면: 그쪽 저장소를 받아 이번 합친 뒤 그쪽 커밋(2026-11-14 663f528)을 기준으로 다시 3-way.
 
 ## 새 공지 팝업 (2026-11-05 트레이너 요청)
 - data.js notices 맨 위에 새 공지를 올리면, 회원이 PT 노트를 열 때 화면 위에서 팝업이 내려왔다가 약 5초 뒤 사라짐(위로 밀어도 닫힘). 누르면 공지 탭의 그 공지로 이동해 반짝 표시.

@@ -1,0 +1,27 @@
+{
+ "name": "PT노트",
+ "short_name": "PT노트",
+ "start_url": "./",
+ "scope": "./",
+ "display": "standalone",
+ "background_color": "#F2F2F4",
+ "theme_color": "#1C1C1E",
+ "icons": [
+  {
+   "src": "../../assets/icon-m-192.png",
+   "sizes": "192x192",
+   "type": "image/png"
+  },
+  {
+   "src": "../../assets/icon-m-512.png",
+   "sizes": "512x512",
+   "type": "image/png"
+  },
+  {
+   "src": "../../assets/icon-m-512.png",
+   "sizes": "512x512",
+   "type": "image/png",
+   "purpose": "maskable"
+  }
+ ]
+}
