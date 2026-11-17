@@ -2075,6 +2075,14 @@ html[data-skin="sheep"] { --barbg: rgba(255, 248, 241, .6); --glass: rgba(255, 2
 @keyframes petBlink { 0%, 93%, 100% { transform: scaleY(1); } 96% { transform: scaleY(.1); } }
 @media (prefers-reduced-motion: reduce) { .petwalk .p-tail, .petwalk .p-eyes { animation: none; } }
 @media print { .petwalk { display: none; } }
+/* 2026-11-17 강아지 이가(pet:"dog") — 고양이와 같은 걷기·앉기, 털귀 쫑긋 + 혀 헥헥 */
+.petwalk .pet.dog .d-ear { transform-box: fill-box; animation: dogEar 3.2s ease-in-out infinite; }
+.petwalk .pet.dog .d-ear.l { transform-origin: 100% 100%; } .petwalk .pet.dog .d-ear.r { transform-origin: 0 100%; animation-delay: .25s; }
+.petwalk .pet.dog .d-tongue { transform-box: fill-box; transform-origin: 50% 0; animation: dogPant .36s ease-in-out infinite alternate; }
+.petwalk .pet.dog.walk .p-tail { animation-duration: .3s; }
+@keyframes dogEar { 0%, 80%, 100% { transform: rotate(0); } 86% { transform: rotate(-9deg); } 92% { transform: rotate(5deg); } }
+@keyframes dogPant { from { transform: scaleY(.8); } to { transform: scaleY(1.12); } }
+@media (prefers-reduced-motion: reduce) { .petwalk .pet.dog .d-ear, .petwalk .pet.dog .d-tongue { animation: none; } }
 
 /* 2026-11-16 뛰어다니는 토끼 (pet:"bunny" — 김지수님 토롱이: 큰 머리 + 작은 몸·솜꼬리·발, 한 칸씩 폴짝폴짝. app.js HOP) */
 .petwalk { height: 84px; }

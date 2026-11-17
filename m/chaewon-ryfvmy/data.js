@@ -3,6 +3,8 @@ window.MEMBER = {
   "name": "채와와",
   "sex": "F",
   "theme": "chihuahua",
+  "pet": "dog",
+  "pet_name": "이가",
   "since": "2026. 2",
   "goal": "탄탄한 몸매 라인 · 힙업 · 체력",
   "journey": {

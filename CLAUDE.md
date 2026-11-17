@@ -285,6 +285,7 @@ _tools/anatomy_v3.py  인체모형 v3 (자극 부위 그림). build(경로, 앞 
 - data.js `"theme": "pinkcheck"` → html[data-theme="pinkcheck"]: 분홍 체크무늬(배경·히어로·시작 화면) + 하트, 둥근 카드, 움직이는 아이콘 색 exicons STY.P, 홈 히어로 오른쪽 아래·시작 화면에 **직접 디자인한 아기 토끼 "보니"**(긴 귀·노란 헤어밴드·작은 덤벨, app.js bunny()). 회원 index.html theme-color #EE86A8.
 - **헬로키티 등 남의 캐릭터를 따라 그리거나 닮게 만들지 않음**(흰 고양이·귀 리본 X). 회원이 캐릭터를 원하면 새로 만든 캐릭터로.
 - `"theme": "chihuahua"` (2026-11-13 채와와 회원님): **트레이너가 준 성난 치와와 그림**으로 — assets/theme/chihuahua/ splash.webp(시작 화면 통째, 이름은 위쪽) · face.webp(홈 히어로 오른쪽 아래 동그란 얼굴 — 부들부들 떨다 폴짝 + 💢 커졌다 작아짐 + 콧김 두 개 + "왈!" 톡, 2.6초 반복 · 시작 화면도 그림이 부들부들 + "왈!") · tile.webp(그림 왼쪽 위 발바닥·뼈다귀를 연하게 한 배경 무늬, 180px). 색 = 그림의 베이지 #F7E8D9 + 모카 #A97E5D + 브라운 #5E4334, exicons STY.C, theme-color #A97E5D. (처음엔 직접 그린 SVG 치와와였는데 트레이너가 그림을 줘서 바꿈)
+- **돌아다니는 강아지** (2026-11-17 팀장 "우리집 강아지 이가, 동욱쌤처럼 움직이게"): data.js `"pet": "dog", "pet_name": "이가"` → 아래 탭 위를 걷다 앉음(고양이 펫과 같은 코드, app.js .pet.dog). 팀장 사진 보고 그린 장모 치와와(검정 등·황갈색 눈썹·흰 주둥이·가슴, 털귀 쫑긋, 혀 헥헥). 누르면 쓰담(헥헥 좋아멍)·뼈다귀 냠냠·한마디. 채와와 회원님 노트에 켬.
 - 지금 쓰는 회원: 이다혜 pinkcheck(m/dahye-dfpttw) · 채와와 chihuahua(m/chaewon-ryfvmy). 다른 여성 회원은 오렌지 테마 그대로. 코드 style.css 맨 아래 테마 블록, app.js THM·mascot() — 새 테마는 THM 허용 목록·mascot()·exicons STY·style.css 블록 넷 다.
 
 ## 동욱쌤 사이트 기능 합침 (2026-11-14 팀장 "내 것도 동욱쌤 거처럼, 테마는 그대로")

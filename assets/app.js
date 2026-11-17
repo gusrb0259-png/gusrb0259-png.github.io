@@ -163,10 +163,24 @@
   /* 2026-11-16 돌아다니는 고양이 (data.js pet: "cat" — 우유정님 "귀여운 고양이 돌아다니게"). 아래 탭 바로 위를 걸어다니다 앉아서 쉼.
      오리지널 그림(크림색 고양이 + 분홍 리본), 화면 위에 따로 떠 있는 칸(.petwalk)이라 본문(.view)엔 효과 없음 · pointer-events none · 폭 안 넓어짐(overflow hidden) */
   (function () {
-    var PET = M.pet; if ((PET !== "cat" && PET !== "bunny") || document.querySelector(".petwalk")) return;
+    var PET = M.pet; if ((PET !== "cat" && PET !== "bunny" && PET !== "dog") || document.querySelector(".petwalk")) return;
     document.documentElement.setAttribute("data-pet", PET);   /* bunny = 김지수님 토롱이가 깡충깡충(2026-11-16) — 테마 그림 base.svg 그대로, 탭 위 빼꼼 그림은 숨김 */
     var wrap = document.createElement("div"); wrap.className = "petwalk"; wrap.setAttribute("aria-hidden", "true");
     if (PET === "bunny") wrap.innerHTML = '<div class="pet hop sit"><svg class="b-all" viewBox="0 -6 64 68" width="48" height="51"><g class="b-body"><circle cx="11" cy="44" r="5.2" fill="#fff" stroke="#B8325A" stroke-width="1.5"/><ellipse class="b-foot" cx="20" cy="56" rx="9" ry="3.8" fill="#FFE8EE" stroke="#B8325A" stroke-width="1.5"/><ellipse cx="25" cy="45" rx="14.5" ry="11.5" fill="#FFE8EE" stroke="#B8325A" stroke-width="1.5"/><ellipse class="b-paw" cx="38" cy="56" rx="4.6" ry="3.4" fill="#FFE8EE" stroke="#B8325A" stroke-width="1.5"/></g><g class="b-ears"><g transform="translate(11.2 1.2) scale(.48)"><ellipse cx="45" cy="17" rx="9" ry="20" transform="rotate(-12 45 17)" fill="#FFE8EE" stroke="#B8325A" stroke-width="3"/><ellipse cx="45" cy="19" rx="4" ry="13" transform="rotate(-12 45 19)" fill="#F7A9BC"/><path d="M68 36 C66 20 72 5 81 6 C90 7 106 16 104 27 C102 34 92 31 84 27 C81 31 79 35 77 37 Z" fill="#FFE8EE" stroke="#B8325A" stroke-width="3" stroke-linejoin="round"/><path d="M74 30 C73 20 77 12 82 12 C88 13 97 19 97 24 C93 25 87 22 82 20 C79 23 77 27 76 31 Z" fill="#F7A9BC"/></g></g><g class="b-head"><g transform="translate(11.2 1.2) scale(.48)"><ellipse cx="60" cy="60" rx="34" ry="30" fill="#FFE8EE" stroke="#B8325A" stroke-width="3"/><path d="M27 50 Q60 34 93 50 L92 58 Q60 43 28 58 Z" fill="#D6204F" stroke="#B8325A" stroke-width="2" stroke-linejoin="round"/><g class="b-eyes"><ellipse cx="47" cy="65" rx="5.4" ry="7" fill="#4A2030"/><circle cx="49" cy="62" r="2.1" fill="#fff"/><circle cx="45.4" cy="67.6" r="1" fill="#fff"/><ellipse cx="73" cy="65" rx="5.4" ry="7" fill="#4A2030"/><circle cx="75" cy="62" r="2.1" fill="#fff"/><circle cx="71.4" cy="67.6" r="1" fill="#fff"/></g><g class="b-happy"><path d="M41 67q6-8 12 0M67 67q6-8 12 0" fill="none" stroke="#4A2030" stroke-width="3.4" stroke-linecap="round"/></g><ellipse cx="37" cy="76" rx="6.5" ry="4" fill="#FF8FA8" opacity=".8"/><ellipse cx="83" cy="76" rx="6.5" ry="4" fill="#FF8FA8" opacity=".8"/><path d="M56 73 Q58 76 60 73 Q62 76 64 73" fill="none" stroke="#B8325A" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></g></g></svg></div>';   /* 2026-11-16 "처음 측면 토롱이가 좋았는데" — 옆모습 토끼(솜꼬리·발 있음)로 다시 */
+    else if (PET === "dog") wrap.innerHTML = '<div class="pet sit dog"><svg viewBox="0 0 64 48" width="52" height="39">'
+      + '<g class="p-walk"><g class="p-tail"><path d="M13 27 C6 26 3 18 7 11" fill="none" stroke="#2A2630" stroke-width="5.5" stroke-linecap="round"/><path d="M7 11 c-3 2-4 6-3 9 M9 15 c-3 1-5 4-4 7" fill="none" stroke="#2A2630" stroke-width="2.2" stroke-linecap="round"/></g>'
+      + '<g class="p-legs"><g class="lg a"><path d="M16 30c-.6 4-.4 7 .3 10.5h4.4c.7-3.5.9-6.5.3-10.5z" fill="#2A2630"/><ellipse cx="19.2" cy="42.3" rx="3.2" ry="2.2" fill="#FBF7F1"/></g><g class="lg b"><path d="M22 30c-.6 4-.4 7 .3 10.5h4.4c.7-3.5.9-6.5.3-10.5z" fill="#C98A4B"/><ellipse cx="25.2" cy="42.3" rx="3.2" ry="2.2" fill="#FBF7F1"/></g><g class="lg b"><path d="M36 30c-.6 4-.4 7 .3 10.5h4.4c.7-3.5.9-6.5.3-10.5z" fill="#C98A4B"/><ellipse cx="39.2" cy="42.3" rx="3.2" ry="2.2" fill="#FBF7F1"/></g><g class="lg a"><path d="M42 30c-.6 4-.4 7 .3 10.5h4.4c.7-3.5.9-6.5.3-10.5z" fill="#FBF7F1"/><ellipse cx="45.2" cy="42.3" rx="3.2" ry="2.2" fill="#fff"/></g></g>'
+      + '<ellipse cx="30" cy="29.5" rx="18" ry="9.5" fill="#2A2630"/><ellipse cx="33" cy="35" rx="12" ry="3.6" fill="#FBF7F1"/><ellipse cx="44" cy="31" rx="5" ry="6.5" fill="#FBF7F1"/></g>'
+      + '<g class="p-sit"><g class="p-tail"><path d="M17 41 C7 41 4 32 9 26" fill="none" stroke="#2A2630" stroke-width="5.5" stroke-linecap="round"/><path d="M9 26 c-3 2-4 6-3 9" fill="none" stroke="#2A2630" stroke-width="2.2" stroke-linecap="round"/></g><path d="M16 44c0-14 6-21 15-21s15 7 15 21z" fill="#2A2630"/><path d="M30 44c0-10 3-17 8-18 5 1 8 8 8 18z" fill="#FBF7F1"/><ellipse cx="35" cy="43.5" rx="4" ry="2.5" fill="#fff"/><ellipse cx="44" cy="43.5" rx="4" ry="2.5" fill="#fff"/></g>'
+      + '<g class="p-head"><g class="d-ear l"><path d="M37.5 12 L31 -1 C34 -1 40 3 43 7z" fill="#2A2630"/><path d="M37 9.5 L33.5 2 C36 3 39 5 40.5 7.5z" fill="#E9A9A0"/><path d="M31 -1 l-1.6 2.4 M31.5 3 l-2 1.6 M33 6.5 l-2 1.2" stroke="#2A2630" stroke-width="1.3" stroke-linecap="round"/></g>'
+      + '<g class="d-ear r"><path d="M55.5 12 L62 -1 C59 -1 53 3 50 7z" fill="#2A2630"/><path d="M56 9.5 L59.5 2 C57 3 54 5 52.5 7.5z" fill="#E9A9A0"/><path d="M62 -1 l1.6 2.4 M61.5 3 l2 1.6 M60 6.5 l2 1.2" stroke="#2A2630" stroke-width="1.3" stroke-linecap="round"/></g>'
+      + '<ellipse cx="46.5" cy="16.5" rx="12.5" ry="10.5" fill="#2A2630"/><path d="M46.5 6.5 v5" stroke="#4A4550" stroke-width="1" stroke-linecap="round"/>'
+      + '<path d="M37 20 C38 26 42 28.5 46.5 28.5 C51 28.5 55 26 56 20 C53 17.5 50 17 46.5 17.5 C43 17 40 17.5 37 20z" fill="#FBF7F1"/><path d="M44.5 17.5 L46.5 11.5 L48.5 17.5z" fill="#FBF7F1"/>'
+      + '<ellipse cx="41.3" cy="11.8" rx="2" ry="1.2" fill="#C98A4B" transform="rotate(-15 41.3 11.8)"/><ellipse cx="51.7" cy="11.8" rx="2" ry="1.2" fill="#C98A4B" transform="rotate(15 51.7 11.8)"/>'
+      + '<g class="p-eyes"><circle cx="41.8" cy="15.6" r="2.3" fill="#120F14"/><circle cx="51.2" cy="15.6" r="2.3" fill="#120F14"/><circle cx="42.5" cy="14.8" r=".8" fill="#fff"/><circle cx="51.9" cy="14.8" r=".8" fill="#fff"/></g><g class="p-happy"><path d="M39.6 16.2q2.2-2.8 4.4 0M49 16.2q2.2-2.8 4.4 0" fill="none" stroke="#120F14" stroke-width="1.4" stroke-linecap="round"/></g>'
+      + '<path class="d-tongue" d="M44.8 23.2 h3.4 v3.2 a1.7 1.7 0 0 1 -3.4 0z" fill="#F08AA4"/><path d="M46.5 23.4 v2.2" stroke="#D9657F" stroke-width=".6"/>'
+      + '<ellipse cx="46.5" cy="20.2" rx="2.3" ry="1.6" fill="#120F14"/><path d="M42.6 22.2q1.9 1.6 3.9.4q2 1.2 3.9-.4" fill="none" stroke="#120F14" stroke-width=".9" stroke-linecap="round"/></g>'
+      + '</svg></div>';   /* 2026-11-17 팀장 "우리집 강아지 이가" — 장모 치와와(검정 등·눈썹 황갈색·흰 주둥이·가슴, 큰 털귀, 혀 빼꼼). 사진 보고 새로 그림 */
     else wrap.innerHTML = '<div class="pet sit"><svg viewBox="0 0 64 48" width="52" height="39">'
       + '<g class="p-walk"><path class="p-tail" d="M12 30 C4 28 3 18 8 14" fill="none" stroke="#F3D9B8" stroke-width="4.5" stroke-linecap="round"/>'
       + '<g class="p-legs"><g class="lg a"><path d="M16 30c-.6 4-.4 7 .3 10.5h4.4c.7-3.5.9-6.5.3-10.5z" fill="#EBCBA4"/><ellipse cx="19.2" cy="42.3" rx="3.3" ry="2.3" fill="#fff"/></g><g class="lg b"><path d="M22 30c-.6 4-.4 7 .3 10.5h4.4c.7-3.5.9-6.5.3-10.5z" fill="#FFF3E2"/><ellipse cx="25.2" cy="42.3" rx="3.3" ry="2.3" fill="#fff"/></g><g class="lg b"><path d="M36 30c-.6 4-.4 7 .3 10.5h4.4c.7-3.5.9-6.5.3-10.5z" fill="#EBCBA4"/><ellipse cx="39.2" cy="42.3" rx="3.3" ry="2.3" fill="#fff"/></g><g class="lg a"><path d="M42 30c-.6 4-.4 7 .3 10.5h4.4c.7-3.5.9-6.5.3-10.5z" fill="#FFF3E2"/><ellipse cx="45.2" cy="42.3" rx="3.3" ry="2.3" fill="#fff"/></g></g>'
@@ -210,7 +224,9 @@
     var FOOD = PET === "bunny"
       ? '<svg viewBox="0 0 40 40" width="26" height="26"><path d="M14 13c-3-6-1-10 2-11 1 3 0 6-1 8M17 12c0-6 4-9 7-8-1 3-3 6-5 8M18 13c3-4 8-5 10-3-2 2-6 4-9 4" fill="#5DBB63" stroke="#3E8E45" stroke-width="1.2" stroke-linejoin="round"/><path d="M13 14c4-4 10-3 11 2L12 37c-2 2-5 0-4-3z" fill="#FF8A3D" stroke="#D9601E" stroke-width="1.6" stroke-linejoin="round"/><path d="M13 21l4 1M11 27l4 1M10 32l3 .8" stroke="#D9601E" stroke-width="1.4" stroke-linecap="round"/></svg>'
       : '<svg viewBox="0 0 44 30" width="30" height="20"><path d="M6 15c6-10 22-12 30 0-8 12-24 10-30 0z" fill="#8EC5E8" stroke="#4E8DB8" stroke-width="1.6"/><path d="M36 15l7-7v14z" fill="#8EC5E8" stroke="#4E8DB8" stroke-width="1.6" stroke-linejoin="round"/><circle cx="13" cy="13" r="1.8" fill="#24324A"/><path d="M20 9c2 4 2 8 0 12M25 9c2 4 2 8 0 12" fill="none" stroke="#4E8DB8" stroke-width="1.2" stroke-linecap="round"/></svg>';
-    var LINES = PET === "bunny" ? ["오늘도 운동 가자!", "깡충! 같이 뛰자!", "물 많이 마셔요!", "스트레칭 잊지 마요!", "최고예요! ♡", "근육아 자라라~"]
+    var PN = M.pet_name || "멍멍이";
+    if (PET === "dog") FOOD = '<svg viewBox="0 0 44 24" width="30" height="16"><path d="M10 9h24M10 15h24" stroke="#C9A98A" stroke-width="1"/><path d="M8 7a4 4 0 1 1 3-6 4 4 0 1 1 3 6h16a4 4 0 1 1 3-6 4 4 0 1 1 3 6v10a4 4 0 1 1-3 6 4 4 0 1 1-3-6H14a4 4 0 1 1-3 6 4 4 0 1 1-3-6z" fill="#FFF6EA" stroke="#B88A60" stroke-width="1.6" stroke-linejoin="round"/></svg>';
+    var LINES = PET === "dog" ? ["왈! 오늘도 운동 가자멍!", PN + "가 응원한다멍!", "물 마셨멍?", "산책… 아니 운동 가자!", "최고다멍 ♡", "스트레칭도 하자멍"] : PET === "bunny" ? ["오늘도 운동 가자!", "깡충! 같이 뛰자!", "물 많이 마셔요!", "스트레칭 잊지 마요!", "최고예요! ♡", "근육아 자라라~"]
       : ["냥~ 오늘도 화이팅!", "쓰담쓰담 좋아냥", "물 마셨냥?", "운동 끝나면 꿀잠냥", "멋지다냥 ♡", "스트레칭도 하자냥"];
     function fx(cls, html, dx, dy, ms) {
       var r = pet.getBoundingClientRect(), e = document.createElement("div");
@@ -230,11 +246,11 @@
       busy = 1; freeze();
       var kind = tapN++ % 3, end = 1800;
       if (kind === 0) {   /* 쓰담쓰담 → 웃는 눈 + 하트 */
-        pet.classList.add("happy", "pat"); hearts(3); bubble(PET === "bunny" ? "헤헤 좋아요!" : "골골골~ 좋아냥");
+        pet.classList.add("happy", "pat"); hearts(3); bubble(PET === "dog" ? "헥헥 좋아멍!" : PET === "bunny" ? "헤헤 좋아요!" : "골골골~ 좋아냥");
       } else if (kind === 1) {   /* 밥 먹기 → 앞에 음식, 세 입에 냠냠 */
         end = 2600; pet.classList.add("eat");
         var f = fx("pfood", FOOD, (FLIP ? dir : 1) * 24, 20, 2400);
-        bubble(PET === "bunny" ? "당근 냠냠!" : "생선 냠냠!", 2300);
+        bubble(PET === "dog" ? "뼈다귀 냠냠!" : PET === "bunny" ? "당근 냠냠!" : "생선 냠냠!", 2300);
         setTimeout(function () { f.classList.add("bite1"); }, 700); setTimeout(function () { f.classList.add("bite2"); }, 1300); setTimeout(function () { f.classList.add("gone"); }, 1900);
         setTimeout(function () { pet.classList.add("happy"); hearts(2); }, 2000);
       } else {   /* 한마디 → 폴짝 */
@@ -244,7 +260,7 @@
       setTimeout(function () { pet.classList.remove("happy", "pat", "eat", "hi"); busy = 0; tm = setTimeout(next, 1500 + Math.random() * 2500); }, end);
     }
     pet.addEventListener("click", function (e) { e.preventDefault(); e.stopPropagation(); react(); });
-    wrap.removeAttribute("aria-hidden"); pet.setAttribute("role", "button"); pet.setAttribute("aria-label", PET === "bunny" ? "토롱이 쓰다듬기" : "고양이 쓰다듬기");
+    wrap.removeAttribute("aria-hidden"); pet.setAttribute("role", "button"); pet.setAttribute("aria-label", PET === "dog" ? PN + " 쓰다듬기" : PET === "bunny" ? "토롱이 쓰다듬기" : "고양이 쓰다듬기");
     tm = setTimeout(next, 2500);
     window.addEventListener("resize", function () { var max = Math.max(20, wrap.clientWidth - W - 8); if (x > max) { x = max; place(0); } });
   })();
