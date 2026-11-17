@@ -144,7 +144,16 @@
     back: function (P) { return [floor(8, 80), L("eq2", [[11, 6], [11, 93]], 3.5), L("eq2", [[8, 93], [18, 93]], 4), L("eq2", [[13, 31], P.ha], 2), D("eq2", [13, 31], 3.2)]; },
     front: function (P) { return [grip(P.ha)]; } };
   EX.pec_deck = deckTop(false);
-  EX.reverse_pec_deck = deckTop(true);
+  /* 리버스 펙덱 (2026-11-16 장동욱 "회원님들이 헷갈린대" → "정면이라 구분이 안 되잖아"): **옆에서 본 모습** —
+     가슴을 패드에 대고 기구를 마주 보고 앉아, 앞으로 뻗은 팔을 어깨 높이에서 뒤로 벌림(옆에서 보면 팔이 몸 쪽으로 짧아졌다가 등 뒤로 나옴). 어깨 뒤·등 위쪽 분홍.
+     펙덱(등받이에 기대 앞으로 모음)과 방향이 반대인 게 보이도록. 펙덱은 그대로 위에서 본 모습(deckTop(false)) */
+  EX.reverse_pec_deck = { t: .85, hold: .5, p0: ext(sit(31, 65), { el: [44, 38.5], ha: [58, 39] }), p1: { el: [22, 37.5], ha: [12, 39] }, bones: SIDE,
+    hl: function (P) { return [seg(P.sh, P.hip, 0, .3, 13), { dot: off(P.sh, -1.5, 0), r: 6.2 }]; },
+    back: function (P) {
+      return seatEq(31, 65, false).concat([L("eq2", [[50, 5], [50, 93]], 5), L("eq2", [[42, 93.5], [60, 93.5]], 4), L("eq2", [[39.5, 36], [39.5, 59]], 6), L("eq2", [[40, 47], [50, 47]], 3),
+        L("eq2", [[50, 9], [P.ha[0], 9], off(P.ha, 0, -7)], 3), D("eq2", [50, 9], 3.4)]);
+    },
+    front: function (P) { return [grip(P.ha, 7)]; } };
   EX.band_push_up = { t: .2,
     p0: { head: [19, 69], sh: [30, 72], hip: [58, 76], ft: [86, 84], toe: [88, 91], el: [41, 66], ha: [30, 87] },
     p1: { head: [19, 53], sh: [30, 58], hip: [58, 68], el: [31, 73] },
@@ -160,6 +169,29 @@
       front: function () { return []; } };
   }
   EX.lat_pulldown = pulldown({ elL: [31, 33], haL: [27, 19] }, { elL: [25, 57], haL: [28, 42] }, function (y) { return L("eq", [[16, y + 6], [23, y], [77, y], [84, y + 6]], 3.8); });
+  /* 클로즈그립 랫풀다운 (2026-11-16 이지환님): 손을 모아 잡는 좁은 손잡이(V바)로 가슴 위까지 당김 — 팔꿈치가 몸통 가까이 내려옴 */
+  EX.close_grip_pulldown = pulldown({ elL: [40, 33], haL: [47, 19] }, { elL: [35, 58], haL: [46.5, 42] }, function (y) { return L("eq", [[42, y + 1], [50, y - 4], [58, y + 1], [42, y + 1]], 3.4); });
+  /* 와이드 풀다운 (2026-11-16 정미경님): 원판식 풀다운 기구의 양쪽 손잡이를 넓게 잡고 끌어내림 — 손잡이가 좌우 따로 */
+  EX.wide_pulldown = pulldown({ elL: [27, 31], haL: [20, 17] }, { elL: [20, 55], haL: [21, 40] }, function (y) { return L("eq", [[10, y + 7], [24, y - 2], [36, y - 5], [64, y - 5], [76, y - 2], [90, y + 7]], 3.8); });
+  /* 원판식(플레이트) 기구라 가운데 케이블 대신: 양쪽 위 축에서 내려오는 지렛대 + 원판, 좌우 기둥 (2026-11-16 "머신임 플레이트") */
+  EX.wide_pulldown.back = function (P) {
+    /* 매장 기구(사진 2026-11-16): 가운데 기둥 중간 높이 양쪽 축에서 지렛대 두 개가 X자로 엇갈려 올라가 손잡이, 축 아래쪽 연장에 원판 */
+    var pl = [43, 50], pr = [57, 50];
+    var exL = [pr[0] + (pr[0] - P.haL[0]) * .32, pr[1] + (pr[1] - P.haL[1]) * .32], exR = [pl[0] + (pl[0] - P.haR[0]) * .32, pl[1] + (pl[1] - P.haR[1]) * .32];
+    return [L("eq2", [[50, 50], [50, 93]], 3.2), L("eq2", [pl, pr], 3),
+      L("eq", [exL, P.haL], 3.2), L("eq", [exR, P.haR], 3.2), D("eq2", pl, 2.6), D("eq2", pr, 2.6),
+      R("eq", exL, 5.8, 3), R("eq", exR, 5.8, 3),
+      L("eq", [off(P.haL, -5, 2), off(P.haL, 4, -3)], 4), L("eq", [off(P.haR, 5, 2), off(P.haR, -4, -3)], 4),
+      L("eq2", [[36, 79.5], [64, 79.5]], 6), L("eq2", [[22, 93], [78, 93]], 3), floor(28, 72)];
+  };
+  /* 프론트 로우 머신 (2026-11-16 매장 사진, Torque 원판식): 앉아서 가슴 패드에 기대고 허벅지 롤러로 고정, 앞쪽 위 축에서 내려온 지렛대 손잡이를 가슴 쪽으로 당김 */
+  EX.front_row = { t: .9, p0: ext(sit(34, 66), { head: [43, 24], sh: [40, 38], el: [52, 29], ha: [66, 23] }), p1: { el: [29, 45], ha: [46, 36] }, bones: SIDE,
+    /* 2026-11-16 매장 사진: 기구 기둥·축이 몸 뒤쪽 위, 지렛대가 머리 위로 넘어와 앞쪽 높은 손잡이 — 가슴 패드에 가슴 대고 앞 위 손잡이를 가슴 쪽으로 끌어당김 */
+    hl: function (P) { return [seg(P.sh, P.hip, .05, .55, 13)]; },
+    back: function (P) { var pv = [24, 14], ex = [pv[0] + (pv[0] - P.ha[0]) * .2, pv[1] + (pv[1] - P.ha[1]) * .2];
+      return seatEq(34, 66, false).concat([L("eq2", [[10, 5], [10, 93]], 3), L("eq2", [[22, 5], [22, 93]], 3), L("eq2", [[8, 5], [30, 5]], 3),
+        L("eq", [ex, P.ha], 3.4), D("eq2", pv, 3), R("eq", ex, 6, 3)]); },
+    front: function (P) { return [L("eq2", [[48, 42], [48, 62]], 5.5), D("eq2", [51, 64], 4.5), L("eq", [off(P.ha, -3, -3), off(P.ha, 3, 3)], 4)]; } };
   EX.underhand_pulldown = pulldown({ elL: [37, 33], haL: [39, 19] }, { elL: [31, 58], haL: [39, 44] }, function (y) { return L("eq", [[28, y], [72, y]], 3.8); });
   /* 어시스트 친업(2026-11-11 최지훈님 영상): 앞모습 — 무릎 받침에 무릎 꿇고 머리 위 손잡이를 잡은 채, 몸을 끌어올려 턱이 손잡이 위로. 받침이 몸과 같이 올라감 */
   EX.assisted_chin_up = { t: .35,
@@ -241,6 +273,20 @@
     hl: function (P) { return [{ dot: P.sh, r: 5.6 }]; },
     back: function (P) { return seatEq(34, 65, false).concat([L("eq2", [[89, 8], [89, 93]], 3.5), L("eq2", [P.ha, [87, 25]], 2), D("eq2", [87, 25], 3.2)]); },
     front: function (P) { return [D("eq", P.ha, 3.4)]; } };
+  /* 페이스풀 (서서, 2026-11-16 김지수님): 머리 높이 케이블 로프를 얼굴 쪽으로, 팔꿈치 높게 당김 */
+  EX.standing_face_pull = { t: .9, p0: ext(stand(34), { kn: [33, 75], el: [48, 30], ha: [62, 27] }), p1: { el: [21, 25], ha: [40, 22] }, bones: SIDE,
+    hl: function (P) { return [{ dot: P.sh, r: 5.6 }]; },
+    back: function (P) { return [floor(14, 92), L("eq2", [[89, 8], [89, 93]], 3.5), L("eq2", [P.ha, [87, 22]], 2), D("eq2", [87, 22], 3.2)]; },
+    front: function (P) { return [D("eq", P.ha, 3.4)]; } };
+  /* 티바로우 머신 (2026-11-16 김지수님): 비스듬한 발판에 서서 가슴 패드에 기대고, T자 손잡이를 배꼽 쪽으로 당김 */
+  EX.tbar_row = { t: .85,
+    p0: { head: [61, 31], sh: [52, 39], hip: [30, 57], kn: [37, 73], ft: [29, 88], toe: [37, 87], el: [55, 56], ha: [56, 72] },
+    p1: { el: [37, 50], ha: [50, 61] }, bones: SIDE,
+    hl: function (P) { return [seg(P.sh, P.hip, .05, .6, 13)]; },
+    back: function (P) { var pc = off(P.ha, 10, 3);
+      return [floor(8, 92), L("eq2", [[20, 92], [44, 86]], 4), L("eq2", [[47, 49], [60, 38]], 5.5), L("eq2", [[54, 45], [62, 92]], 3),
+        L("eq", [[90, 90], P.ha], 3.4), D("eq2", [90, 90], 3), R("eq", pc, 7, 3.2)]; },
+    front: function (P) { return [L("eq", [off(P.ha, -4, 0), off(P.ha, 4, 0)], 4)]; } };
   function shrug(front, back) {
     return { t: 1, p0: mir(ext(FSTAND, { elL: [35, 42], haL: [35, 56] })), p1: mir({ shL: [40, 23.5], elL: [35, 37.5], haL: [35, 51.5] }), bones: FRONT,
       hl: function (P) { var y = P.shL[1]; return [{ poly: [[P.shL[0] + 2, y - 1.5], [46.5, y - 7], [53.5, y - 7], [P.shR[0] - 2, y - 1.5], [53.5, y + 3], [46.5, y + 3]], w: 2 }]; },
@@ -291,6 +337,20 @@
     hl: function (P) { return [seg(P.sh, P.el, .25, 1, 7.5)]; },
     back: function () { return inclineEq(); },
     front: function (P) { return db(P.ha, perp(P.el, P.ha), 7.5); } };
+  /* 스파이더 컬 (2026-11-16 염승완님): 인클라인 벤치에 가슴을 대고 엎드려, 벤치 끝으로 늘어뜨린 팔을 감아 올림 */
+  EX.spider_curl = { t: .75,
+    p0: { head: [66, 30], sh: [56, 40], hip: [36, 58], kn: [28, 74], ft: [22, 90], toe: [29, 91], el: [57, 57], ha: [57, 73] },
+    p1: { ha: [70, 47.5] }, arcs: { ha: "el" }, bones: SIDE,
+    hl: function (P) { return [seg(P.sh, P.el, .25, 1, 7.5)]; },
+    back: function () { return [floor(10, 90), L("eq2", [[39, 67], [54, 53]], 5.5), L("eq2", [[46, 62], [44, 92]], 3), L("eq2", [[32, 92], [58, 92]], 3.5)]; },
+    front: function (P) { return db(P.ha, perp(P.el, P.ha), 7.5); } };
+  /* 프리처 컬 머신 (2026-11-17 염승완님): 앉아서 위팔을 비스듬한 패드에 올리고, 기계 손잡이를 감아 올림 */
+  EX.preacher_curl_machine = { t: .75,
+    p0: { head: [40, 22], sh: [36, 36], hip: [30, 64], kn: [50, 66], ft: [52, 89], toe: [60, 90], el: [55, 54], ha: [69, 66] },
+    p1: { ha: [52, 38] }, arcs: { ha: "el" }, bones: SIDE,
+    hl: function (P) { return [seg(P.sh, P.el, .3, 1, 7.5)]; },
+    back: function (P) { return seatEq(30, 64, false).concat([L("eq", [[45, 50], [60, 63]], 8), L("eq2", [[58, 62], [62, 93]], 3), L("eq2", [[55, 54], [76, 52]], 3)]); },
+    front: function (P) { return [L("eq", [P.ha, [76, 52]], 3), L("eq", [off(P.ha, 0, -4), off(P.ha, 0, 4)], 4)]; } };
   EX.cable_pushdown = { t: .85, p0: ext(stand(38), { el: [41, 45], ha: [54, 37] }), p1: { ha: [46, 60] }, arcs: { ha: "el" }, bones: SIDE,
     hl: function (P) { return [seg(P.sh, P.el, .2, 1, 7.5)]; },
     back: function (P) { return [floor(18, 86), L("eq2", [[78, 6], [78, 93]], 3.5), L("eq2", [[62, 8], [78, 8]], 3), L("eq2", [[62, 8], P.ha], 2), D("eq2", [62, 8], 3.2)]; },
@@ -454,7 +514,9 @@
     var sex = opt.sex === "F" ? "F" : "M", still = !!opt.still, ck = key + sex + (still ? "s" : "a");
     if (!cache[ck]) {
       var S = STY[sex], base = shapes(ex, S, still ? ex.t : 0), frames = still ? null : FR.map(function (f) { return shapes(ex, S, f.t); });
-      var dur = ex.slow ? "3.6s" : "2.8s";
+      var base0 = ex.slow ? 3.6 : 2.8, hold = ex.hold || 0, dur = f1(base0 + hold) + "s";
+      /* ex.hold(초): 시작 자세에서 그만큼 더 멈춰 있다가 움직임 (2026-11-16 리버스 펙덱 "시작 준비 자세를 0.5초 느리게") */
+      var kt = !hold ? KT : FR.map(function (f, n) { return n ? Math.round((hold + f.kt * base0) / (base0 + hold) * 1000) / 1000 : 0; }).join(";");
       var h = '<rect x=".75" y=".75" width="98.5" height="98.5" rx="23" fill="' + S.tile + '"/>';
       base.forEach(function (o, n) {
         var attrs = "", anim = "", k;
@@ -462,7 +524,7 @@
           attrs += " " + k + '="' + o.dyn[k] + '"';
           if (still) continue;
           var vals = frames.map(function (fr) { return fr[n].dyn[k]; }), same = vals.every(function (v) { return v === vals[0]; });
-          if (!same) anim += '<animate attributeName="' + k + '" dur="' + dur + '" repeatCount="indefinite" keyTimes="' + KT + '" values="' + vals.join(";") + '"/>';
+          if (!same) anim += '<animate attributeName="' + k + '" dur="' + dur + '" repeatCount="indefinite" keyTimes="' + kt + '" values="' + vals.join(";") + '"/>';
         }
         h += "<" + o.tag + " " + o.fix + attrs + (anim ? ">" + anim + "</" + o.tag + ">" : "/>");
       });
