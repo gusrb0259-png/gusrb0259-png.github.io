@@ -4107,12 +4107,27 @@
   window.addEventListener("resize", function () { viewHeal("크기"); });
   document.addEventListener("visibilitychange", function () { if (!document.hidden) setTimeout(function () { viewHeal("돌아옴"); }, 300); });
   [800, 2500].forEach(function (t) { setTimeout(function () { viewHeal("처음"); }, t); });
+  /* 가볍게 (2026-11-17 팀장 "홈페이지·핸드폰 전체가 렉"): 화면 밖으로 나간 칸의 움직임(CSS 애니메이션·움직이는 SVG 아이콘)은 멈추고,
+     앱을 안 보고 있을 땐(다른 앱·화면 꺼짐) 전부 멈춤 → 폰 그래픽 부담·배터리 줄임. 보이면 다시 움직임. */
+  (function () {
+    if (!window.IntersectionObserver) return;
+    function svgs(el, on) { Array.prototype.forEach.call(el.querySelectorAll("svg"), function (g) { try { on ? g.unpauseAnimations() : g.pauseAnimations(); } catch (e) {} }); }
+    var io = new IntersectionObserver(function (es) {
+      es.forEach(function (e) { var on = e.isIntersecting; e.target.classList.toggle("offv", !on); svgs(e.target, on); });
+    }, { rootMargin: "120px 0px" });
+    function watch() { Array.prototype.forEach.call(view.children, function (c) { if (!c.__io) { c.__io = 1; io.observe(c); } }); }
+    new MutationObserver(watch).observe(view, { childList: true }); watch();
+    document.addEventListener("visibilitychange", function () {
+      document.documentElement.classList.toggle("hid", document.hidden);
+      svgs(document, !document.hidden);
+    });
+  })();
   window.addEventListener("hashchange", function () { route(); tourMaybe(); });
   route(); tourMaybe();
   cmemoFill();
   (function () {   /* 로딩 화면 걷기 — 앱 아이콘으로 열었을 때 0.6초는 보이게, 그 밖(아이패드 칸 안·안내서 데모)은 바로 */
     var t0 = (window.performance && performance.timing && performance.timing.navigationStart) || Date.now();
-    var wait = window.self !== window.top || DEMO ? 0 : Math.max(0, 1000 - (Date.now() - t0));
+    var wait = window.self !== window.top || DEMO ? 0 : Math.max(0, 350 - (Date.now() - t0));   /* 2026-11-17 "렉" — 로딩 화면 최소 1초 → 0.35초 */
     setTimeout(function () { document.body.classList.add("ready"); }, wait);
   })();
   nDot();

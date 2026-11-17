@@ -2024,3 +2024,11 @@ html[data-skin="sheep"] .stamp::after { background: #FFE3C7; }
   --hero-sh: rgba(217, 104, 142, .34); --kp-hi: #A0614F; --page: #FFF5F8; }
 :root[data-theme="chihuahua"] { --seal: #A97E5D; --hero: #A97E5D; --hero2: #CDA889; --hero3: #7E5A40; --hero-sub: #F7E8D9; --hero-eye: #FFF6EC; --hero-blob: #FFF6EC; --hero-blob-o: .14;
   --hero-sh: rgba(126, 90, 64, .34); --kp-hi: #8A6650; --page: #F7E8D9; }
+
+/* ===== 가볍게 (2026-11-17 팀장 "홈페이지·핸드폰 전체가 렉") =====
+   폰에서 제일 무거운 것: 계속 움직이는 칸에 흐림(blur) 필터 · 화면에 붙은 막대·아래 탭의 뒤 흐림(backdrop-filter). 모양은 거의 같게 두고 뺌.
+   화면 밖 칸(.offv)·앱을 안 볼 때(html.hid)는 움직임 멈춤. */
+.thero::before, .thero::after, .hero::before, .hero::after, .rp-home::before, .rp-home::after { filter: none !important; }
+.bar, .tabs, .navback, .npop, .bgpop { backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }
+.tabs { background: rgba(255, 255, 255, .985); }
+.offv, .offv *, .offv *::before, .offv *::after, html.hid *, html.hid *::before, html.hid *::after { animation-play-state: paused !important; }
