@@ -691,16 +691,33 @@ body.pad .mcard.sel .av { outline: 3px solid var(--key); outline-offset: 3px; }
         .catch(function () { QN--; if (t.n++ < 1) setTimeout(function () { QW.push(t); qrun(); }, 1500); else t.no(); qrun(); });
     })(QW.shift());
   }
+  /* 2026-11-19 빨리 열기: 내 회원(이 사이트)부터 바로 그리고, 연결된 다른 선생님 개인 사이트 회원은 다 불러온 뒤 아래에 덧붙임(예전엔 그걸 다 기다렸다 한꺼번에 그려서 느렸음).
+     출석은 지난번 받은 것(DAYS)을 먼저 보여 주고 새로 오면 바꿈 — 다시 그려도 '불러오는 중'으로 깜빡이지 않게. */
+  var RGEN = 0, RLAST = 0, EXT_ROWS = [];
   function render() {
-    var box = document.getElementById("list");
-    Promise.all([Promise.all(LIST.map(function (slug) {
+    var box = document.getElementById("list"), gen = ++RGEN; RLAST = Date.now();
+    Promise.all(LIST.map(function (slug) {
       return loadMember(slug).then(function (M) { return { slug: slug, M: M }; }).catch(function () { return null; });
-    })), extAll()]).then(function (two) {
-      var rows = two[0].filter(Boolean).concat(two[1]).filter(function (r) { return (ME.admin || tidOf(r.slug, r.M) === ME.id) && (r.ext || HIDDEN.indexOf(r.slug) < 0); });
+    })).then(function (own) {
+      if (gen !== RGEN) return;
+      draw(own.filter(Boolean).concat(EXT_ROWS), true);
+      extAll().then(function (ex) {
+        if (gen !== RGEN) return;
+        var had = EXT_ROWS.map(function (r) { return r.slug; }).join(), now = ex.map(function (r) { return r.slug; }).join();
+        EXT_ROWS = ex;
+        if (had === now) { ex.forEach(function (r) { var o = ROWS.filter(function (x) { return x.slug === r.slug && x.ext; })[0]; if (o) o.M = r.M; }); return; }
+        draw(own.filter(Boolean).concat(ex), true);
+      });
+    });
+  }
+  function draw(all, reset) {
+    var box = document.getElementById("list");
+    {
+      var rows = all.filter(function (r) { return (ME.admin || tidOf(r.slug, r.M) === ME.id) && (r.ext || HIDDEN.indexOf(r.slug) < 0); });
       ROWS = rows; setCount(rows.length); tChips(); if (ME.admin) trDraw();
       if (!rows.length) box.innerHTML = ME.admin ? "" : '<div class="panel lockmsg"><b>아직 담당 회원이 없어요</b><p>위 "＋ 새 회원 노트 만들기"로 시작하거나, 팀장님께 담당을 넘겨 달라고 하세요</p></div>';
-      else box.innerHTML = rows.map(function (r) { return card(r.slug, r.M, null); }).join("");
-      fsum("list", rows.length + "명");
+      else box.innerHTML = rows.map(function (r) { if (DAYS[r.slug]) r.days = DAYS[r.slug]; return card(r.slug, r.M, DAYS[r.slug] || null); }).join("");
+      fsum("list", rows.length + "명"); sumDraw(); if (TRAINERS.length && ME.admin) tdDraw();
       if (isPad() && !paneSlug) { var last = ""; try { last = sessionStorage.getItem("ptpane") || ""; } catch (e) {} if (last) paneOpen(last); }
       paneMark();
       applyFilter();
@@ -719,14 +736,15 @@ body.pad .mcard.sel .av { outline: 3px solid var(--key); outline-offset: 3px; }
             return j && j.ok ? j.days : {};
           }).catch(function () { return {}; })
           .then(function (days) {
+            if (days && typeof days === "object" && Object.keys(days).length) { DAYS[r.slug] = days; daysSave(); } else if (DAYS[r.slug]) days = DAYS[r.slug];
             r.days = days;
-            var el = box.children[i]; if (el) el.outerHTML = card(r.slug, r.M, days);
+            var el = box.querySelector('.mcard[data-slug="' + r.slug + '"]:not([data-x])'); if (el) el.outerHTML = card(r.slug, r.M, days);
             paneMark();
             applyFilter();
             sumDraw(); if (TRAINERS.length && ME.admin) tdDraw();
           });
       });
-    });
+    }
   }
   /* ---------- 새 회원 노트 만들기 (2026-11-12 트레이너 "이름만 넣으면 페이지 자동으로")
      창고 저장소에 pub:m:<주소>:profile(노트 정보) + coach:roster(회원 목록, 선생님만 읽기) 저장 → 사이트 404.html이 /m/<주소>/ 를 노트로 그려 줌.
@@ -841,6 +859,17 @@ body.pad .mcard.sel .av { outline: 3px solid var(--key); outline-offset: 3px; }
   function coachLoad() {   /* 창고 coach:* 한 번에 — 회원 목록(roster)·선생님·담당 + 누구인지(who) */
     var k = bnKey(); if (!k || !API) return Promise.resolve({ roster: [] });
     return kvPost({ a: "kv_get", prefix: "coach:" }, k).then(function (j) {
+      if (j && j.ok) try { var js = JSON.stringify(j); BOOT_SAME = js === localStorage.getItem(BOOT_LS); localStorage.setItem(BOOT_LS, js); } catch (e) {}
+      return coachApply(j);
+    }).catch(function () { return { roster: [] }; });
+  }
+  /* 빨리 열기 (2026-11-19 팀장 "폰으로 보면 랙이 너무 심해"): 지난번 받은 coach:* 를 폰에 기억해 두고 열자마자 그걸로 목록을 그림 → 창고 답이 오면 다시 맞춤 */
+  var BOOT_SAME = false, BOOT_LS = "ptcoach:boot", DAYS_LS = "ptcoach:days", DAYS = {};
+  try { DAYS = JSON.parse(localStorage.getItem(DAYS_LS) || "{}") || {}; } catch (e) { DAYS = {}; }
+  function daysSave() { clearTimeout(daysSave.t); daysSave.t = setTimeout(function () { try { localStorage.setItem(DAYS_LS, JSON.stringify(DAYS)); } catch (e) {} }, 800); }
+  function coachCached() { var j = null; try { j = JSON.parse(localStorage.getItem(BOOT_LS) || "null"); } catch (e) {} return j && j.ok ? coachApply(j) : null; }
+  function coachApply(j) {
+    {
       if (j && !j.ok && j.error === "key") return { bad: 1, roster: [] };
       var kv = j && j.ok && j.kv || {};
       TRAINERS = Array.isArray(kv["coach:trainers"]) ? kv["coach:trainers"] : [];
@@ -849,7 +878,7 @@ body.pad .mcard.sel .av { outline: 3px solid var(--key); outline-offset: 3px; }
       if (j && j.who && j.who.admin === false) ME = { admin: false, id: j.who.id || "none", name: j.who.name || "" };
       else if (j && j.who && j.who.admin && j.who.id) ME = { admin: true, id: j.who.id, name: j.who.name || "", sub: 1 };   /* 관리자 선생님 */
       return { roster: Array.isArray(kv["coach:roster"]) ? kv["coach:roster"] : [] };
-    }).catch(function () { return { roster: [] }; });
+    }
   }
   function applyMe(bad) {
     document.getElementById("trSec").hidden = !ME.admin || !bnKey() || bad;
@@ -1233,6 +1262,8 @@ body.pad .mcard.sel .av { outline: 3px solid var(--key); outline-offset: 3px; }
     }).catch(function (err) { msg.textContent = err && err.msg || "저장이 안 됐어요 — 다시 눌러 주세요"; trDraw(); });
   });
 
+  var C0 = coachCached();
+  if (C0 && !C0.bad) { rosterMerge(C0.roster); applyMe(); render(); }
   coachLoad().then(function (c) {
     rosterMerge(c.roster);
     applyMe(c.bad);
@@ -1243,10 +1274,11 @@ body.pad .mcard.sel .av { outline: 3px solid var(--key); outline-offset: 3px; }
       document.getElementById("sOn").textContent = document.getElementById("sWait").textContent = "–";
       return;
     }
+    if (C0 && !C0.bad && BOOT_SAME) return;   /* 지난번과 같으면 이미 그린 걸 그대로 */
     render();
   });
   document.getElementById("refresh").addEventListener("click", render);
-  document.addEventListener("visibilitychange", function () { if (!document.hidden) render(); });
+  document.addEventListener("visibilitychange", function () { if (!document.hidden && Date.now() - RLAST > 60000) render(); });   /* 앱으로 돌아올 때 1분 안이면 다시 안 불러옴 */
 })();
 </script>
 </body>
