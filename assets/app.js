@@ -920,8 +920,50 @@
       litApply(t);
     }
   }
+  /* ---------------- 복습지 본 표시 (2026-11-18 팀장 "회원님들이 복습지 보면 본 거 알 수 있게")
+     회원 폰에서 복습지(#form-<id>)를 열면 창고 mw:<주소>:seen = { 복습지id: [처음 본 시각, 마지막 본 시각, 본 횟수] } (초 단위, 10분 안에 다시 열면 안 셈).
+     선생님 보기에서만 표시: 복습지 목록 카드 "✓ 봤어요 11/18" / "아직 안 봤어요", 복습지 안 위쪽 한 줄. 선생님 페이지 회원 카드에 "봄 n/m". 재배포 필요 없음(kv_set mw). */
+  var SEEN_LS = "ptnote:" + SLUG + ":seen", SEEN = {}, SEEN_T = 0;
+  try { SEEN = JSON.parse(localStorage.getItem(SEEN_LS) || "{}") || {}; } catch (e) { SEEN = {}; }
+  function seenPush() {
+    try { localStorage.setItem(SEEN_LS, JSON.stringify(SEEN)); } catch (e) {}
+    clearTimeout(SEEN_T);
+    SEEN_T = setTimeout(function () { if (ATT_API && JSON.stringify(SEEN).length < 3900) rtPost({ a: "kv_set", k: "mw:" + SLUG + ":seen", v: SEEN }).catch(function () {}); }, 1200);
+  }
+  function seenMark(id) {
+    if (COACH_MODE || DEMO || !id) return;
+    var now = Math.floor(Date.now() / 1000), o = SEEN[id];
+    if (o && now - o[1] < 600) return;
+    SEEN[id] = o ? [o[0], now, (o[2] || 1) + 1] : [now, now, 1];
+    seenPush();
+  }
+  function seenServer(kv) {
+    var v = kv && kv["mw:" + SLUG + ":seen"]; if (!v || typeof v !== "object") v = {};
+    var ch = false, up = false;
+    Object.keys(v).forEach(function (id) {
+      var a = v[id], b = SEEN[id]; if (!Array.isArray(a)) return;
+      if (!b) { SEEN[id] = a; ch = true; return; }
+      var m = [Math.min(a[0], b[0]), Math.max(a[1], b[1]), Math.max(a[2] || 1, b[2] || 1)];
+      if (m.join() !== b.join()) { SEEN[id] = m; ch = true; }
+      if (m.join() !== a.join()) up = true;
+    });
+    Object.keys(SEEN).forEach(function (id) { if (!v[id]) up = true; });
+    if (ch) { try { localStorage.setItem(SEEN_LS, JSON.stringify(SEEN)); } catch (e) {} if (COACH_MODE && /^#forms?(-|$)/.test(location.hash || "")) route(); }
+    if (up && !COACH_MODE && !DEMO) seenPush();
+  }
+  function seenWhen(t) { var d = new Date(t * 1000); return (d.getMonth() + 1) + "/" + d.getDate() + " " + ("0" + d.getHours()).slice(-2) + ":" + ("0" + d.getMinutes()).slice(-2); }
+  function seenChip(f) {
+    if (!COACH_MODE || DEMO) return "";
+    var o = SEEN[f.id];
+    return o ? '<span class="fseen on">✓ 봤어요 ' + seenWhen(o[0]).split(" ")[0] + '</span>' : '<span class="fseen">아직 안 봤어요</span>';
+  }
+  function seenLine(f) {
+    if (!COACH_MODE || DEMO) return "";
+    var o = SEEN[f.id];
+    return '<div class="fseen-line' + (o ? ' on' : '') + '">' + (o ? '👀 회원님이 <b>' + seenWhen(o[0]) + '</b>에 처음 봤어요' + ((o[2] || 1) > 1 ? ' · ' + o[2] + '번 봄 (마지막 ' + seenWhen(o[1]) + ')' : '') : '회원님이 아직 이 복습지를 안 열어 봤어요') + '</div>';
+  }
   function careServer(kv) {
-    infoServer(kv); dietServer(kv); mediaServer(kv); xdServer(kv);
+    seenServer(kv); infoServer(kv); dietServer(kv); mediaServer(kv); xdServer(kv);
     var tv = kv && kv["pub:m:" + SLUG + ":trainer"];
     if (typeof tv === "string" && tv && tv !== TRN) { M.trainer = tv; TRN = tv; try { localStorage.setItem(TRN_LS, tv); } catch (e) {} route(); }
     var had, now;
@@ -2691,7 +2733,7 @@
   }
   function formCard(f) {
     return '<a class="card-link" data-cat="' + esc(formCats(f).join(" ")) + '" href="#form-' + esc(f.id) + '"><div class="thumb">' + (f.simple ? fmThumb(f) : '<img src="' + esc(f.dir) + 'poster.jpg" alt="" loading="lazy">') + '</div>' +
-      '<div>' + (f.part ? '<span class="tagc">' + esc(f.part) + '</span>' : '') + (formNew(f) ? '<span class="fnew">NEW</span>' : '') + '<h3>' + esc(f.exercise) + '</h3><p>' + (f.simple ? '사진·영상 ' + (FMEDIA[f.id] || []).length + '개' : esc(f.exercise_en)) + ' · ' + esc(f.date) + '</p></div></a>';
+      '<div>' + (f.part ? '<span class="tagc">' + esc(f.part) + '</span>' : '') + (formNew(f) ? '<span class="fnew">NEW</span>' : '') + seenChip(f) + '<h3>' + esc(f.exercise) + '</h3><p>' + (f.simple ? '사진·영상 ' + (FMEDIA[f.id] || []).length + '개' : esc(f.exercise_en)) + ' · ' + esc(f.date) + '</p></div></a>';
   }
   /* 복습지 날짜별로 묶기 (2026-11-12 트레이너 "날짜별 ㄱ") — "11월 12일 (목) · 3개" 제목 아래 그날 복습지. 최신 날짜가 위, 같은 날은 원래 순서
      + 그날 더 한 운동 (2026-11-12 트레이너 "수업한 날 회원님들이 추가로 운동을 더 하면 종목을 더 추가하고 싶다"):
@@ -2840,7 +2882,7 @@
   function renderForm(f) {
     if (f.simple) return renderSimpleForm(f);
     var D = f.dir;
-    var h = '<a class="back" href="#forms">← 자세 복습지</a>';
+    var h = '<a class="back" href="#forms">← 자세 복습지</a>' + seenLine(f);
     h += '<div class="hero"><div class="hero-main split"><div class="hero-l">' +
       '<div class="eyebrow">MY FORM NOTE <b>· 자세 복습지</b></div><h1>' + esc(f.exercise) + '</h1>' +
       '<div class="en">' + esc(f.exercise_en) + '</div>' +
@@ -4521,7 +4563,7 @@
     });
     tabInd();
     alignText(document);
-    if (/^form-/.test(hsh) && !DEMO) lsAdd(FOPEN_KEY, [hsh.slice(5)]);
+    if (/^form-/.test(hsh) && !DEMO) { lsAdd(FOPEN_KEY, [hsh.slice(5)]); seenMark(hsh.slice(5)); }
     litApply(tab);
     setupFold(tab, jumpTo || (scrollDay ? "day" : null));
     setupAttCheck(); setupCal(); setupIb(); setupBadges(); setupMuscle(); setupRtEdit();

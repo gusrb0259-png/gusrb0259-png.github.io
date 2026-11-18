@@ -2394,6 +2394,13 @@ html.rt-dragging, html.rt-dragging body { -webkit-user-select: none; user-select
 :root[data-theme="chihuahua"] { --seal: #A97E5D; --hero: #A97E5D; --hero2: #CDA889; --hero3: #7E5A40; --hero-sub: #F7E8D9; --hero-eye: #FFF6EC; --hero-blob: #FFF6EC; --hero-blob-o: .14;
   --hero-sh: rgba(126, 90, 64, .34); --kp-hi: #8A6650; --page: #F7E8D9; }
 
+/* ===== 복습지 본 표시 — 선생님 보기에서만 (2026-11-18) ===== */
+.fseen { display: inline-block; font-size: 10.5px; font-weight: 800; line-height: 1; padding: 4px 7px; border-radius: 8px; margin: 0 0 4px 4px; background: #EFEFF2; color: #8A8A94; vertical-align: 1px; }
+.fseen.on { background: #E3F6EA; color: #1E8A4C; }
+.fseen-line { margin: 0 0 12px; padding: 10px 14px; border-radius: 14px; font-size: 13px; font-weight: 700; background: #F2F2F4; color: #6E6E78; }
+.fseen-line.on { background: #E8F7EE; color: #1E7A45; }
+.fseen-line b { font-weight: 900; }
+
 /* ===== 가볍게 (2026-11-17 팀장 "홈페이지·핸드폰 전체가 렉") =====
    폰에서 제일 무거운 것: 계속 움직이는 칸에 흐림(blur) 필터 · 화면에 붙은 막대·아래 탭의 뒤 흐림(backdrop-filter). 모양은 거의 같게 두고 뺌.
    화면 밖 칸(.offv)·앱을 안 볼 때(html.hid)는 움직임 멈춤. */
