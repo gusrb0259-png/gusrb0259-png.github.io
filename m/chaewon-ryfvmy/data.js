@@ -4,7 +4,7 @@ window.MEMBER = {
   "sex": "F",
   "theme": "chihuahua",
   "call": "채원",
-  "pet": "hamster",
+  "pet": "dog",
   "pet_name": "와와햄",
   "since": "2026. 2",
   "goal": "탄탄한 몸매 라인 · 힙업 · 체력",
