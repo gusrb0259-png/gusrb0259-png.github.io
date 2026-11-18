@@ -2408,6 +2408,7 @@ html.rt-dragging, html.rt-dragging body { -webkit-user-select: none; user-select
 .petq p { margin: 0; font-size: 16px; line-height: 1.65; font-weight: 700; color: #2E2A28; word-break: keep-all; }
 .petq::after { content: ""; position: absolute; left: 50%; bottom: -8px; margin-left: -8px; border: 8px solid transparent; border-bottom: 0; border-top-color: #FFFDF9; }
 .petq.out { animation: petqOut .38s ease both; }
+.petq .pqn { font-weight: 900; color: var(--seal, var(--primary)); }
 @keyframes petqIn { from { opacity: 0; transform: translate(-50%, 14px) scale(.96); } to { opacity: 1; transform: translate(-50%, 0) scale(1); } }
 @keyframes petqOut { to { opacity: 0; transform: translate(-50%, 8px); } }
 @media (prefers-reduced-motion: reduce) { .petq, .petq.out { animation: none; } }

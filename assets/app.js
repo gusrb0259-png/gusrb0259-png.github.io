@@ -263,7 +263,9 @@
       var n; do { n = Math.floor(Math.random() * PQ.length); } while (n === PQL && PQ.length > 1); PQL = n;
       var q = document.createElement("div"); q.className = "petq"; q.setAttribute("role", "status");
       var lc = PN.charCodeAt(PN.length - 1) - 0xAC00, ga = lc >= 0 && lc < 11172 && lc % 28 ? "이" : "가";
-      q.innerHTML = '<small>' + esc(PN) + ga + ' 전하는 말</small><p>' + esc(PQ[n]).replace(/\n/g, "<br>") + '</p>';
+      /* 2026-11-19 팀장 "각자 이름 불러 줘 — 수업 때처럼 이름 옆에 님": data.js call(부르는 이름) 또는 이름에서 성 뺀 것(2~4글자 한글 이름) + 님. 그룹 PT(이름에 ·)는 안 부름 */
+      var nm = String(M.call || M.name || "").trim(), call = M.call ? nm : /·/.test(nm) ? "" : /^[가-힣]{3,4}$/.test(nm) ? nm.slice(1) : nm;
+      q.innerHTML = '<small>' + esc(PN) + ga + ' 전하는 말</small><p>' + (call ? '<b class="pqn">' + esc(call) + '님,</b><br>' : '') + esc(PQ[n]).replace(/\n/g, "<br>") + '</p>';
       document.body.appendChild(q);
       function bye() { q.classList.add("out"); setTimeout(function () { q.remove(); }, 400); }
       q.addEventListener("click", bye); setTimeout(bye, 6500);

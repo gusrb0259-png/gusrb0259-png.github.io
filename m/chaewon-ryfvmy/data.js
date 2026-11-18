@@ -3,6 +3,7 @@ window.MEMBER = {
   "name": "채와와",
   "sex": "F",
   "theme": "chihuahua",
+  "call": "채원",
   "pet": "dog",
   "pet_name": "이가",
   "since": "2026. 2",
