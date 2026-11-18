@@ -85,7 +85,7 @@
     "플랫 덤벨프레스": "db_bench_press", "덤벨 벤치프레스": "db_bench_press", "바벨 벤치프레스": "bench_press", "벤치프레스": "bench_press",
     "인클라인 덤벨 프레스": "incline_db_press", "스미스 인클라인 프레스": "smith_incline_press", "인클라인 프레스 머신": "incline_machine_press", "머신 인클라인 프레스": "incline_machine_press",
     "체스트 프레스": "chest_press", "뉴텍 체스트 프레스 머신": "lying_chest_press", "뉴텍 체스트프레스 머신": "lying_chest_press", "펙덱 플라이": "pec_deck", "펙덱": "pec_deck", "케이블 푸쉬다운": "cable_pushdown",
-    "오버헤드 익스텐션": "overhead_ext", "랫풀다운": "lat_pulldown", "클로즈그립 랫풀다운": "close_grip_pulldown", "와이드 풀다운": "wide_pulldown", "언더그립 랫풀다운": "underhand_pulldown",
+    "오버헤드 익스텐션": "overhead_ext", "랫풀다운": "lat_pulldown", "패럴렐 그립 랫풀다운": "lat_pulldown", "벤트오버 덤벨 로우": "one_arm_row", "클로즈그립 랫풀다운": "close_grip_pulldown", "와이드 풀다운": "wide_pulldown", "언더그립 랫풀다운": "underhand_pulldown",
     "스트레이트 암 풀다운": "straight_arm_pulldown", "뉴텍 시티드 로우 머신": "seated_row_machine", "뉴텍 엠토처 시티드 로우": "mtorture_row", "엠토처 시티드 로우": "mtorture_row", "시티드 로우 머신": "seated_row_machine", "시티드 로우": "seated_row_machine",
     "케이블 시티드 로우": "cable_seated_row", "롱풀": "cable_seated_row", "언더그립 시티드 로우": "underhand_seated_row", "원암 덤벨 로우": "one_arm_row",
     "해머스트렝스 로우로우": "low_row", "로우로우": "low_row", "하이 로우": "high_row", "뉴텍 버티컬 풀다운": "vertical_pulldown", "버티컬 풀다운": "vertical_pulldown", "버티컬 풀다운 머신": "vertical_pulldown", "버티컬 풀다운": "vertical_pulldown",
