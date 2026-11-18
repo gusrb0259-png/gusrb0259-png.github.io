@@ -171,8 +171,8 @@
     var PSL = window.ATT_SLUG || (location.pathname.match(/\/m\/([^\/]+)\//) || [, M.name || "x"])[1];   /* SLUG은 아래에서 정해져서 여기선 직접 */
     for (var pi = 0; pi < PSL.length; pi++) PH = (PH * 31 + PSL.charCodeAt(pi)) % 9973;
     var PVAR = M.pet || PPOOL[PH % 3], PET = { wolf: "dog", doberman: "dog", puppy: "dog", panther: "cat" }[PVAR] || PVAR;
-    if (PET !== "cat" && PET !== "bunny" && PET !== "dog") return;
-    var PNAME = { wolf: "로키", panther: "팬텀", doberman: "듀크", cat: "모모", bunny: "토롱이", puppy: "몽이", dog: "멍멍이" };
+    if (PET !== "cat" && PET !== "bunny" && PET !== "dog" && PET !== "hamster") return;
+    var PNAME = { hamster: "햄찌", wolf: "로키", panther: "팬텀", doberman: "듀크", cat: "모모", bunny: "토롱이", puppy: "몽이", dog: "멍멍이" };
     var PCOL = {
       wolf: [["#2A2630", "#6E737C"], ["#C98A4B", "#A9AEB6"], ["#FBF7F1", "#F2F3F5"], ["#E9A9A0", "#C9CDD3"]],
       doberman: [["#2A2630", "#1C1A1F"], ["#C98A4B", "#B5652B"], ["#FBF7F1", "#C27A3E"], ["#E9A9A0", "#8A4A26"]],
@@ -196,6 +196,15 @@
       + '<path class="d-tongue" d="M44.8 23.2 h3.4 v3.2 a1.7 1.7 0 0 1 -3.4 0z" fill="#F08AA4"/><path d="M46.5 23.4 v2.2" stroke="#D9657F" stroke-width=".6"/>'
       + '<ellipse cx="46.5" cy="20.2" rx="2.3" ry="1.6" fill="#120F14"/><path d="M42.6 22.2q1.9 1.6 3.9.4q2 1.2 3.9-.4" fill="none" stroke="#120F14" stroke-width=".9" stroke-linecap="round"/></g>'
       + '</svg></div>';   /* 2026-11-17 팀장 "우리집 강아지 이가" — 장모 치와와(검정 등·눈썹 황갈색·흰 주둥이·가슴, 큰 털귀, 혀 빼꼼). 사진 보고 새로 그림 */
+    else if (PET === "hamster") wrap.innerHTML = '<div class="pet sit ham"><svg viewBox="0 0 64 48" width="52" height="39">'
+      + '<g class="p-walk"><g class="p-legs"><g class="lg a"><ellipse cx="19" cy="41.5" rx="3.4" ry="2.4" fill="#F6A9B4"/></g><g class="lg b"><ellipse cx="25" cy="42" rx="3.4" ry="2.4" fill="#F6A9B4"/></g><g class="lg b"><ellipse cx="36" cy="42" rx="3.4" ry="2.4" fill="#F6A9B4"/></g><g class="lg a"><ellipse cx="42" cy="41.5" rx="3.4" ry="2.4" fill="#F6A9B4"/></g></g>'
+      + '<circle class="p-tail" cx="11.5" cy="33" r="2.6" fill="#D98E3E"/><ellipse cx="30" cy="32" rx="19.5" ry="10.5" fill="#EFAE5F"/><ellipse cx="33" cy="37.5" rx="13" ry="4.2" fill="#FFF9F0"/><path d="M18 25c5-3 13-3.5 18-1" fill="none" stroke="#D98E3E" stroke-width="2.2" stroke-linecap="round" opacity=".7"/></g>'
+      + '<g class="p-sit"><circle class="p-tail" cx="15" cy="40" r="2.6" fill="#D98E3E"/><path d="M15 44c0-15 7-22 16-22s16 7 16 22z" fill="#EFAE5F"/><path d="M28 44c0-10 4-16 9-16s9 6 9 16z" fill="#FFF9F0"/><ellipse cx="35" cy="43.6" rx="3.6" ry="2.3" fill="#F6A9B4"/><ellipse cx="43" cy="43.6" rx="3.6" ry="2.3" fill="#F6A9B4"/><ellipse cx="38" cy="31" rx="2.6" ry="2" fill="#F6A9B4"/><ellipse cx="43.5" cy="31" rx="2.6" ry="2" fill="#F6A9B4"/></g>'
+      + '<g class="p-head"><circle cx="37.5" cy="8.5" r="4.6" fill="#EFAE5F"/><circle cx="37.5" cy="8.5" r="2.6" fill="#F6A9B4"/><circle cx="55.5" cy="8.5" r="4.6" fill="#EFAE5F"/><circle cx="55.5" cy="8.5" r="2.6" fill="#F6A9B4"/>'
+      + '<ellipse cx="46.5" cy="18" rx="12.8" ry="11" fill="#EFAE5F"/><path d="M34.5 21c1 5.5 6 8.5 12 8.5s11-3 12-8.5c-3-2.8-7.5-4-12-4s-9 1.2-12 4z" fill="#FFF9F0"/><path d="M46.5 8v6" stroke="#FFF9F0" stroke-width="2.6" stroke-linecap="round"/>'
+      + '<g class="p-eyes"><circle cx="41.6" cy="16.8" r="2.2" fill="#1E1714"/><circle cx="51.4" cy="16.8" r="2.2" fill="#1E1714"/><circle cx="42.3" cy="16" r=".75" fill="#fff"/><circle cx="52.1" cy="16" r=".75" fill="#fff"/></g><g class="p-happy"><path d="M39.4 17.2q2.2-2.8 4.4 0M49.2 17.2q2.2-2.8 4.4 0" fill="none" stroke="#1E1714" stroke-width="1.3" stroke-linecap="round"/></g>'
+      + '<ellipse cx="38" cy="22.5" rx="3" ry="1.9" fill="#FF9BAA" opacity=".75"/><ellipse cx="55" cy="22.5" rx="3" ry="1.9" fill="#FF9BAA" opacity=".75"/><ellipse cx="46.5" cy="20.6" rx="1.5" ry="1.1" fill="#E7798C"/><path d="M44.6 22.6q1 1.1 1.9 0q.9 1.1 1.9 0" fill="none" stroke="#6B4A3A" stroke-width=".9" stroke-linecap="round"/><path d="M45.4 23.4h2.2v1.8h-2.2z" fill="#fff" stroke="#E3D7CC" stroke-width=".4"/></g>'
+      + '</svg></div>';   /* 2026-11-19 팀장 "채와와는 와와햄으로" — 새로 그린 골든 햄스터(동그란 몸·흰 볼·분홍 발·앞니), 고양이와 같은 걷기·앉기 */
     else wrap.innerHTML = '<div class="pet sit"><svg viewBox="0 0 64 48" width="52" height="39">'
       + '<g class="p-walk"><path class="p-tail" d="M12 30 C4 28 3 18 8 14" fill="none" stroke="#F3D9B8" stroke-width="4.5" stroke-linecap="round"/>'
       + '<g class="p-legs"><g class="lg a"><path d="M16 30c-.6 4-.4 7 .3 10.5h4.4c.7-3.5.9-6.5.3-10.5z" fill="#EBCBA4"/><ellipse cx="19.2" cy="42.3" rx="3.3" ry="2.3" fill="#fff"/></g><g class="lg b"><path d="M22 30c-.6 4-.4 7 .3 10.5h4.4c.7-3.5.9-6.5.3-10.5z" fill="#FFF3E2"/><ellipse cx="25.2" cy="42.3" rx="3.3" ry="2.3" fill="#fff"/></g><g class="lg b"><path d="M36 30c-.6 4-.4 7 .3 10.5h4.4c.7-3.5.9-6.5.3-10.5z" fill="#EBCBA4"/><ellipse cx="39.2" cy="42.3" rx="3.3" ry="2.3" fill="#fff"/></g><g class="lg a"><path d="M42 30c-.6 4-.4 7 .3 10.5h4.4c.7-3.5.9-6.5.3-10.5z" fill="#FFF3E2"/><ellipse cx="45.2" cy="42.3" rx="3.3" ry="2.3" fill="#fff"/></g></g>'
