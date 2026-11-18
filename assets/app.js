@@ -193,6 +193,8 @@
       + '<path d="M46 19.300l.9 1 .9-1z" fill="#E98AA2"/><path d="M44.800 21.600q1.050 1.100 2.100 0q1.050 1.100 2.100 0" fill="none" stroke="#3A2E2E" stroke-width=".9" stroke-linecap="round"/>'
       + '<path d="M40.500 26.200l-4-2.200v4.400zM42.500 26.200l4-2.200v4.400z" fill="#D6204F"/><circle cx="41.500" cy="26.200" r="1.500" fill="#B8173F"/></g>'
       + '</svg></div>';
+    if (PET === "bunny" && THM === "pinkcheck") wrap.innerHTML = wrap.innerHTML   /* 2026-11-18 이다혜님 — 돌아다니는 토끼를 홈 마스코트 '보니' 색으로(흰 털·갈색 선·노란 헤어밴드) */
+      .replace(/#B8325A/gi, "#7A4636").replace(/#FFE8EE/gi, "#FFFFFF").replace(/#D6204F/gi, "#FFD54A").replace(/#F7A9BC/gi, "#FFC2D6").replace(/#4A2030/gi, "#4A2A20");
     document.body.appendChild(wrap);
     var pet = wrap.firstChild, x = 16, dir = 1, tm = 0, W = PET === "bunny" ? 48 : 52, HOP = PET === "bunny", FLIP = true;
     var still = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -246,7 +248,7 @@
       busy = 1; freeze();
       var kind = tapN++ % 3, end = 1800;
       if (kind === 0) {   /* 쓰담쓰담 → 웃는 눈 + 하트 */
-        pet.classList.add("happy", "pat"); hearts(3); bubble(PET === "dog" ? "헥헥 좋아멍!" : PET === "bunny" ? "헤헤 좋아요!" : "골골골~ 좋아냥");
+        pet.classList.add("happy", "pat"); hearts(3); bubble(PET === "dog" ? "헥헥 좋아멍!" : PET === "bunny" ? (M.pet_name ? M.pet_name + " 기분 최고!" : "헤헤 좋아요!") : "골골골~ 좋아냥");
       } else if (kind === 1) {   /* 밥 먹기 → 앞에 음식, 세 입에 냠냠 */
         end = 2600; pet.classList.add("eat");
         var f = fx("pfood", FOOD, (FLIP ? dir : 1) * 24, 20, 2400);
@@ -260,7 +262,7 @@
       setTimeout(function () { pet.classList.remove("happy", "pat", "eat", "hi"); busy = 0; tm = setTimeout(next, 1500 + Math.random() * 2500); }, end);
     }
     pet.addEventListener("click", function (e) { e.preventDefault(); e.stopPropagation(); react(); });
-    wrap.removeAttribute("aria-hidden"); pet.setAttribute("role", "button"); pet.setAttribute("aria-label", PET === "dog" ? PN + " 쓰다듬기" : PET === "bunny" ? "토롱이 쓰다듬기" : "고양이 쓰다듬기");
+    wrap.removeAttribute("aria-hidden"); pet.setAttribute("role", "button"); pet.setAttribute("aria-label", PET === "dog" ? PN + " 쓰다듬기" : PET === "bunny" ? (M.pet_name || "토롱이") + " 쓰다듬기" : "고양이 쓰다듬기");
     tm = setTimeout(next, 2500);
     window.addEventListener("resize", function () { var max = Math.max(20, wrap.clientWidth - W - 8); if (x > max) { x = max; place(0); } });
   })();
