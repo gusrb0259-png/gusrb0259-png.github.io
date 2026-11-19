@@ -89,7 +89,7 @@
     "스트레이트 암 풀다운": "straight_arm_pulldown", "뉴텍 시티드 로우 머신": "seated_row_machine", "뉴텍 엠토처 시티드 로우": "mtorture_row", "엠토처 시티드 로우": "mtorture_row", "시티드 로우 머신": "seated_row_machine", "시티드 로우": "seated_row_machine",
     "케이블 시티드 로우": "cable_seated_row", "롱풀": "cable_seated_row", "언더그립 시티드 로우": "underhand_seated_row", "원암 덤벨 로우": "one_arm_row",
     "해머스트렝스 로우로우": "low_row", "로우로우": "low_row", "하이 로우": "high_row", "뉴텍 버티컬 풀다운": "vertical_pulldown", "버티컬 풀다운": "vertical_pulldown", "버티컬 풀다운 머신": "vertical_pulldown", "버티컬 풀다운": "vertical_pulldown",
-    "케이블 풀오버": "cable_pullover", "시티드 페이스풀": "face_pull", "페이스풀": "standing_face_pull", "페이스 풀": "standing_face_pull", "티바로우 머신": "tbar_row", "프론트 로우 머신": "front_row", "리버스 펙덱": "reverse_pec_deck", "리버스 펙덱 플라이": "reverse_pec_deck", "케이블 체스트 프레스": "cable_chest_press",
+    "케이블 풀오버": "cable_pullover", "시티드 페이스풀": "face_pull", "페이스풀": "standing_face_pull", "페이스 풀": "standing_face_pull", "티바로우 머신": "tbar_row", "프론트 로우 머신": "front_row", "리버스 펙덱": "reverse_pec_deck", "리버스 플라이 머신": "reverse_pec_deck", "리버스 펙덱 플라이": "reverse_pec_deck", "케이블 체스트 프레스": "cable_chest_press",
     "어시스트 친업": "assisted_chin_up", "어시스티드 친업": "assisted_chin_up", "어시스트 풀업": "assisted_chin_up", "해머 로우로우": "low_row",
     "레그 익스텐션": "leg_extension", "이너타이": "inner_thigh", "아웃타이 머신": "outer_thigh_pin", "플레이트 아웃타이": "outer_thigh_plate",
     "아웃타이": "outer_thigh", "고블릿 스쿼트": "goblet_squat", "핵스쿼트": "hack_squat", "스미스 스쿼트": "smith_squat",
