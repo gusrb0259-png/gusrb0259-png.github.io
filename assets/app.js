@@ -786,12 +786,12 @@
       '<div class="who"><strong>' + (now ? (now.month ? now.month + '개월차' : '곧 시작해요') + ' · ' + now.stage.no + '단계 ' + esc(now.stage.short) : '') + '</strong><span>담당 ' + esc(TRN) + ' ' + TRL() + '</span></div></div></div>' +
       '<div class="keypoint"><small>KEY POINT</small><p>' + (BP ? '목표는 하나, 바프 촬영날! 그 의지라면 충분해요. 단계마다 함께 넘어가요!' : '혼자 가는 길이 아니에요. 단계마다 함께 넘어가요!') + '</p></div></div>';
     h += careSection();
-    var n4 = "04";
+    var n4 = COACH_MODE ? "04" : "03";
     var attSec = '<section id="att">' + head("01", "출석률 · 출석 달력", "얼마나 꾸준히 나왔는지 봐요") + '<div class="panel attcard">' + attGauge() + attCalendar() + '</div></section>';
     if (!now) {
-      return h + attSec + rankSection("02") + badgeSection("03") + '<div class="panel empty"><h3>PT 여정 준비 중이에요</h3><p>선생님이 시작일을 넣으면 12개월 여정이 나와요</p></div>' + remember();
+      return h + attSec + (COACH_MODE ? rankSection("02") + badgeSection("03") : badgeSection("02")) + '<div class="panel empty"><h3>PT 여정 준비 중이에요</h3><p>선생님이 시작일을 넣으면 12개월 여정이 나와요</p></div>' + remember();
     }
-    h += attSec + rankSection("02") + badgeSection("03");
+    h += attSec + (COACH_MODE ? rankSection("02") + badgeSection("03") : badgeSection("02"));   /* 2026-11-20 팀장 "출석 순위 나만 보이게" — 회원님 화면엔 안 보임, 선생님 페이지에서 열 때만 */
     /* 2026-11-13 "한눈에 보는 12개월 그래프 + 단계별 목표 합치기" — 그래프 아래 1·2·3단계 줄(눌러서 바꾸기) + 고른 단계 목표 카드 */
     h += '<section id="goal-journey">' + head(n4, BP ? "바프까지 " + JTN + "개월 여정" : "나의 12개월 여정", "지금 어디쯤, 무엇을 할지 한눈에") + '<div class="panel jpanel jmerge' + (BP ? ' bp">' + bpStrip() : '">') + journeyChart(now) +
       '<div class="jsel">' + stageStepper(now) + '<div class="jdet" id="jdet">' + stageCard(now.stage, now, false) + '</div></div></div></section>';
