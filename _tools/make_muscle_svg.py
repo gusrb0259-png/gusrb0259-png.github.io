@@ -21,16 +21,31 @@ def d_of(P, dx, closed=True):
             keep.append(p); last = p
     return "M" + "L".join(pt(p, dx) for p in keep) + ("Z" if closed else "")
 
+ANG = 15   # 결 방향 무늬 각도 단위
+
+def fiber_angle(Q):
+    """근육 결 방향 = 모양의 긴 축(PCA) — 화면 좌표(y 아래로) 기준 각도"""
+    P = np.asarray(Q, float); P = P - P.mean(0)
+    w, v = np.linalg.eigh(np.cov(P.T))
+    ax = v[:, np.argmax(w)]
+    ang = np.degrees(np.arctan2(-ax[1], ax[0])) % 180   # y 뒤집힘
+    return int(round(ang / ANG) * ANG) % 180
+
 def view(v, sex, dx, cid):
     g = a._geo(v, sex)
-    out = ['<g clip-path="url(#%s)">' % cid]
-    out.append('<path d="%s" fill="%s"/>' % (d_of(g["body"], dx), a.BODY))
+    out = ['<g clip-path="url(#%s)" data-v="%s">' % (cid, v)]
+    out.append('<path class="skin" d="%s"/>' % d_of(g["body"], dx))
+    fib = []
     for name, polys in g["R"].items():
-        ds = " ".join(d_of(Q, dx) for P in polys for Q in a._both(P))
-        out.append('<path class="m" data-k="%s" d="%s"/>' % (name, ds))
+        Qs = [Q for P in polys for Q in a._both(P)]
+        ds = " ".join(d_of(Q, dx) for Q in Qs)
+        out.append('<path class="m" data-k="%s" data-v="%s" d="%s"/>' % (name, v, ds))
+        for Q in Qs:
+            fib.append('<path class="fb" data-k="%s" fill="url(#fa%d)" d="%s"/>' % (name, fiber_angle(Q), d_of(Q, dx)))
+    out += fib
     for name, polys in g["DEEP"].items():
         ds = " ".join(d_of(Q, dx) for P in polys for Q in a._both(P))
-        out.append('<path class="m deep" data-k="%s" d="%s"/>' % (name, ds))
+        out.append('<path class="m deep" data-k="%s" data-v="%s" d="%s"/>' % (name, v, ds))
     lines = [Q for P in g["D"] for Q in a._both(P)] + list(g["C"])
     for name, ls in g["L"].items():
         lines += [Q for P in ls for Q in a._both(P)]
@@ -42,7 +57,9 @@ def build(sex, path):
     fv, fb = view("F", sex, -2.35, "cF")
     bv, bb = view("B", sex, 2.35, "cB")
     s = ['<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 %d %d" class="mmap">' % (W, H),
-         '<defs><clipPath id="cF"><path d="%s"/></clipPath><clipPath id="cB"><path d="%s"/></clipPath></defs>' % (fb, bb)]
+         '<defs><clipPath id="cF"><path d="%s"/></clipPath><clipPath id="cB"><path d="%s"/></clipPath>' % (fb, bb) +
+         "".join('<pattern id="fa%d" width="4" height="4" patternUnits="userSpaceOnUse" patternTransform="rotate(%d)"><path d="M0 2H4" class="fl"/></pattern>' % (g, -g) for g in range(0, 180, ANG)) +
+         '</defs>']
     s += fv + bv
     s.append('<text x="%.0f" y="%.0f" class="lb">앞모습</text><text x="%.0f" y="%.0f" class="lb">뒷모습</text>' % ((-2.35 - X0) * S, H - 6, (2.35 - X0) * S, H - 6))
     s.append('</svg>')

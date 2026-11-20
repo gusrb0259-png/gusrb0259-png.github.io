@@ -3347,7 +3347,8 @@
     (f.primary_muscles || []).forEach(function (m) { all.push([m.name, "p", m.where || ""]); });
     muSplit(f.secondary_muscles).forEach(function (t) { all.push([t, "s", ""]); });
     var sh = rtSheet("근육 위치", '<div class="mu-chips">' + all.map(function (x) { return '<button type="button" class="mu-c ' + x[1] + '" data-mu="' + esc(x[0]) + '" data-mr="' + x[1] + '">' + esc(x[0].replace(/\(.*$/, "").trim()) + '</button>'; }).join("") + '</div>' +
-      '<div class="mu-map"><p class="mu-load">몸 지도를 불러오는 중…</p></div><div class="mu-info"></div>', null, false);
+      '<div class="mu-map"><p class="mu-load">몸 지도를 불러오는 중…</p></div>' +
+      '<div class="mu-z"><button type="button" data-mz="F">앞모습</button><button type="button" data-mz="B">뒷모습</button><button type="button" data-mz="all">전체 몸</button></div><div class="mu-info"></div>', null, false);
     var cl = sh.querySelector(".rts-foot [data-close]"); if (cl) cl.textContent = "닫기";
     var sx = M.sex === "F" ? "F" : "M";
     function show(n, r) {
@@ -3355,13 +3356,58 @@
       var hits = muFind(n), keys = {};
       hits.forEach(function (q) { q[1].split(" ").forEach(function (k) { keys[k] = 1; }); });
       var svg = sh.querySelector(".mu-map svg");
-      if (svg) Array.prototype.forEach.call(svg.querySelectorAll(".m"), function (el) { var on = !!keys[el.getAttribute("data-k")]; el.classList.toggle("on", on); el.classList.toggle("s", on && r === "s"); });
+      if (svg) {
+        Array.prototype.forEach.call(svg.querySelectorAll(".m"), function (el) { var on = !!keys[el.getAttribute("data-k")]; el.classList.toggle("on", on); el.classList.toggle("s", on && r === "s"); });
+        svg.classList.toggle("sel", hits.length > 0);
+        curLab = hits.map(function (q) { return q[2]; }).join(" · ");
+        muZoom("auto");
+      }
       var w0 = (all.filter(function (x) { return x[0] === n; })[0] || [])[2];
       sh.querySelector(".mu-info").innerHTML = '<p class="mu-role ' + r + '">' + (r === "p" ? "주동근 · 여기가 메인!" : "보조근 · 같이 도와줘요") + '</p>' +
         (hits.length ? hits.map(function (q) { return '<div class="mu-one"><b>' + esc(q[2]) + '</b><p><i>위치</i>' + esc(q[3]) + '</p><p><i>하는 일</i>' + esc(q[4]) + '</p></div>'; }).join("")
           : '<div class="mu-one"><b>' + esc(n) + '</b>' + (w0 ? '<p><i>위치</i>' + esc(w0) + '</p>' : '') + '<p class="mu-none">그림에는 아직 표시하지 못하는 근육이에요</p></div>');
     }
-    sh.addEventListener("click", function (e) { var b = e.target.closest(".mu-c"); if (b) show(b.getAttribute("data-mu"), b.getAttribute("data-mr")); });
+    /* 확대: 칠한 근육이 있는 쪽(앞/뒤 중 더 넓게 칠해진 쪽)으로 viewBox를 부드럽게 당김 + 이름표 */
+    var curLab = "", zAnim = 0;
+    function muZoom(mode) {
+      var svg = sh.querySelector(".mu-map svg"); if (!svg) return;
+      var vb0 = svg.getAttribute("data-vb0") || svg.getAttribute("viewBox"); svg.setAttribute("data-vb0", vb0);
+      var F = vb0.split(/\s+/).map(Number), box = { F: null, B: null }, area = { F: 0, B: 0 };
+      Array.prototype.forEach.call(svg.querySelectorAll(".m.on"), function (el) {
+        var v = el.getAttribute("data-v"), bb; try { bb = el.getBBox(); } catch (e2) { return; }
+        if (!bb.width) return;
+        area[v] += bb.width * bb.height;
+        var o = box[v]; box[v] = o ? { x: Math.min(o.x, bb.x), y: Math.min(o.y, bb.y), x2: Math.max(o.x2, bb.x + bb.width), y2: Math.max(o.y2, bb.y + bb.height) } : { x: bb.x, y: bb.y, x2: bb.x + bb.width, y2: bb.y + bb.height };
+      });
+      if (mode === "auto") mode = !box.F && !box.B ? "all" : area.F >= area.B ? "F" : "B";
+      Array.prototype.forEach.call(sh.querySelectorAll("[data-mz]"), function (b) { var z = b.getAttribute("data-mz"); b.hidden = z !== "all" && !box[z]; b.classList.toggle("on", z === mode); });
+      var T = F.slice(), bx = mode !== "all" && box[mode];
+      if (bx) {
+        var w = Math.max(150, (bx.x2 - bx.x) * 1.9), h = Math.max(150, (bx.y2 - bx.y) * 1.6), ar = F[2] / F[3];
+        if (w / h > ar) h = w / ar; else w = h * ar;
+        var cx = (bx.x + bx.x2) / 2, cy = (bx.y + bx.y2) / 2;
+        T = [Math.max(F[0], Math.min(F[0] + F[2] - w, cx - w / 2)), Math.max(F[1], Math.min(F[1] + F[3] - h, cy - h / 2 + h * 0.06)), w, h];
+      }
+      var lab = svg.querySelector(".mlab"); if (lab) lab.remove();
+      var S0 = (svg.getAttribute("viewBox") || vb0).split(/\s+/).map(Number), t0 = performance.now(), me = ++zAnim;
+      (function step(now) {
+        if (me !== zAnim) return;
+        var k = Math.min(1, (now - t0) / 380), e3 = 1 - Math.pow(1 - k, 3);
+        svg.setAttribute("viewBox", S0.map(function (v, i) { return (v + (T[i] - v) * e3).toFixed(1); }).join(" "));
+        if (k < 1) requestAnimationFrame(step);
+        else if (bx && curLab) {
+          var tx = document.createElementNS("http://www.w3.org/2000/svg", "text");
+          tx.setAttribute("class", "mlab"); tx.setAttribute("x", ((bx.x + bx.x2) / 2).toFixed(1));
+          tx.setAttribute("y", Math.max(T[1] + T[3] * 0.07, bx.y - T[3] * 0.03).toFixed(1));
+          tx.setAttribute("font-size", (T[2] * 0.055).toFixed(1)); tx.setAttribute("stroke-width", (T[2] * 0.012).toFixed(1));
+          tx.textContent = curLab; svg.appendChild(tx);
+        }
+      })(t0);
+    }
+    sh.addEventListener("click", function (e) {
+      var z = e.target.closest("[data-mz]"); if (z) { muZoom(z.getAttribute("data-mz")); return; }
+      var b = e.target.closest(".mu-c"); if (b) show(b.getAttribute("data-mu"), b.getAttribute("data-mr"));
+    });
     function put(t) { var m = sh.querySelector(".mu-map"); if (m) { m.innerHTML = t; show(name, role); } }
     show(name, role);
     if (MU_SVG[sx]) put(MU_SVG[sx]);

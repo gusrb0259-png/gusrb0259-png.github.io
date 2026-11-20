@@ -2649,3 +2649,19 @@ button.exr-ic { border: 0; padding: 0; cursor: pointer; }
 .mu-one p { margin: 2px 0; font-size: 14px; color: var(--ink); }
 .mu-one p i { font-style: normal; font-size: 12px; font-weight: 800; color: var(--sub); margin-right: 8px; }
 .mu-none { color: var(--sub) !important; }
+/* 근육 위치 2차 — 해부도처럼(근육 색·결·확대·이름표) */
+.mu-map { background: #FFFBF8; overflow: hidden; }
+.mmap .skin { fill: #F8E9DF; }
+.mmap .m { fill: #E6A796; stroke: #A5594B; stroke-width: .8; }
+.mmap .fb { pointer-events: none; opacity: .9; }
+.mmap .fl { stroke: rgba(120, 38, 28, .30); stroke-width: .7; }
+.mmap .ln { stroke: #A5594B; stroke-width: .7; opacity: .55; }
+.mmap .ol { stroke: #8E5B4D; stroke-width: 1.6; }
+.mmap.sel .m { fill: #F0D2C8; stroke: #C7978A; }
+.mmap.sel .fb { opacity: .35; }
+.mmap .m.on, .mmap.sel .m.on { fill: #D8402F; stroke: #8E1F14; stroke-width: 1.3; animation: muOn 1.8s ease-in-out infinite; }
+.mmap .m.on.s, .mmap.sel .m.on.s { fill: #F08A6E; stroke: #B4513B; }
+.mmap .mlab { fill: #5A140C; font-weight: 800; text-anchor: middle; paint-order: stroke; stroke: #fff; stroke-linejoin: round; }
+.mu-z { display: flex; gap: 6px; justify-content: center; margin: 0 0 8px; }
+.mu-z button { border: 0; border-radius: 99px; padding: 6px 12px; font: inherit; font-size: 12.5px; font-weight: 800; background: var(--tint, #F2F4F7); color: var(--sub); cursor: pointer; }
+.mu-z button.on { background: var(--ink); color: #fff; }
