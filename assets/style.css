@@ -2616,3 +2616,36 @@ button.exr-ic { border: 0; padding: 0; cursor: pointer; }
 .angseg { display: flex; gap: 4px; padding: 4px; border-radius: 14px; background: var(--soft, #F2F4F7); }
 .angseg button { flex: 1; border: 0; border-radius: 10px; padding: 9px 0; background: transparent; font: inherit; font-size: 15px; font-weight: 800; color: var(--faint, #8A8F99); cursor: pointer; }
 .angseg button[aria-selected="true"] { background: var(--card, #fff); color: var(--key); box-shadow: 0 1px 4px rgba(0,0,0,.08); }
+/* 근육 위치 보기 (복습지 03) */
+.mbtn { border: 0; background: transparent; padding: 0; font: inherit; color: inherit; text-decoration: underline; text-decoration-color: var(--pink); text-decoration-thickness: 2px; text-underline-offset: 4px; cursor: pointer; }
+.mbtn.s { color: var(--sub); text-decoration-color: var(--pink-l); }
+.mdot { font-style: normal; margin: 0 6px; color: var(--sub); }
+.mhint { margin: 2px 0 0; font-size: 12.5px; font-weight: 700; color: var(--pink-e); }
+.mhint::before { content: "👆 "; }
+.mu-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.mu-c { border: 0; border-radius: 99px; padding: 7px 12px; font: inherit; font-size: 13.5px; font-weight: 800; cursor: pointer; background: var(--soft, #F2F4F7); color: var(--sub); }
+.mu-c.p { box-shadow: inset 0 0 0 1.5px var(--pink); }
+.mu-c.s { box-shadow: inset 0 0 0 1.5px var(--pink-l); }
+.mu-c.on.p { background: var(--pink); color: #fff; }
+.mu-c.on.s { background: var(--pink-l); color: var(--pink-e); }
+.mu-map { margin: 10px 0 6px; border-radius: 16px; background: #FAF9F7; padding: 6px; min-height: 200px; display: grid; place-items: center; }
+.mu-map svg { width: 100%; height: auto; display: block; }
+.mu-load { color: var(--sub); font-size: 14px; }
+.mmap .m { fill: none; stroke: #9E978D; stroke-width: 1; stroke-linejoin: round; transition: fill .3s; }
+.mmap .m.deep { display: none; }
+.mmap .ln { fill: none; stroke: #9E978D; stroke-width: .9; stroke-linecap: round; }
+.mmap .ol { fill: none; stroke: #8C867E; stroke-width: 2; stroke-linejoin: round; }
+.mmap .lb { font-size: 14px; fill: #7A756E; text-anchor: middle; }
+.mmap .m.on { fill: var(--pink); stroke: var(--pink-e); stroke-width: 1.4; animation: muOn 1.6s ease-in-out infinite; }
+.mmap .m.on.s { fill: var(--pink-l); }
+.mmap .m.deep.on { display: inline; stroke-dasharray: 4 3; }
+@keyframes muOn { 0%, 100% { fill-opacity: 1; } 50% { fill-opacity: .55; } }
+@media (prefers-reduced-motion: reduce) { .mmap .m.on { animation: none; } }
+.mu-role { margin: 4px 0 6px; font-size: 13px; font-weight: 800; }
+.mu-role.p { color: var(--pink-e); }
+.mu-role.s { color: var(--sub); }
+.mu-one { padding: 10px 12px; border-radius: 14px; background: var(--soft, #F2F4F7); margin-bottom: 6px; }
+.mu-one b { display: block; font-size: 17px; font-weight: 800; color: var(--ink); margin-bottom: 4px; }
+.mu-one p { margin: 2px 0; font-size: 14px; color: var(--ink); }
+.mu-one p i { font-style: normal; font-size: 12px; font-weight: 800; color: var(--sub); margin-right: 8px; }
+.mu-none { color: var(--sub) !important; }
