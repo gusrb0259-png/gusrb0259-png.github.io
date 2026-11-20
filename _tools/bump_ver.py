@@ -11,3 +11,4 @@ for f in glob.glob("m/*/index.html") + ["404.html", "index.html"] + glob.glob("c
     if t != s:
         open(f, "w", encoding="utf-8").write(t); n += 1
 print("v=" + stamp, n, "files")
+open("assets/ver.txt", "w").write(stamp)   # 2026-11-21 app.js가 열 때 이걸 확인해서 옛 화면이면 한 번 새로고침

@@ -1,4 +1,4 @@
-/* GYMTOS 도당점 회원 홈페이지 — window.MEMBER(data.js)를 읽어 화면을 그림 */
+/* PT 노트 회원 홈페이지 — window.MEMBER(data.js)를 읽어 화면을 그림 */
 (function () {
   "use strict";
   var M = window.MEMBER;
@@ -41,13 +41,25 @@
   try { FMEDIA = JSON.parse(localStorage.getItem(FM_LS) || "{}") || {}; fxApply(JSON.parse(localStorage.getItem(FX_LS) || "null")); } catch (e) { fxApply(null); }
   var SCRIPT = document.currentScript;
   var BASE = SCRIPT ? SCRIPT.src.replace(/app\.js(\?.*)?$/, "") : "../../assets/";
+  /* 옛 화면 자동 새로고침 (2026-11-21 팀장 "안 바뀌잖아") — GitHub Pages가 index.html을 10분까지 붙잡고 있어서 고친 걸 바로 못 봄.
+     열 때 assets/ver.txt(캐시 안 씀)를 확인해 지금 불러온 ?v= 보다 새것이면 한 번만 새로고침(같은 버전으로 두 번은 안 함). */
+  (function () {
+    var cur = SCRIPT && (SCRIPT.src.match(/[?&]v=(\w+)/) || [])[1];
+    if (!cur || !window.fetch) return;
+    fetch(BASE + "ver.txt?t=" + Date.now(), { cache: "no-store" }).then(function (r) { return r.ok ? r.text() : ""; }).then(function (v) {
+      v = (v || "").trim();
+      if (!/^\d{10}$/.test(v) || v <= cur) return;
+      var k = "ptver:" + v; try { if (sessionStorage.getItem(k)) return; sessionStorage.setItem(k, "1"); } catch (e) { return; }
+      location.reload();
+    }).catch(function () {});
+  })();
   var THEME = M.sex === "F" ? "F" : "M";
   /* 사이트 기본 정보 (assets/site.js — 없으면 아래 기본값) */
   var SITE = window.SITE || {};
   /* 담당 선생님 이름 (2026-11-12 선생님 여러 명) — data.js trainer / 창고 pub:m:<주소>:trainer(팀장이 담당 바꾸면) / 없으면 site.js 트레이너 */
   var TRN_LS = "ptnote:" + INFO_SLUG + ":trainer";
   try { var trnC = localStorage.getItem(TRN_LS); if (trnC) M.trainer = trnC; } catch (e) {}
-  var TRN = M.trainer || SITE.trainer || "OOO", TRL = function () { return TRN === SITE.trainer && SITE.role ? SITE.role : "트레이너"; }, BRAND = SITE.brand || "GYMTOS", BRANCH = SITE.branch || "도당점", BRN = BRAND + (BRANCH ? " " + BRANCH : "");
+  var TRN = M.trainer || SITE.trainer || "OOO", TRL = function () { return TRN === SITE.trainer && SITE.role ? SITE.role : "트레이너"; }, BRAND = SITE.brand || "", BRANCH = SITE.branch || "", BRN = (BRAND + (BRANCH ? " " + BRANCH : "")).trim();   /* 2026-11-21 팀장 "짐토스 싹다 빼" — site.js brand·branch 비움 */
   /* 루틴 고치기 (2026-11-10): 선생님이 폰에서 고친 루틴은 출석 창고(시트 "루틴")에 저장되고,
      회원 휴대폰에는 ptnote:<주소>:routine 으로 기억해 둠 → 열자마자 고친 루틴으로 보임.
      기준(base) = data.js 루틴의 version|updated. data.js 루틴이 새로 올라오면(기준이 달라지면) data.js가 이김 */
@@ -535,7 +547,7 @@
     return '<div class="remember"><svg viewBox="0 0 34 34" aria-hidden="true"><circle cx="17" cy="17" r="17" fill="var(--primary)"/>' +
       '<rect x="7" y="13" width="4" height="8" rx="1.2" fill="#fff"/><rect x="23" y="13" width="4" height="8" rx="1.2" fill="#fff"/>' +
       '<rect x="11" y="15.5" width="12" height="3" rx="1" fill="#E8C766"/></svg><div><small>기억해요!</small><p>' + esc(q) + '</p></div></div>' +
-      '<footer class="foot"><span>' + esc(BRN) + '</span><span>PERSONAL TRAINING</span></footer>';
+      '<footer class="foot"><span>' + esc(BRN || "MY PT NOTE") + '</span><span>PERSONAL TRAINING</span></footer>';
   }
   function head(num, title, sub, more) {
     return '<div class="head">' + (num ? '<span class="num">' + num + '</span>' : '') + '<h2>' + esc(title) + '</h2>' +
@@ -2230,7 +2242,7 @@
       '<div class="rp-side">' + right + '<div class="rp-box rp-bd"><h4>' + (R.badges.length ? '이번 달 받은 배지' : '이번 달 배지') + '</h4>' +
       (bdgs ? '<div class="rp-bds">' + bdgs + '</div>' : '<p>다음 달엔 배지 하나 받아 봐요!</p>') + '</div></div></div>' +
       '<div class="rp-quote"><span aria-hidden="true">“</span><div><p>' + quote + '</p><small>' + qwho + '</small></div></div>' +
-      '<div class="rp-foot"><span><b>MY PT NOTE</b> · 나만의 운동 노트</span><span>' + esc(BRN) + ' · 담당 ' + esc(TRN) + ' ' + TRL() + '</span></div></div>';
+      '<div class="rp-foot"><span><b>MY PT NOTE</b> · 나만의 운동 노트</span><span>' + (BRN ? esc(BRN) + ' · ' : '') + '담당 ' + esc(TRN) + ' ' + TRL() + '</span></div></div>';
   }
   function renderReport(ym) {
     var now = new Date(), curYm = ymOf(now), st = startDate(), firstYm = st ? ymOf(st) : curYm;
@@ -2536,7 +2548,7 @@
       '<div class="rp-tiles">' + tile("함께한 날", G.days, "일", "pk") + tile("출석 도장", G.att, "회") + tile("배운 자세", G.forms, "개") + tile("받은 배지", G.badges, "개", "gd") + '</div>' +
       '<div class="rp-mid gr-mid">' + left + '<div class="rp-side">' + right + '</div></div>' +
       '<div class="rp-quote"><span aria-hidden="true">“</span><div><p>' + quote + '</p><small>' + qwho + '</small></div></div>' +
-      '<div class="rp-foot"><span><b>MY PT NOTE</b> · 나만의 운동 노트</span><span>' + esc(BRN) + ' · 담당 ' + esc(TRN) + ' 트레이너</span></div></div>';
+      '<div class="rp-foot"><span><b>MY PT NOTE</b> · 나만의 운동 노트</span><span>' + (BRN ? esc(BRN) + ' · ' : '') + '담당 ' + esc(TRN) + ' 트레이너</span></div></div>';
   }
   function renderGrowth() {
     var G = grData(), coach = COACH_MODE && !DEMO;

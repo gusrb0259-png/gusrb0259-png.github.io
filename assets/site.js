@@ -2,8 +2,8 @@
 window.SITE = {
   trainer: "박현규",                  /* 트레이너 이름 (화면에 "OOO 트레이너"로 나옴) */
   role: "팀장",                       /* 직함 (2026-11-12 "박현규는 팀장으로") — 이 사이트 주인 회원 노트·선생님 페이지에 "박현규 팀장". 다른 선생님 회원은 "트레이너" */
-  brand: "GYMTOS",                   /* 센터 이름 */
-  branch: "도당점",                  /* 지점 이름 */
+  brand: "",                           /* 센터 이름 */
+  branch: "",                        /* 지점 이름 */
   site: "https://gusrb0259-png.github.io",   /* 사이트 주소 (og 미리보기 그림 등) */
   att_api: "https://script.google.com/macros/s/AKfycbwEYa2aXdpGeiPMNwnXqg1TAU7Pu2YdOKYxZ7NWSEcmHWOLQacTQwmYbfAPcQFG8zvvSw/exec"                        /* 출석 창고(Apps Script 웹 앱) 주소 — 세팅 3단계에서 넣음. 비어 있으면 출석·인바디·루틴 고치기 저장이 안 됨 */
 };
