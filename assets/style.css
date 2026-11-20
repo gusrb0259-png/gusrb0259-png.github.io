@@ -2612,3 +2612,7 @@ button.exr-ic { border: 0; padding: 0; cursor: pointer; }
 .fc-note { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 10px 14px; border-radius: 14px; background: var(--soft, #F2F4F7); font-size: 14px; color: var(--key); }
 .fc-note b { color: var(--primary); }
 .fc-note button { flex: none; border: 0; border-radius: 10px; padding: 8px 12px; background: var(--key); color: var(--card, #fff); font: inherit; font-size: 13px; font-weight: 800; cursor: pointer; }
+/* 복습지 앞·옆·뒤 */
+.angseg { display: flex; gap: 4px; padding: 4px; border-radius: 14px; background: var(--soft, #F2F4F7); }
+.angseg button { flex: 1; border: 0; border-radius: 10px; padding: 9px 0; background: transparent; font: inherit; font-size: 15px; font-weight: 800; color: var(--faint, #8A8F99); cursor: pointer; }
+.angseg button[aria-selected="true"] { background: var(--card, #fff); color: var(--key); box-shadow: 0 1px 4px rgba(0,0,0,.08); }

@@ -3298,7 +3298,10 @@
       '<div class="benefit">' + esc(f.benefit) + '</div></div></div>' +
       '<div class="keypoint"><small>KEY POINT</small><p>' + esc(f.key_point) + '</p></div></div>';
 
-    h += '<section>' + head("01", "오늘 내 자세", "영상으로 확인해요") +
+    /* 앞·옆·뒤 (2026-11-20 팀장 "한 영상에 앞 옆 뒤 찍어서 보내면") — data.js "angles": ["앞","옆","뒤"] → 파일 form.mp4 / form-side.mp4 / form-back.mp4 (+ poster·webp 같은 꼬리) */
+    var ANG = Array.isArray(f.angles) && f.angles.length > 1 ? f.angles : null, ANGK = { "앞": "", "옆": "-side", "뒤": "-back" };
+    h += '<section>' + head("01", "오늘 내 자세", ANG ? ANG.join(" · ") + "에서 확인해요" : "영상으로 확인해요") +
+      (ANG ? '<div class="angseg" role="tablist" aria-label="보는 방향">' + ANG.map(function (t, i) { return '<button type="button" role="tab" data-ang="' + esc(ANGK[t] || "") + '" data-angt="' + esc(t) + '" aria-selected="' + (i ? "false" : "true") + '">' + esc(t) + '</button>'; }).join("") + '</div>' : '') +
       '<div class="player"><video id="main" poster="' + esc(D) + 'poster.jpg" autoplay muted loop playsinline webkit-playsinline disablepictureinpicture disableremoteplayback x-webkit-airplay="deny" preload="auto" data-src="' + esc(D) + 'form.mp4" data-gif="' + esc(D) + 'form.webp"></video>' +
       '<img id="gifFallback" alt="오늘 수업 영상 (반복 재생)" hidden>' +
       '<span class="chip">▶ 오늘 수업 영상</span><button class="tapper" id="tap" type="button" aria-label="영상 재생 / 멈춤"></button>' +
@@ -3365,6 +3368,17 @@
         v.playbackRate = parseFloat(b.getAttribute("data-rate"));
         Array.prototype.forEach.call(rateBtns, function (o) { o.setAttribute("aria-pressed", String(o === b)); });
       });
+    });
+    var angBar = document.querySelector(".angseg");
+    if (angBar) angBar.addEventListener("click", function (e) {
+      var b = e.target.closest("[data-ang]"); if (!b || b.getAttribute("aria-selected") === "true") return;
+      Array.prototype.forEach.call(angBar.children, function (o) { o.setAttribute("aria-selected", o === b ? "true" : "false"); });
+      var D0 = v.getAttribute("data-src").replace(/form(-side|-back)?\.mp4$/, ""), k = b.getAttribute("data-ang");
+      v.setAttribute("data-src", D0 + "form" + k + ".mp4"); v.setAttribute("data-gif", D0 + "form" + k + ".webp");
+      v.poster = D0 + "poster" + k + ".jpg";
+      var ch = document.querySelector(".player .chip"); if (ch) ch.textContent = "▶ " + b.getAttribute("data-angt") + "에서 본 영상";
+      if (swapped) { document.getElementById("gifFallback").src = D0 + "form" + k + ".webp"; return; }
+      var rate = v.playbackRate; v.src = D0 + "form" + k + ".mp4"; v.load(); v.playbackRate = rate; tryPlay();
     });
     // 카톡 등 앱 안 브라우저: 영상을 통째로 받아 재생, 4초 안에 안 나오면 움직이는 그림으로 바꿈
     function swapToGif() {
