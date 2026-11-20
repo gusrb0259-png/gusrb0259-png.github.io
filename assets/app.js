@@ -2221,7 +2221,7 @@
     }
     var bdgs = R.badges.slice(0, 4).map(function (b) { return bgIcon(b, "#0E0E10"); }).join("");
     return '<div class="rp" id="rp"><i class="rp-stripe"></i><i class="rp-c1"></i><i class="rp-c2"></i>' +
-      '<div class="rp-top"><div class="rp-brand"><b>' + esc(BRAND) + '</b><span>' + esc(BRANCH) + '</span></div><span class="rp-k">MONTHLY REPORT · ' + R.y + '. ' + pad2(R.mo) + '</span></div>' +
+      '<div class="rp-top"><div class="rp-brand"><b>MY PT NOTE</b><span>' + esc(BRANCH) + '</span></div><span class="rp-k">MONTHLY REPORT · ' + R.y + '. ' + pad2(R.mo) + '</span></div>' +
       '<div class="rp-title"><span>' + esc(M.name) + ' 회원님의</span><h2>' + R.mo + '월 운동 리포트</h2>' + (R.live ? '<em>' + R.upto + ' 기준 · 진행 중</em>' : '') + '</div>' +
       '<div class="rp-tiles">' + tile("출석", R.done, "회", "pk") + tile("출석률", R.rate, "%") + tile("최고 연속", R.best, "회") + tile("새 배지", R.badges.length, "개", "gd") + '</div>' +
       '<div class="rp-mid"><div class="rp-map"><h4>' + R.mo + '월 근육 지도</h4>' + mmFigure(R.mc.cnt, R.mo + "월 근육 지도") +
@@ -2529,7 +2529,7 @@
     }
     var d = new Date();
     return '<div class="rp gr" id="rp"><i class="rp-stripe"></i><i class="rp-c1"></i><i class="rp-c2"></i>' +
-      '<div class="rp-top"><div class="rp-brand"><b>' + esc(BRAND) + '</b><span>' + esc(BRANCH) + '</span></div><span class="rp-k">MY GROWTH · ' + d.getFullYear() + '. ' + pad2(d.getMonth() + 1) + '. ' + pad2(d.getDate()) + '</span></div>' +
+      '<div class="rp-top"><div class="rp-brand"><b>MY PT NOTE</b><span>' + esc(BRANCH) + '</span></div><span class="rp-k">MY GROWTH · ' + d.getFullYear() + '. ' + pad2(d.getMonth() + 1) + '. ' + pad2(d.getDate()) + '</span></div>' +
       '<div class="rp-title"><span>' + esc(M.name) + ' 회원님의</span><h2>첫날 vs 오늘</h2>' +
       (G.st ? '<em>' + G.st.getFullYear() + '. ' + (G.st.getMonth() + 1) + '. ' + G.st.getDate() + ' 시작 · 함께한 지 ' + G.days + '일</em>' : '') + '</div>' +
       '<div class="rp-tiles">' + tile("함께한 날", G.days, "일", "pk") + tile("출석 도장", G.att, "회") + tile("배운 자세", G.forms, "개") + tile("받은 배지", G.badges, "개", "gd") + '</div>' +

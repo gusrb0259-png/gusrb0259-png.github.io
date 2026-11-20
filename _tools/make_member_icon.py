@@ -27,7 +27,8 @@ html,body{{margin:0;background:{c['bg']}}} #i{{position:relative;width:500px;hei
 <path d="M64 12h8v26l-4-4.5-4 4.5z" fill="{c['rib']}"/>
 <rect x="36" y="58" width="34" height="0.9" fill="{c['rib']}" opacity=".7"/>
 <text x="53" y="70" text-anchor="middle" font-family="Noto Sans CJK KR, Noto Sans KR, sans-serif" font-size="8" font-weight="900" letter-spacing="1.2" fill="{c['text']}">PT NOTE</text>
-</svg><img src="data:image/png;base64,{base64.b64encode(open(os.path.join(A, c['logo']), 'rb').read()).decode()}"></div></body></html>"""
+<path d="M42 40h22M42 40v-4M42 40v4M64 40v-4M64 40v4M38 37v6M68 37v6" stroke="{c['text']}" stroke-width="2.6" stroke-linecap="round" opacity=".92"/>
+</svg></div></body></html>"""
 
 
 with sync_playwright() as p:

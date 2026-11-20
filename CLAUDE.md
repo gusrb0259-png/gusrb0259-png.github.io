@@ -320,6 +320,11 @@ _tools/anatomy_v3.py  인체모형 v3 (자극 부위 그림). build(경로, 앞 
 - 사진: 창고 POST meal_img {m, data} → 드라이브 "PT노트 식단 사진" 폴더(회원 폰도 올림, 열쇠 X). 자동 분석: POST meal_ai {data, hint} → 스크립트 속성 **GEMINI_KEY**(구글 AI Studio 키) 있으면 Gemini(GEMINI_MODEL, 기본 gemini-2.5-flash)가 {items, note} — 키가 없으면 "자동 분석 준비 중" 안내만. **창고 코드 바뀜(meal_img·meal_ai) → 새 버전 배포 + UrlFetchApp 권한 승인 필요.**
 - 코드 app.js FOOD_DB·mealServer·mealSection·mealSheet·mealSave, style.css "먹은 것 기록" 블록.
 
+## 로고 뺌 (2026-11-20 팀장 "짐토스 마크 싹다 빼줘")
+- GYMTOS 로고 그림(assets/logo.png)을 화면에서 전부 뺌: 회원 노트·404·선생님 페이지 위 막대 왼쪽 = 글자 "PT NOTE"(.bar-brand), 첫 화면 index.html·아이패드 소개(intro.html) 로고 삭제, PT 안내서 표지 GYMTOS 글자 → PT NOTE, 월간 리포트·성장 카드 위 브랜드 → MY PT NOTE.
+- 홈 화면 앱 아이콘(make_member_icon.py)은 로고 대신 덤벨 그림, 선생님 앱 아이콘(assets/icon-coach-*)은 블랙 바탕 "PT" + 금색 COACH 띠. og.jpg(make_og.py)도 로고 빼고 아래 띠 "담당 박현규 팀장"으로 전부 다시 만듦.
+- 남겨 둔 것: 브라우저 탭 제목·선생님 페이지 부제 등 글자 "GYMTOS 도당점"(site.js brand). 새로 만드는 화면에도 로고 그림 넣지 말 것.
+
 ## 가볍게 (2026-11-17 팀장 "홈페이지·핸드폰 전체가 렉")
 - 로딩 화면 최소 1초 → 0.35초. 계속 움직이는 큰 카드 빛 덩어리의 blur 필터·위 막대·아래 탭·팝업의 backdrop-filter(뒤 흐림) 뺌(모양은 거의 같음, style.css 맨 아래 "가볍게").
 - 화면 밖 칸은 .offv로 CSS 애니메이션 멈춤 + 그 안 움직이는 SVG 아이콘 pauseAnimations, 앱을 안 볼 땐(html.hid) 전부 멈춤 — app.js "가볍게" 블록(IntersectionObserver, #view 자식 감시). 새 칸도 자동.

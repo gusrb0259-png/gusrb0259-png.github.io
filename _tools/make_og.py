@@ -17,10 +17,10 @@ for y in range(H - BH):
 d.rectangle([0, H - BH, W, H], fill=band)
 logo = Image.open(__file__.rsplit("/", 2)[0] + "/assets/logo.png").convert("RGBA")
 lw = 300; logo = logo.resize((lw, int(logo.height * lw / logo.width)), Image.LANCZOS)
-im.paste(logo, (80, 70), logo)
+pass  # 2026-11-20 로고 뺌 (팀장 "짐토스 마크 싹다 빼줘")
 d.text((82, 228), "MY PT NOTE · " + ("함께하는 그룹 PT 노트" if group else "나만의 운동 노트"), font=font("Bold", 34), fill=sub)
 nf = 92
 while font("Black", nf).getlength(name + " 회원님") > W - 160: nf -= 4
 d.text((78, 300), name + " 회원님", font=font("Black", nf), fill=(255, 255, 255))
-d.text((82, H - BH + 22), "GYMTOS 도당점 · 담당 " + trn, font=font("Bold", 32), fill=bt)
+d.text((82, H - BH + 22), "담당 " + trn, font=font("Bold", 32), fill=bt)
 im.save(out, quality=88)

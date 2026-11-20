@@ -2487,3 +2487,8 @@ html[data-skin="bunny"] { --barbg: rgba(255, 246, 248, .97); --glass: rgba(255, 
 .bgpop-wrap { background: rgba(12, 14, 24, .7) !important; }
 @keyframes spIcon { from { opacity: 0; transform: translateY(10px) scale(.86); } to { opacity: 1; transform: none; } }
 .offv, .offv *, .offv *::before, .offv *::after, html.hid *, html.hid *::before, html.hid *::after { animation-play-state: paused !important; }
+
+/* ===== 로고 뺌 (2026-11-20 팀장 "짐토스 마크 싹다 빼줘") — 위 막대 왼쪽은 글자 PT NOTE ===== */
+.bar .bar-brand { font-size: 17px; font-weight: 900; letter-spacing: .08em; color: var(--primary); white-space: nowrap; }
+:root[data-sex="F"] .bar .bar-brand { color: var(--seal, var(--primary)); }
+.bar a { text-decoration: none; }
