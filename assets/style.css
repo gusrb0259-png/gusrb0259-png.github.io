@@ -2665,3 +2665,20 @@ button.exr-ic { border: 0; padding: 0; cursor: pointer; }
 .mu-z { display: flex; gap: 6px; justify-content: center; margin: 0 0 8px; }
 .mu-z button { border: 0; border-radius: 99px; padding: 6px 12px; font: inherit; font-size: 12.5px; font-weight: 800; background: var(--tint, #F2F4F7); color: var(--sub); cursor: pointer; }
 .mu-z button.on { background: var(--ink); color: #fff; }
+/* 03 큰 그림도 해부도 스타일 */
+.mu-big { display: block; width: 100%; border: 0; padding: 12px 8px 10px; border-radius: 16px; background: #FFFBF8; cursor: pointer; text-align: center; font: inherit; }
+.mu-big svg { width: 100%; height: auto; display: block; }
+.mu-big .mmap .m.on { animation: none; }
+.mu-bt { display: inline-block; padding: 5px 14px; border-radius: 99px; background: #6E6A64; color: #fff; font-size: 13px; font-weight: 700; margin-bottom: 6px; }
+.mu-lg { display: flex; align-items: center; justify-content: center; gap: 6px; margin-top: 6px; font-size: 12.5px; font-weight: 700; color: var(--sub); }
+.mu-lg i { width: 12px; height: 12px; border-radius: 3px; display: inline-block; }
+.mu-lg i.p { background: #D8402F; } .mu-lg i.s { background: #F08A6E; margin-left: 6px; }
+.mu-lg em { font-style: normal; margin-left: 10px; color: #B4513B; }
+.muscle .mchip.p { background: #D8402F; color: #fff; }
+.muscle .mchip.s { background: #FBD3C5; color: #9A3B28; }
+.muscle .mbtn { text-decoration-color: #D8402F; }
+.muscle .mbtn.s { text-decoration-color: #F08A6E; }
+.muscle .mhint { color: #B4513B; }
+.mu-c.p { box-shadow: inset 0 0 0 1.5px #D8402F; } .mu-c.s { box-shadow: inset 0 0 0 1.5px #F4A88F; }
+.mu-c.on.p { background: #D8402F; color: #fff; } .mu-c.on.s { background: #FBD3C5; color: #9A3B28; }
+.mu-role.p { color: #B4513B; }

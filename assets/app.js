@@ -3414,6 +3414,26 @@
     else fetch(BASE + "muscle/map-" + sx + ".svg").then(function (r) { return r.text(); }).then(function (t) { MU_SVG[sx] = t; put(t); })
       .catch(function () { var m = sh.querySelector(".mu-map"); if (m) m.innerHTML = '<p class="mu-load">몸 지도를 못 불러왔어요 — 인터넷 연결을 확인해 주세요</p>'; });
   }
+  function muInline() {   /* 2026-11-21 팀장 "이다혜님 봐봐" — 03 자극 부위 큰 그림도 같은 해부도 스타일로(주동근 빨강·보조근 주황). 못 불러오면 예전 anatomy.png 그대로 */
+    var im = view.querySelector(".muscle > img"), id = (location.hash || "").replace(/^#form-/, ""), f = findForm(id);
+    if (!im || !f || f.simple) return;
+    var sx = M.sex === "F" ? "F" : "M";
+    function put(t) {
+      if (!document.body.contains(im)) return;
+      var on = {};
+      muSplit(f.secondary_muscles).forEach(function (n) { muFind(n).forEach(function (q) { q[1].split(" ").forEach(function (k) { on[k] = "s"; }); }); });
+      (f.primary_muscles || []).forEach(function (m) { muFind(m.name).forEach(function (q) { q[1].split(" ").forEach(function (k) { on[k] = "p"; }); }); });
+      if (!Object.keys(on).length) return;
+      var box = document.createElement("button"); box.type = "button"; box.className = "mu-big"; box.setAttribute("aria-label", "자극 부위 몸 그림 — 누르면 근육 위치 자세히");
+      box.innerHTML = '<span class="mu-bt">오늘의 운동 자극 부위</span>' + t + '<span class="mu-lg"><i class="p"></i>주동근<i class="s"></i>보조근<em>눌러서 자세히 ›</em></span>';
+      var svg = box.querySelector("svg"); svg.classList.add("sel");
+      Array.prototype.forEach.call(svg.querySelectorAll(".m"), function (el) { var r = on[el.getAttribute("data-k")]; if (r) { el.classList.add("on"); if (r === "s") el.classList.add("s"); } });
+      box.addEventListener("click", function () { var m0 = (f.primary_muscles || [])[0]; if (m0) muSheet(f, m0.name, "p"); });
+      im.replaceWith(box);
+    }
+    if (MU_SVG[sx]) put(MU_SVG[sx]);
+    else fetch(BASE + "muscle/map-" + sx + ".svg").then(function (r) { return r.text(); }).then(function (t) { MU_SVG[sx] = t; put(t); }).catch(function () {});
+  }
   document.addEventListener("click", function (e) {
     var b = e.target.closest && e.target.closest(".mbtn"); if (!b) return;
     var id = (location.hash || "").replace(/^#form-/, ""), f = findForm(id);
@@ -3485,6 +3505,7 @@
     });
   });
   function setupPlayer() {
+    muInline();
     var v = document.getElementById("main");
     if (!v) return;
     var badge = document.getElementById("pbadge"), playBtn = document.getElementById("playBtn"), tap = document.getElementById("tap");
