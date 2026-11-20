@@ -2608,3 +2608,4 @@ button.exr-ic { border: 0; padding: 0; cursor: pointer; }
 .xs-rest b { font-size: 22px; font-weight: 800; font-variant-numeric: tabular-nums; margin-right: auto; }
 .xs-rest button { border: 0; border-radius: 10px; padding: 7px 8px; background: rgba(255,255,255,.16); color: #fff; font: inherit; font-size: 12px; font-weight: 800; cursor: pointer; }
 .xs-rest.done { background: #12A150; }
+.fday.fold > h3[data-fdt]::after { content: "펼치기"; width: auto; height: auto; border: 0; transform: none; font-size: 12px; font-weight: 800; color: var(--primary); opacity: 1; padding: 4px 10px; border-radius: 99px; background: var(--soft, #F2F4F7); }
