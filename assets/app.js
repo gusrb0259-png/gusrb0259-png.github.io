@@ -3240,8 +3240,16 @@
         g.hidden = !!c && !g.querySelector(".flist .card-link:not([hidden])");
       });
       view.classList.toggle("fc-on", !!c);   /* 부위 고르면 접힌 날도 다 펼쳐 보여 줌 */
+      /* 2026-11-20 팀장 "펼쳐도 없어" — 부위 탭(폰에 기억됨)이 골라져 있으면 다른 부위 복습지가 숨는 걸 몰라서, 날짜 목록 위에 알림 + 전체 보기 */
+      var fn = view.querySelector(".fc-note"), d0 = view.querySelector(".fday");
+      if (c) {
+        var hid = Array.prototype.filter.call(cards, function (a) { return a.hidden; }).length;
+        if (!fn && d0) { fn = document.createElement("div"); fn.className = "fc-note"; d0.parentNode.insertBefore(fn, d0); }
+        if (fn) fn.innerHTML = '<span><b>' + esc(c) + '</b>만 보는 중 · 다른 부위 ' + hid + '개 숨김</span><button type="button" data-fc-all>전체 보기</button>';
+      } else if (fn) fn.remove();
       if (save) { try { localStorage.setItem(FCAT_K, c); } catch (e) {} }
     }
+    view.addEventListener("click", function (e) { if (e.target.closest("[data-fc-all]")) apply("", true); });
     bar.addEventListener("click", function (e) {
       var b = e.target.closest("button[data-fc]"); if (!b) return;
       apply(b.getAttribute("data-fc"), true);
