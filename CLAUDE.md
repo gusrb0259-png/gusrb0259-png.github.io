@@ -365,7 +365,8 @@ _tools/anatomy_v3.py  인체모형 v3 (자극 부위 그림). build(경로, 앞 
 
 ## 그날 더 한 운동 (2026-11-12 트레이너 "수업한 날 회원님들이 추가로 운동을 더 하면 종목을 더 추가하고 싶다")
 - 회원 노트 복습지 탭: 날짜 칸마다 "＋ 이날 더 한 운동 추가"(오늘 칸이 없으면 맨 위 "＋ 오늘 더 한 운동 기록하기") → 운동 이름(도당점 종목 목록 RT_CAT 자동 완성)·세트·횟수·kg·메모 → 그 날짜 칸 아래 "이날 더 한 운동" 목록(아이콘 + 3세트 × 15회 · 25kg + 메모, 삭제 두 번). 복습지 없는 날도 더 한 운동만 있으면 날짜 칸이 생김. 날짜 제목 옆 "복습지 n개 · 더 한 운동 n개".
-- 회원 본인 폰에서 바로 됨(열쇠 필요 없음) — 창고 저장소 `mw:<주소>:xd:<YYYY-MM-DD>` [{id, n, s, r, w, memo, at}] (하루 4KB까지 ≈ 20개), 폰 기억 ptnote:<주소>:xd. 선생님 보기에서도 같이 보이고 추가·삭제 됨. 창고 재배포 필요 없음(기존 kv_set mw 규칙). PT 안내서 데모에선 버튼 숨김. 코드 app.js XD·xdServer·xdBlock·formDays·xdSave, style.css .xd*.
+- **세트 표** (2026-11-20 팀장 "운동 기록 앱처럼 세트추가·세트삭제"): 기록 창이 세트마다 KG·회·완료 ✓ 줄 + "＋ 세트추가"(바로 위 세트 값 복사, 20세트까지)·"－ 세트삭제"(1세트는 남김) + 볼륨(kg×회 합) 자동. 기록마다 ✎로 다시 고치기. 목록엔 "4세트 · 25kg×12✓ · 30×10 … · 볼륨 1,200kg". 저장 sets [[kg,회,완료0/1],…] + 옛 화면용 s·r·w(세트 수·첫 세트 회·가장 무거운 kg). 코드 app.js xdSetsText·data-xadd 핸들러, style.css .xs-*.
+- 회원 본인 폰에서 바로 됨(열쇠 필요 없음) — 창고 저장소 `mw:<주소>:xd:<YYYY-MM-DD>` [{id, n, sets?, s, r, w, memo, at}] (하루 4KB까지 ≈ 20개), 폰 기억 ptnote:<주소>:xd. 선생님 보기에서도 같이 보이고 추가·삭제 됨. 창고 재배포 필요 없음(기존 kv_set mw 규칙). PT 안내서 데모에선 버튼 숨김. 코드 app.js XD·xdServer·xdBlock·formDays·xdSave, style.css .xd*.
 
 ## 자세 복습지 미디어 만들기 (영상 1개 기준)
 - 웹 영상 (2026-11-12 트레이너 "영상 다 깨지는 거야?" → 540px·crf27에서 올림): `ffmpeg -i in.mov -an -vf "scale=1080:-2,fps=30" -c:v libx264 -preset medium -crf 22 -profile:v high -pix_fmt yuv420p -movflags +faststart form.mp4` (12초 4K 원본 → 약 5MB). poster.jpg도 1080px.

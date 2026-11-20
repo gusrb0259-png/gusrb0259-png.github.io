@@ -2808,14 +2808,21 @@
     var p = k.split("-"), d = new Date(+p[0], +p[1] - 1, +p[2]), DW = ["일", "월", "화", "수", "목", "금", "토"];
     return (p[0] !== String(new Date().getFullYear()) ? p[0] + "년 " : "") + (+p[1]) + "월 " + (+p[2]) + "일 (" + DW[d.getDay()] + ")";
   }
+  function xdSetsText(S) {   /* [[kg,회,완료],…] → "3세트 · 25kg×12 · 30×10 · 30×10 · 볼륨 900kg" */
+    var v = 0, parts = S.map(function (x, i) {
+      var a = parseFloat(x[0]), b = parseFloat(x[1]); if (isFinite(a) && isFinite(b)) v += a * b;
+      return (x[0] !== "" && x[0] !== null && x[0] !== undefined ? x[0] + (i ? "" : "kg") + (x[1] !== "" ? "×" : "") : "") + (x[1] !== "" && x[1] !== undefined ? x[1] + (x[0] === "" || x[0] === null ? "회" : "") : "") + (x[2] ? "✓" : "");
+    });
+    return S.length + "세트 · " + parts.join(" · ") + (v ? " · 볼륨 " + Math.round(v).toLocaleString() + "kg" : "");
+  }
   function xdBlock(k) {
     var L = XD[k] || [], can = !DEMO;
     if (!L.length && !can) return "";
     var h = '<div class="xd">';
     if (L.length) h += '<div class="xdh">이날 더 한 운동 <small>' + L.length + '개</small></div>' + L.map(function (x) {
-      var sr = [[x.s ? x.s + "세트" : "", x.r ? x.r + "회" : ""].filter(Boolean).join(" × "), x.w ? x.w + "kg" : ""].filter(Boolean).join(" · ");
+      var sr = Array.isArray(x.sets) && x.sets.length ? xdSetsText(x.sets) : [[x.s ? x.s + "세트" : "", x.r ? x.r + "회" : ""].filter(Boolean).join(" × "), x.w ? x.w + "kg" : ""].filter(Boolean).join(" · ");
       return '<div class="xdi">' + img(iconOf({ name: x.n }), "xdic", true) + '<div><b>' + esc(x.n) + '</b>' + (sr ? '<span>' + esc(sr) + '</span>' : '') +
-        (x.memo ? '<p>' + esc(x.memo) + '</p>' : '') + '</div>' + (can ? '<button type="button" class="xddel" data-xdel="' + esc(k + "|" + x.id) + '">삭제</button>' : '') + '</div>';
+        (x.memo ? '<p>' + esc(x.memo) + '</p>' : '') + '</div>' + (can ? '<div class="xdbt"><button type="button" class="xded" data-xadd="' + esc(k) + '" data-xid="' + esc(x.id) + '">✎</button><button type="button" class="xddel" data-xdel="' + esc(k + "|" + x.id) + '">삭제</button></div>' : '') + '</div>';
     }).join("");
     if (can) h += '<button type="button" class="xdadd" data-xadd="' + esc(k) + '">＋ 이날 더 한 운동 추가</button>';
     return h + '</div>';
@@ -2847,20 +2854,58 @@
   document.addEventListener("click", function (e) {
     var a = e.target.closest && e.target.closest("[data-xadd]");
     if (a) {
-      var k = a.getAttribute("data-xadd"), names = [];
+      /* 2026-11-20 팀장 "운동 기록 앱처럼 세트추가·세트삭제" — 세트마다 kg·회·완료 ✓, 볼륨 자동 계산. 저장 = sets [[kg, 회, 완료(0/1)], …] (+ 옛 화면용 s·r·w) */
+      var k = a.getAttribute("data-xadd"), xid = a.getAttribute("data-xid"), names = [];
+      var x0 = xid ? (XD[k] || []).filter(function (x) { return x.id === xid; })[0] || null : null;
       RT_CAT.forEach(function (c) { c[1].forEach(function (n) { if (names.indexOf(n) < 0) names.push(n); }); });
-      var sh = rtSheet(dayLabel(k) + " 더 한 운동",
-        '<label>운동 이름<input id="xdN" list="xdNL" maxlength="30" placeholder="예: 레그 익스텐션" autocomplete="off"></label><datalist id="xdNL">' + names.map(function (n) { return '<option value="' + esc(n) + '">'; }).join("") + '</datalist>' +
-        '<div class="xdrow"><label>세트<input id="xdS" type="number" inputmode="numeric" min="1" max="20" placeholder="3"></label><label>횟수<input id="xdR" inputmode="numeric" maxlength="8" placeholder="12"></label><label>무게 kg<input id="xdW" inputmode="decimal" maxlength="6" placeholder="20"></label></div>' +
-        '<label>메모 <small>없어도 돼요</small><input id="xdM" maxlength="60" placeholder="예: 마지막 세트 힘들었어요" autocomplete="off"></label>',
+      var S0 = x0 && Array.isArray(x0.sets) && x0.sets.length ? x0.sets : x0 && (x0.s || x0.r || x0.w) ? Array.apply(null, Array(Math.max(1, Math.min(20, +x0.s || 1)))).map(function () { return [x0.w || "", x0.r || "", 0]; }) : [["", "", 0], ["", "", 0], ["", "", 0]];
+      function row(v, i) {
+        return '<div class="xs-r"><span class="xs-n">' + (i + 1) + '</span><input class="xs-w" inputmode="decimal" maxlength="6" placeholder="kg" value="' + esc(v[0] === null || v[0] === undefined ? "" : v[0]) + '">' +
+          '<input class="xs-c" inputmode="numeric" maxlength="6" placeholder="회" value="' + esc(v[1] === undefined ? "" : v[1]) + '"><button type="button" class="xs-d' + (v[2] ? ' on' : '') + '" aria-label="' + (i + 1) + '세트 완료">✓</button></div>';
+      }
+      var sh = rtSheet(dayLabel(k) + (x0 ? " 운동 고치기" : " 더 한 운동"),
+        '<label>운동 이름<input id="xdN" list="xdNL" maxlength="30" placeholder="예: 레그 익스텐션" autocomplete="off" value="' + esc(x0 ? x0.n : "") + '"></label><datalist id="xdNL">' + names.map(function (n) { return '<option value="' + esc(n) + '">'; }).join("") + '</datalist>' +
+        '<div class="xs"><div class="xs-h"><span>세트</span><span>KG</span><span>회</span><span>완료</span></div><div id="xsRows">' + S0.map(row).join("") + '</div>' +
+        '<div class="xs-btns"><button type="button" class="xs-add" id="xsAdd">＋ 세트추가</button><button type="button" class="xs-del" id="xsDel">－ 세트삭제</button></div>' +
+        '<div class="xs-vol" id="xsVol"></div></div>' +
+        '<label>메모 <small>없어도 돼요</small><input id="xdM" maxlength="60" placeholder="예: 마지막 세트 힘들었어요" autocomplete="off" value="' + esc(x0 && x0.memo || "") + '"></label>',
         function (s) {
           var n = fv(s, "xdN"); if (!n) return "운동 이름을 넣어 주세요";
-          var x = { id: Date.now().toString(36), n: n, s: fv(s, "xdS"), r: fv(s, "xdR"), w: fv(s, "xdW").replace(/kg/i, ""), memo: fv(s, "xdM"), at: new Date().toISOString() };
-          Object.keys(x).forEach(function (q) { if (x[q] === "") delete x[q]; });
-          xdSave(k, (XD[k] || []).concat([x]), s, n + " 추가했어요");
+          var sets = rows().filter(function (v) { return v[0] !== "" || v[1] !== ""; });
+          var w = sets.reduce(function (m, v) { var q = parseFloat(v[0]); return isFinite(q) && q > m ? q : m; }, 0);
+          var x = { id: x0 ? x0.id : Date.now().toString(36), n: n, sets: sets, s: sets.length ? String(sets.length) : "", r: sets.length ? String(sets[0][1]) : "", w: w ? String(w) : "", memo: fv(s, "xdM"), at: x0 ? x0.at : new Date().toISOString() };
+          Object.keys(x).forEach(function (q) { if (x[q] === "" || (Array.isArray(x[q]) && !x[q].length)) delete x[q]; });
+          var L = (XD[k] || []).slice(), ix = x0 ? L.map(function (y) { return y.id; }).indexOf(x0.id) : -1;
+          if (ix >= 0) L[ix] = x; else L.push(x);
+          xdSave(k, L, s, n + (x0 ? " 고쳤어요" : " 추가했어요"));
           return true;
-        }, "추가");
-      setTimeout(function () { var i = sh.querySelector("#xdN"); if (i) i.focus(); }, 50);
+        }, x0 ? "저장" : "추가");
+      function rows() {
+        return Array.prototype.map.call(sh.querySelectorAll(".xs-r"), function (r) {
+          var w = r.querySelector(".xs-w").value.trim().replace(/kg/i, ""), c = r.querySelector(".xs-c").value.trim();
+          return [w === "" ? "" : (isFinite(+w) ? +w : w), c === "" ? "" : (isFinite(+c) ? +c : c), r.querySelector(".xs-d").classList.contains("on") ? 1 : 0];
+        });
+      }
+      function vol() {
+        var R = rows(), v = R.reduce(function (t, x) { var a = parseFloat(x[0]), b = parseFloat(x[1]); return t + (isFinite(a) && isFinite(b) ? a * b : 0); }, 0), d = R.filter(function (x) { return x[2]; }).length;
+        sh.querySelector("#xsVol").innerHTML = '볼륨 <b>' + (Math.round(v * 10) / 10).toLocaleString() + '</b> kg <small>' + R.length + '세트' + (d ? ' · 완료 ' + d : '') + '</small>';
+      }
+      function renum() { Array.prototype.forEach.call(sh.querySelectorAll(".xs-n"), function (n, i) { n.textContent = i + 1; }); }
+      sh.addEventListener("click", function (ev) {
+        if (ev.target.closest(".xs-d")) { ev.target.closest(".xs-d").classList.toggle("on"); vol(); return; }
+        if (ev.target.closest("#xsAdd")) {
+          var R = rows(); if (R.length >= 20) { sh.msg("20세트까지 넣을 수 있어요"); return; }
+          var last = R[R.length - 1] || ["", "", 0];
+          sh.querySelector("#xsRows").insertAdjacentHTML("beforeend", row([last[0], last[1], 0], R.length)); vol(); return;
+        }
+        if (ev.target.closest("#xsDel")) {
+          var all = sh.querySelectorAll(".xs-r"); if (all.length <= 1) { sh.msg("1세트는 남겨 둘게요"); return; }
+          all[all.length - 1].remove(); renum(); vol();
+        }
+      });
+      sh.addEventListener("input", vol);
+      vol();
+      if (!x0) setTimeout(function () { var i = sh.querySelector("#xdN"); if (i) i.focus(); }, 50);
       return;
     }
     var d = e.target.closest && e.target.closest("[data-xdel]");

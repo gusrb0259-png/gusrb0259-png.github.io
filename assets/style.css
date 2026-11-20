@@ -2492,3 +2492,21 @@ html[data-skin="bunny"] { --barbg: rgba(255, 246, 248, .97); --glass: rgba(255, 
 .bar .bar-brand { font-size: 17px; font-weight: 900; letter-spacing: .08em; color: var(--primary); white-space: nowrap; }
 :root[data-sex="F"] .bar .bar-brand { color: var(--seal, var(--primary)); }
 .bar a { text-decoration: none; }
+
+/* ===== 그날 더 한 운동 — 세트 표 (2026-11-20 팀장 "세트추가·세트삭제") ===== */
+.xs { margin: 10px 0 14px; }
+.xs-h, .xs-r { display: grid; grid-template-columns: 44px 1fr 1fr 52px; gap: 8px; align-items: center; }
+.xs-h { font-size: 12px; font-weight: 800; color: #8A8A94; text-align: center; margin-bottom: 6px; }
+.xs-r { margin-bottom: 7px; }
+.xs-n { height: 46px; display: flex; align-items: center; justify-content: center; border-radius: 12px; background: #F2F2F4; font-weight: 900; color: #8A8A94; font-size: 16px; }
+.xs-r input { height: 46px; width: 100%; min-width: 0; border: 1px solid #E2E2E6; border-radius: 12px; text-align: center; font-size: 18px; font-weight: 800; background: #fff; padding: 0 4px; }
+.xs-d { height: 46px; border: 0; border-radius: 12px; background: #F2F2F4; color: #C2C2C8; font-size: 20px; font-weight: 900; }
+.xs-d.on { background: var(--seal, var(--primary)); color: #fff; }
+.xs-btns { display: flex; justify-content: space-around; margin: 8px 0 6px; }
+.xs-btns button { border: 0; background: none; font-size: 15px; font-weight: 900; padding: 8px 10px; }
+.xs-add { color: var(--seal, var(--primary)); } .xs-del { color: #8A8A94; }
+.xs-vol { text-align: center; font-size: 13px; font-weight: 700; color: #6E6E78; }
+.xs-vol b { font-size: 18px; color: var(--seal, var(--primary)); font-weight: 900; }
+.xs-vol small { margin-left: 6px; color: #A0A0A8; }
+.xdbt { display: flex; gap: 6px; align-items: flex-start; flex: none; }
+.xded { border: 0; background: #F2F2F4; color: #6E6E78; border-radius: 10px; font-size: 13px; padding: 6px 9px; font-weight: 800; }
