@@ -2919,9 +2919,10 @@
       }
       var sh = rtSheet(dayLabel(k) + (x0 ? " 운동 고치기" : " 더 한 운동"),
         '<label>운동 이름<input id="xdN" list="xdNL" maxlength="30" placeholder="예: 레그 익스텐션" autocomplete="off" value="' + esc(x0 ? x0.n : a.getAttribute("data-xname") || "") + '"></label><datalist id="xdNL">' + names.map(function (n) { return '<option value="' + esc(n) + '">'; }).join("") + '</datalist>' +
+        '<div class="xs-prev" id="xsPrev"></div>' +
         '<div class="xs"><div class="xs-h"><span>세트</span><span>KG</span><span>회</span><span>완료</span></div><div id="xsRows">' + S0.map(row).join("") + '</div>' +
         '<div class="xs-btns"><button type="button" class="xs-add" id="xsAdd">＋ 세트추가</button><button type="button" class="xs-del" id="xsDel">－ 세트삭제</button></div>' +
-        '<div class="xs-vol" id="xsVol"></div></div>' +
+        '<div class="xs-vol" id="xsVol"></div><div class="xs-rest" id="xsRest" hidden></div></div>' +
         '<label>메모 <small>없어도 돼요</small><input id="xdM" maxlength="60" placeholder="예: 마지막 세트 힘들었어요" autocomplete="off" value="' + esc(x0 && x0.memo || "") + '"></label>',
         function (s) {
           var n = fv(s, "xdN"); if (!n) return "운동 이름을 넣어 주세요";
@@ -2946,7 +2947,20 @@
       }
       function renum() { Array.prototype.forEach.call(sh.querySelectorAll(".xs-n"), function (n, i) { n.textContent = i + 1; }); }
       sh.addEventListener("click", function (ev) {
-        if (ev.target.closest(".xs-d")) { ev.target.closest(".xs-d").classList.toggle("on"); vol(); return; }
+        if (ev.target.closest(".xs-d")) { var dn = ev.target.closest(".xs-d"); dn.classList.toggle("on"); vol(); if (dn.classList.contains("on")) restStart(); return; }
+        var rb = ev.target.closest("[data-rest]");
+        if (rb) {
+          var rv = rb.getAttribute("data-rest");
+          if (rv === "x") { clearInterval(restT); sh.querySelector("#xsRest").hidden = true; return; }
+          rv = +rv; restDur = Math.max(15, Math.min(600, restDur + rv)); restLeft = Math.max(0, restLeft + rv);
+          try { localStorage.setItem(REST_K, String(restDur)); } catch (e2) {}
+          restDraw(); return;
+        }
+        if (ev.target.closest("#xsLoad")) {
+          var ph = exlHist()[fv(sh, "xdN")], pst = ph && Array.isArray(ph.x.sets) ? ph.x.sets : [];
+          if (pst.length) { sh.querySelector("#xsRows").innerHTML = pst.map(function (v, i) { return row([v[0], v[1], 0], i); }).join(""); vol(); attToast("지난번 기록을 불러왔어요"); }
+          return;
+        }
         if (ev.target.closest("#xsAdd")) {
           var R = rows(); if (R.length >= 20) { sh.msg("20세트까지 넣을 수 있어요"); return; }
           var last = R[R.length - 1] || ["", "", 0];
@@ -2957,7 +2971,35 @@
           all[all.length - 1].remove(); renum(); vol();
         }
       });
-      sh.addEventListener("input", vol);
+      sh.addEventListener("input", function (ev) { if (ev.target.id === "xdN") prevDraw(); vol(); });
+      /* 지난번 기록 보여 주고 그대로 불러오기 + 세트 ✓ 누르면 휴식 타이머 (2026-11-20 팀장 "플릭 앱처럼") */
+      var REST_K = "ptnote:" + SLUG + ":rest", restT = null, restLeft = 0, restDur = 90;
+      try { restDur = +localStorage.getItem(REST_K) || 90; } catch (e3) {}
+      function restDraw() {
+        var el = sh.querySelector("#xsRest"); if (!el || !sh.isConnected) { clearInterval(restT); return; }
+        var L0 = Math.max(0, restLeft);
+        el.hidden = false; el.className = "xs-rest" + (L0 <= 0 ? " done" : "");
+        el.innerHTML = '<i style="width:' + (L0 > 0 ? L0 / restDur * 100 : 100) + '%"></i><span class="xr-l">' + (L0 > 0 ? '쉬는 중' : '다음 세트 시작!') + '</span><b>' + Math.floor(L0 / 60) + ':' + ("0" + L0 % 60).slice(-2) + '</b>' +
+          '<button type="button" data-rest="-15">−15초</button><button type="button" data-rest="15">+15초</button><button type="button" data-rest="x">' + (L0 > 0 ? '건너뛰기' : '닫기') + '</button>';
+      }
+      function restStart() {
+        clearInterval(restT); restLeft = restDur; restDraw();
+        restT = setInterval(function () {
+          if (!sh.isConnected) { clearInterval(restT); return; }
+          restLeft--;
+          if (restLeft <= 0) { clearInterval(restT); try { if (navigator.vibrate) navigator.vibrate([200, 100, 200]); } catch (e4) {} }
+          restDraw();
+        }, 1000);
+      }
+      function prevDraw() {
+        var el = sh.querySelector("#xsPrev"); if (!el || x0) return;
+        var h = exlHist()[fv(sh, "xdN")];
+        if (!h || !h.x) { el.innerHTML = ""; return; }
+        var st = Array.isArray(h.x.sets) ? h.x.sets : [];
+        el.innerHTML = '<div><b>' + esc(exlLast(h)) + '</b>' + (st.length ? '<small>' + st.map(function (v) { return (v[0] !== "" ? v[0] + "kg" : "-") + " × " + (v[1] !== "" ? v[1] : "-"); }).join("  ·  ") + '</small>' : '') + '</div>' +
+          (st.length ? '<button type="button" id="xsLoad">그대로 불러오기</button>' : '');
+      }
+      prevDraw();
       vol();
       if (!x0) setTimeout(function () { var i = sh.querySelector("#xdN"); if (i) i.focus(); }, 50);
       return;
@@ -3005,9 +3047,37 @@
     ["플랭크","복근","맨몸","plank"],["크런치","복근","맨몸","dead_bug"],["레그 레이즈","복근","맨몸","dead_bug"],["데드버그","복근","맨몸","dead_bug"],["행잉 레그 레이즈","복근","맨몸","assisted_chin_up"],
     ["트레드밀","유산소","유산소","treadmill"],["인클라인 워킹","유산소","유산소","walk"],["천국의 계단","유산소","유산소","stair_climber"],["실내 사이클","유산소","유산소","bike"],
     ["폼롤러","스트레칭","스트레칭","foam_roller"]
+    ,
+    ["디클라인 덤벨 프레스","가슴,삼두","덤벨","db_bench_press"],["덤벨 풀오버","가슴,등","덤벨","cable_pullover"],["해머 스트렝스 체스트 프레스","가슴,삼두","머신","chest_press"],
+    ["케이블 플라이","가슴","케이블","cable_chest_press"],["로우 케이블 플라이","가슴,어깨","케이블","cable_chest_press"],["하이 케이블 플라이","가슴","케이블","cable_chest_press"],
+    ["니 푸쉬업","가슴,삼두","맨몸","band_push_up"],["인클라인 푸쉬업","가슴,삼두","맨몸","band_push_up"],["디클라인 푸쉬업","가슴,어깨","맨몸","band_push_up"],["어시스트 딥스 머신","가슴,삼두","머신","band_push_up"],
+    ["원암 케이블 로우","등,이두","케이블","cable_seated_row"],["원암 랫풀다운","등","케이블","lat_pulldown"],["인버티드 로우","등,이두","맨몸","smith_row"],["체스트 서포티드 로우","등","덤벨","low_row"],
+    ["메도우스 로우","등","바벨","one_arm_row"],["랙 풀","등,엉덩이","바벨","db_rdl"],["스모 데드리프트","하체,엉덩이,등","바벨","db_rdl"],["트랩바 데드리프트","하체,엉덩이,등","바벨","db_rdl"],["굿모닝","엉덩이,하체,등","바벨","back_extension"],
+    ["시티드 덤벨 숄더 프레스","어깨,삼두","덤벨","shoulder_press"],["바벨 비하인드 넥 프레스","어깨,삼두","바벨","smith_shoulder_press"],["랜드마인 프레스","어깨,가슴","바벨","shoulder_press"],
+    ["케이블 프론트 레이즈","어깨","케이블","lateral_raise_standing"],["바벨 프론트 레이즈","어깨","바벨","lateral_raise"],["Y 레이즈","어깨,등","덤벨","lateral_raise"],
+    ["케이블 리어 델트 플라이","어깨,등","케이블","reverse_pec_deck"],["덤벨 업라이트 로우","어깨","덤벨","shrug"],["케이블 업라이트 로우","어깨","케이블","shrug"],["바벨 슈러그","등,어깨","바벨","shrug"],
+    ["원암 케이블 푸쉬다운","삼두","케이블","cable_pushdown"],["리버스 그립 푸쉬다운","삼두","케이블","cable_pushdown"],["트라이셉스 익스텐션 머신","삼두","머신","cable_pushdown"],
+    ["벤치 딥스","삼두,가슴","맨몸","band_push_up"],["스컬 크러셔","삼두","바벨","overhead_ext"],["덤벨 라잉 익스텐션","삼두","덤벨","overhead_ext"],
+    ["컨센트레이션 컬","이두","덤벨","db_curl"],["케이블 해머 컬","이두","케이블","db_curl"],["EZ바 프리처 컬","이두","바벨","preacher_curl_machine"],["드래그 컬","이두","바벨","db_curl"],["리버스 컬","이두","바벨","db_curl"],
+    ["프론트 스쿼트","하체,엉덩이","바벨","squat"],["박스 스쿼트","하체,엉덩이","바벨","squat"],["와이드 스쿼트","하체,엉덩이","바벨","squat"],["스모 스쿼트","하체,엉덩이","덤벨","goblet_squat"],
+    ["펜듈럼 스쿼트","하체,엉덩이","머신","hack_squat"],["브이 스쿼트 머신","하체,엉덩이","머신","hack_squat"],["벨트 스쿼트","하체,엉덩이","머신","goblet_squat"],["시시 스쿼트","하체","맨몸","goblet_squat"],
+    ["워킹 런지","하체,엉덩이","덤벨","goblet_squat"],["리버스 런지","하체,엉덩이","덤벨","goblet_squat"],["사이드 런지","하체,엉덩이","덤벨","goblet_squat"],["스텝업","하체,엉덩이","덤벨","goblet_squat"],
+    ["스미스 런지","하체,엉덩이","스미스","smith_squat"],["스미스 스플릿 스쿼트","하체,엉덩이","스미스","smith_squat"],["싱글 레그 익스텐션","하체","머신","leg_extension"],
+    ["스탠딩 레그컬","하체","머신","lying_leg_curl"],["노르딕 컬","하체","맨몸","lying_leg_curl"],["원레그 데드리프트","하체,엉덩이","덤벨","db_rdl"],
+    ["스탠딩 카프 레이즈","하체","머신","leg_press"],["시티드 카프 레이즈","하체","머신","leg_press"],["덤벨 카프 레이즈","하체","덤벨","goblet_squat"],
+    ["스미스 힙쓰러스트","엉덩이,하체","스미스","hip_thrust"],["덤벨 힙쓰러스트","엉덩이","덤벨","hip_thrust"],["싱글 레그 힙쓰러스트","엉덩이","맨몸","hip_thrust"],["프로그 펌프","엉덩이","맨몸","hip_thrust"],
+    ["케이블 풀스루","엉덩이,하체","케이블","db_rdl"],["킥백 머신","엉덩이","머신","cable_kickback"],["동키킥","엉덩이","맨몸","cable_kickback"],["클램쉘","엉덩이","밴드","outer_thigh"],["밴드 사이드 워크","엉덩이","밴드","outer_thigh"],
+    ["케틀벨 스윙","엉덩이,하체,전신","케틀벨","db_rdl"],["케틀벨 고블릿 스쿼트","하체,엉덩이","케틀벨","goblet_squat"],["케틀벨 데드리프트","엉덩이,하체","케틀벨","db_rdl"],
+    ["사이드 플랭크","복근","맨몸","plank"],["러시안 트위스트","복근","맨몸","dead_bug"],["바이시클 크런치","복근","맨몸","dead_bug"],["리버스 크런치","복근","맨몸","dead_bug"],["싯업","복근","맨몸","dead_bug"],
+    ["할로우 바디 홀드","복근","맨몸","dead_bug"],["버드독","복근,엉덩이","맨몸","plank"],["마운틴 클라이머","복근,전신","맨몸","plank"],["AB 롤아웃","복근","맨몸","plank"],
+    ["케이블 크런치","복근","케이블","dead_bug"],["앱 크런치 머신","복근","머신","dead_bug"],["행잉 니 레이즈","복근","맨몸","assisted_chin_up"],
+    ["버피","전신,유산소","맨몸","goblet_squat"],["점핑잭","전신,유산소","맨몸","walk"],["로잉 머신","유산소,등","유산소","walk"],["일립티컬","유산소","유산소","bike"],["줄넘기","유산소","유산소","walk"],
+    ["야외 걷기","유산소","유산소","walk"],["러닝","유산소","유산소","treadmill"],
+    ["고양이-소 스트레칭","스트레칭","스트레칭","plank"],["햄스트링 스트레칭","스트레칭","스트레칭","dead_bug"],["고관절 스트레칭","스트레칭","스트레칭","dead_bug"],["비둘기 자세","스트레칭","스트레칭","plank"],
+    ["흉추 회전 스트레칭","스트레칭","스트레칭","foam_roller"],["어깨 스트레칭","스트레칭","스트레칭","foam_roller"],["종아리 스트레칭","스트레칭","스트레칭","walk"]
   ];
-  var EXL_M = ["가슴", "등", "어깨", "삼두", "이두", "하체", "엉덩이", "복근", "유산소"];
-  var EXL_E = ["머신", "케이블", "덤벨", "바벨", "스미스", "맨몸", "밴드", "유산소", "스트레칭"];
+  var EXL_M = ["가슴", "등", "어깨", "삼두", "이두", "하체", "엉덩이", "복근", "전신", "유산소"];
+  var EXL_E = ["머신", "케이블", "덤벨", "바벨", "스미스", "케틀벨", "맨몸", "밴드", "유산소", "스트레칭"];
   var EXL_F = [["", "전체"], ["fav", "좋아하는"], ["freq", "자주하는"], ["recent", "최근"], ["custom", "커스텀"]];
   var EXL_K = "ptnote:" + SLUG + ":exl", EXS = { f: "", m: "", e: "", q: "" }, EXFAV = {};
   try { var ex0 = JSON.parse(localStorage.getItem(EXL_K) || "null"); if (ex0) { EXS.f = ex0.f || ""; EXS.m = ex0.m || ""; EXS.e = ex0.e || ""; EXFAV = ex0.fav || {}; } } catch (e) {}
@@ -3028,6 +3098,48 @@
     var t = best ? ((best[0] !== "" && best[0] != null ? best[0] + "kg" : "") + (best[1] ? (best[0] ? " × " : "") + best[1] + "회" : "")) : x.w ? x.w + "kg" + (x.r ? " × " + x.r + "회" : "") : "";
     var p = h.last.split("-");
     return "지난번 " + (+p[1]) + "/" + (+p[2]) + (t ? " · " + t : "");
+  }
+  function exInfo(n) {   /* 운동 그림 누르면: 큰 움직이는 그림 + 내 기록(최고 무게·추정 1RM·볼륨·그래프·최근 기록) */
+    var x = EXL.filter(function (y) { return y[0] === n; })[0] || [n, "", "커스텀", iconOf({ name: n })];
+    var recs = [];
+    Object.keys(XD).sort().forEach(function (k) { (XD[k] || []).forEach(function (r) { if (r.n === n) recs.push([k, r]); }); });
+    function sets(r) { return Array.isArray(r.sets) && r.sets.length ? r.sets : (r.w || r.r) ? [[r.w || "", r.r || "", 1]] : []; }
+    var best = 0, orm = 0, bestVol = 0, pts = [];
+    recs.forEach(function (q) {
+      var mx = 0, v = 0;
+      sets(q[1]).forEach(function (st) {
+        var w = parseFloat(st[0]), c = parseFloat(st[1]);
+        if (!isFinite(w)) return;
+        if (w > mx) mx = w;
+        if (isFinite(c) && c > 0) { v += w * c; var e1 = c === 1 ? w : w * (1 + Math.min(c, 15) / 30); if (e1 > orm) orm = e1; }
+      });
+      if (mx > best) best = mx; if (v > bestVol) bestVol = v; if (mx) pts.push([q[0], mx]);
+    });
+    function md(k) { var p = k.split("-"); return (+p[1]) + "/" + (+p[2]); }
+    function r1(v) { return (Math.round(v * 10) / 10).toLocaleString(); }
+    var chart = "";
+    if (pts.length > 1) {
+      var P = pts.slice(-10), W = 320, Hh = 120, lo = Math.min.apply(null, P.map(function (q) { return q[1]; })), hi = Math.max.apply(null, P.map(function (q) { return q[1]; }));
+      if (hi === lo) { hi += 5; lo = Math.max(0, lo - 5); }
+      var xy = P.map(function (q, i) { return [20 + i * (W - 40) / (P.length - 1), 22 + (1 - (q[1] - lo) / (hi - lo)) * (Hh - 50)]; });
+      chart = '<div class="exi-ch"><b>최고 무게 변화</b><svg viewBox="0 0 ' + W + ' ' + Hh + '" role="img" aria-label="최고 무게 변화 그래프"><polyline points="' + xy.map(function (q) { return q.join(","); }).join(" ") + '"/>' +
+        xy.map(function (q, i) { return '<circle cx="' + q[0] + '" cy="' + q[1] + '" r="4"/><text x="' + q[0] + '" y="' + (q[1] - 9) + '">' + P[i][1] + '</text><text class="d" x="' + q[0] + '" y="' + (Hh - 6) + '">' + md(P[i][0]) + '</text>'; }).join("") + '</svg></div>';
+    }
+    var hist = recs.slice(-5).reverse().map(function (q) {
+      var st = sets(q[1]);
+      return '<li><b>' + md(q[0]) + '</b><span>' + (st.length ? st.map(function (v) { return (v[0] !== "" ? v[0] + "kg" : "-") + "×" + (v[1] !== "" ? v[1] : "-"); }).join(" · ") : "기록만") + (q[1].memo ? '<em>' + esc(q[1].memo) + '</em>' : '') + '</span></li>';
+    }).join("");
+    var body = '<div class="exi-pic">' + img(x[3], "", false) + '</div>' +
+      '<p class="exi-tags">' + (x[1] ? x[1].split(",").map(function (t) { return '<span>' + esc(t) + '</span>'; }).join("") : '') + '<span class="eq">' + esc(x[2]) + '</span></p>' +
+      '<div class="exi-st"><div><small>한 번수</small><b>' + recs.length + '<i>번</i></b></div><div><small>최고 무게</small><b>' + (best ? r1(best) + '<i>kg</i>' : '-') + '</b></div>' +
+      '<div><small>추정 1RM</small><b>' + (orm ? r1(orm) + '<i>kg</i>' : '-') + '</b></div><div><small>최고 볼륨</small><b>' + (bestVol ? r1(bestVol) + '<i>kg</i>' : '-') + '</b></div></div>' +
+      chart + (hist ? '<div class="exi-h"><b>최근 기록</b><ul>' + hist + '</ul></div>' : '<p class="exi-none">아직 기록이 없어요' + (DEMO ? '' : ' — 기록하기로 첫 기록을 남겨요') + '</p>');
+    rtSheet(n, body, function (s) {
+      s.close();
+      var b = document.createElement("button"); b.setAttribute("data-xadd", xdToday()); b.setAttribute("data-xname", n); b.hidden = true;
+      document.body.appendChild(b); b.click(); b.remove();
+      return true;
+    }, DEMO ? false : "＋ 기록하기");
   }
   function renderExlib() {
     function seg(cls, L, cur, attr) {
@@ -3075,15 +3187,16 @@
         var h = H[x[0]], sub = x[4] ? "직접 추가한 운동" : x[1].split(",").join(", ");
         return '<div class="exr">' +
           '<button type="button" class="exr-fav' + (EXFAV[x[0]] ? ' on' : '') + '" data-exfav="' + esc(x[0]) + '" aria-label="' + esc(x[0]) + ' 좋아하는 운동' + (EXFAV[x[0]] ? ' 빼기' : '에 넣기') + '"><svg viewBox="0 0 24 24"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/></svg></button>' +
+          '<button type="button" class="exr-ic" data-exinfo="' + esc(x[0]) + '" data-ic="' + x[3] + '" aria-label="' + esc(x[0]) + ' 동작·기록 보기">' + img(x[3], "", true) + '</button>' +
           '<button type="button" class="exr-b"' + (DEMO ? '' : ' data-xadd="' + today + '" data-xname="' + esc(x[0]) + '"') + '>' +
-          '<span class="exr-ic" data-ic="' + x[3] + '">' + img(x[3], "", true) + '</span>' +
           '<span class="exr-t"><b>' + esc(x[0]) + '</b><small>' + esc(sub) + (x[4] ? '' : ' · ' + esc(x[2])) + '</small>' + (h ? '<em>' + esc(exlLast(h)) + (h.c > 1 ? ' · ' + h.c + '번' : '') + '</em>' : '') + '</span>' +
           (DEMO ? '' : '<span class="exr-go" aria-hidden="true">＋</span>') + '</button></div>';
       }).join("") : '<div class="panel empty"><h3>' + (EXS.f === "fav" ? "하트 누른 운동이 없어요" : EXS.f ? "아직 기록한 운동이 없어요" : "찾는 운동이 없어요") + '</h3><p>' + (EXS.f === "fav" ? "운동 옆 ♡를 누르면 여기 모여요" : "＋ 커스텀 운동 추가로 직접 적을 수 있어요") + '</p></div>';
       if (io) Array.prototype.forEach.call(box.querySelectorAll(".exr-ic"), function (el) { io.observe(el); });
     }
     view.querySelector(".exl").addEventListener("click", function (e) {
-      var b = e.target.closest("[data-exf],[data-exm],[data-exe],[data-exfav]"); if (!b) return;
+      var b = e.target.closest("[data-exf],[data-exm],[data-exe],[data-exfav],[data-exinfo]"); if (!b) return;
+      if (b.hasAttribute("data-exinfo")) { exInfo(b.getAttribute("data-exinfo")); return; }
       if (b.hasAttribute("data-exfav")) {
         var n = b.getAttribute("data-exfav");
         if (EXFAV[n]) delete EXFAV[n]; else EXFAV[n] = 1;
