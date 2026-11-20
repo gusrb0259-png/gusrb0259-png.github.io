@@ -2541,3 +2541,33 @@ button.fc-d { cursor: pointer; } button.fc-d:active { background: var(--soft, #F
 .fc-on .fday.fold > .fd-b { display: block; }
 .fday.fold + .fday { margin-top: 6px; }
 .fday.fold > h3 { margin-bottom: 0; border-bottom: 1px solid var(--line, #E6E8EC); padding-bottom: 10px; }
+/* 운동 목록 (운동 앱처럼) */
+.exl-top { margin: 4px 0 8px; }
+.exl-q { display: flex; align-items: center; gap: 8px; height: 46px; padding: 0 14px; border-radius: 14px; background: var(--card, #fff); border: 1px solid var(--line, #E6E8EC); }
+.exl-q svg { width: 20px; height: 20px; fill: none; stroke: var(--faint, #8A8F99); stroke-width: 2; flex: none; }
+.exl-q input { flex: 1; min-width: 0; border: 0; background: transparent; font: inherit; font-size: 16px; color: var(--key); outline: none; }
+.exl-seg { display: flex; gap: 4px; overflow-x: auto; scrollbar-width: none; margin: 0 -16px; padding: 0 16px; }
+.exl-seg::-webkit-scrollbar { display: none; }
+.exl-seg button { flex: none; border: 0; background: transparent; padding: 8px 10px; font: inherit; font-size: 15px; font-weight: 700; color: var(--faint, #8A8F99); border-radius: 10px; cursor: pointer; }
+.exl-seg.f1 button[aria-selected="true"] { color: #E5484D; }
+.exl-seg.f2 button[aria-selected="true"] { color: var(--primary); }
+.exl-seg.f3 button[aria-selected="true"] { color: #12A150; }
+.exl-seg.f1 { font-size: 16px; }
+.exl-add { display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; margin: 10px 0 6px; padding: 12px; border: 0; background: transparent; font: inherit; font-size: 16px; font-weight: 800; color: #E5484D; cursor: pointer; }
+.exl-add b { display: inline-grid; place-items: center; width: 28px; height: 28px; border-radius: 50%; background: #E5484D; color: #fff; font-size: 18px; line-height: 1; }
+.exr { display: flex; align-items: center; gap: 4px; border-bottom: 1px solid var(--line, #E6E8EC); }
+.exr-fav { flex: none; width: 34px; height: 34px; border: 0; background: transparent; padding: 5px; cursor: pointer; }
+.exr-fav svg { width: 100%; height: 100%; fill: none; stroke: var(--faint, #8A8F99); stroke-width: 1.8; }
+.exr-fav.on svg { fill: #E5484D; stroke: #E5484D; }
+.exr-b { flex: 1; min-width: 0; display: flex; align-items: center; gap: 12px; padding: 10px 0; border: 0; background: transparent; font: inherit; text-align: left; color: var(--key); cursor: pointer; }
+.exr-ic { flex: none; width: 76px; height: 76px; border-radius: 16px; background: var(--card, #fff); display: grid; place-items: center; overflow: hidden; }
+.exr-ic > svg, .exr-ic > img { width: 100%; height: 100%; }
+.exr-t { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.exr-t b { font-size: 16px; font-weight: 800; }
+.exr-t small { font-size: 13px; color: var(--faint, #8A8F99); }
+.exr-t em { font-style: normal; font-size: 12px; font-weight: 700; color: var(--primary); }
+.exr-go { flex: none; width: 32px; height: 32px; border-radius: 50%; display: grid; place-items: center; background: var(--soft, #F2F4F7); color: var(--key); font-weight: 800; }
+.exr-b:active { opacity: .6; }
+.exl { display: block; }
+.exl-seg + .exl-seg { margin-top: 2px; }
+.exl-top { margin-bottom: 10px; }
