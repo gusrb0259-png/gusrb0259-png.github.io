@@ -2827,7 +2827,19 @@
     if (can) h += '<button type="button" class="xdadd" data-xadd="' + esc(k) + '">＋ 이날 더 한 운동 추가</button>';
     return h + '</div>';
   }
-  var FC_M = "";
+  var FC_M = "", FD_OPEN = {};
+  function fdSet(g, open) {
+    var k = g.id.slice(3); FD_OPEN[k] = open;
+    g.classList.toggle("fold", !open);
+    var h = g.querySelector("[data-fdt]"); if (h) h.setAttribute("aria-expanded", open ? "true" : "false");
+  }
+  document.addEventListener("click", function (e) {
+    var h = e.target.closest && e.target.closest("[data-fdt]"); if (!h) return;
+    var g = h.parentNode; fdSet(g, g.classList.contains("fold"));
+  });
+  document.addEventListener("keydown", function (e) {
+    if ((e.key === "Enter" || e.key === " ") && e.target.hasAttribute && e.target.hasAttribute("data-fdt")) { e.preventDefault(); e.target.click(); }
+  });
   function fdCal() {
     var has = {}, xd = {};
     M.forms.forEach(function (f) { var k = formKey(f.date); if (k) has[k] = (has[k] || 0) + 1; });
@@ -2863,6 +2875,7 @@
     if (!el) return;
     var all = document.querySelector('.fcat [data-fc=""]');
     if (el.offsetParent === null && all) all.click();
+    fdSet(el, true);
     el.scrollIntoView({ behavior: "smooth", block: "start" });
     el.classList.remove("fd-hit"); void el.offsetWidth; el.classList.add("fd-hit");
   });
@@ -2875,8 +2888,9 @@
     var top = !DEMO && order.indexOf(xdToday()) < 0 ? '<button type="button" class="xdadd today" data-xadd="' + xdToday() + '">＋ 오늘 더 한 운동 기록하기<small>수업 말고 혼자 더 한 운동을 적어 두세요</small></button>' : '';
     return top + order.map(function (k) {
       var fs = G[k];
-      return '<div class="fday" id="fd-' + k + '"><h3>' + esc(dayLabel(k)) + '<small>' + (fs.length ? '복습지 ' + fs.length + '개' : '') + ((XD[k] || []).length ? (fs.length ? ' · ' : '') + '더 한 운동 ' + XD[k].length + '개' : '') + '</small></h3>' +
-        (fs.length ? '<div class="flist">' + fs.map(formCard).join("") + '</div>' : '') + xdBlock(k) + '</div>';
+      if (FD_OPEN[k] === undefined) FD_OPEN[k] = k === order[0];
+      return '<div class="fday' + (FD_OPEN[k] ? '' : ' fold') + '" id="fd-' + k + '"><h3 role="button" tabindex="0" data-fdt="' + k + '" aria-expanded="' + (FD_OPEN[k] ? 'true' : 'false') + '">' + esc(dayLabel(k)) + '<small>' + (fs.length ? '복습지 ' + fs.length + '개' : '') + ((XD[k] || []).length ? (fs.length ? ' · ' : '') + '더 한 운동 ' + XD[k].length + '개' : '') + '</small></h3>' +
+        '<div class="fd-b">' + (fs.length ? '<div class="flist">' + fs.map(formCard).join("") + '</div>' : '') + xdBlock(k) + '</div></div>';
     }).join("");
   }
   function xdSave(k, arr, sh, ok) {
@@ -2979,6 +2993,7 @@
       Array.prototype.forEach.call(view.querySelectorAll(".fday"), function (g) {   /* 날짜 칸: 고른 부위 복습지가 없으면 숨김 */
         g.hidden = !!c && !g.querySelector(".flist .card-link:not([hidden])");
       });
+      view.classList.toggle("fc-on", !!c);   /* 부위 고르면 접힌 날도 다 펼쳐 보여 줌 */
       if (save) { try { localStorage.setItem(FCAT_K, c); } catch (e) {} }
     }
     bar.addEventListener("click", function (e) {

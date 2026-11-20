@@ -2533,3 +2533,11 @@ button.fc-d { cursor: pointer; } button.fc-d:active { background: var(--soft, #F
 .fday.fd-hit > h3 { animation: fdhit 1.6s ease; }
 @keyframes fdhit { 0%, 60% { background: var(--soft, #F2F4F7); box-shadow: 0 0 0 6px var(--soft, #F2F4F7); border-radius: 8px; } 100% { background: transparent; box-shadow: none; } }
 .fc-d.fut { opacity: .35; }
+/* 자세 복습지 날짜별 접기 */
+.fday > h3[data-fdt] { cursor: pointer; padding: 4px 0; -webkit-tap-highlight-color: transparent; }
+.fday > h3[data-fdt]::after { content: ""; margin-left: auto; width: 8px; height: 8px; border-right: 2px solid currentColor; border-bottom: 2px solid currentColor; transform: rotate(45deg); align-self: center; transition: transform .2s; opacity: .6; }
+.fday.fold > h3[data-fdt]::after { transform: rotate(-45deg); }
+.fday.fold > .fd-b { display: none; }
+.fc-on .fday.fold > .fd-b { display: block; }
+.fday.fold + .fday { margin-top: 6px; }
+.fday.fold > h3 { margin-bottom: 0; border-bottom: 1px solid var(--line, #E6E8EC); padding-bottom: 10px; }
