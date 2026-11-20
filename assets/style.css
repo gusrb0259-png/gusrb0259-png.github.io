@@ -2413,6 +2413,65 @@ html.rt-dragging, html.rt-dragging body { -webkit-user-select: none; user-select
 @keyframes petqOut { to { opacity: 0; transform: translate(-50%, 8px); } }
 @media (prefers-reduced-motion: reduce) { .petq, .petq.out { animation: none; } }
 
+/* ===== 먹은 것 기록 — 식단 사진 (2026-11-20) ===== */
+.ml-day { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin: 0 0 10px; }
+.ml-day b { font-size: 15px; font-weight: 900; }
+.ml-day button { width: 38px; height: 38px; border-radius: 12px; border: 0; background: var(--tint, #F2F2F4); font-size: 20px; font-weight: 900; color: var(--primary); }
+.ml-day button:disabled { opacity: .3; }
+.ml-tot { display: flex; gap: 14px; align-items: center; padding: 16px; }
+.ml-kcal { flex: none; width: 104px; text-align: center; }
+.ml-kcal small { display: block; font-size: 11px; font-weight: 800; color: #8A8A94; }
+.ml-kcal b { display: block; font-size: 30px; line-height: 1.1; font-weight: 900; color: var(--seal, var(--primary)); letter-spacing: -.02em; }
+.ml-kcal i { font-style: normal; font-size: 12px; font-weight: 800; color: #6E6E78; }
+.ml-kcal span { display: block; margin-top: 4px; font-size: 11px; color: #8A8A94; font-weight: 700; }
+.ml-mac { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 7px; }
+.ml-mac .mm { display: grid; grid-template-columns: 42px 48px 1fr 34px; align-items: center; gap: 6px; font-size: 12px; }
+.ml-mac .mm span { font-weight: 800; color: #6E6E78; }
+.ml-mac .mm b { font-weight: 900; text-align: right; }
+.ml-mac .mm i { height: 7px; border-radius: 4px; background: #EFEFF2; position: relative; overflow: hidden; }
+.ml-mac .mm i::after { content: ""; position: absolute; inset: 0 auto 0 0; width: var(--w); border-radius: 4px; background: var(--mc); }
+.ml-mac .mm small { font-size: 10.5px; color: #8A8A94; text-align: right; font-weight: 700; }
+.ml-mac .c { --mc: #F2B33D; } .ml-mac .p { --mc: #E0627A; } .ml-mac .f { --mc: #5B8DEF; }
+.ml-card .ml-mac { margin-top: 10px; }
+.ml-add { display: block; width: 100%; margin: 12px 0; padding: 15px 16px; border: 2px dashed var(--seal, var(--primary)); border-radius: 18px; background: #fff; color: var(--seal, var(--primary)); font-size: 15.5px; font-weight: 900; text-align: center; }
+.ml-add small { display: block; margin-top: 3px; font-size: 11.5px; font-weight: 700; color: #8A8A94; }
+.ml-card { padding: 14px 16px; margin-bottom: 10px; }
+.ml-top { display: flex; align-items: center; gap: 8px; }
+.ml-t { font-size: 12px; font-weight: 900; color: #fff; background: var(--seal, var(--primary)); border-radius: 8px; padding: 4px 9px; }
+.ml-top small { flex: 1; font-size: 11.5px; color: #8A8A94; font-weight: 700; }
+.ml-ck { font-size: 15px; font-weight: 900; }
+.ml-img { display: block; margin: 10px 0 0; border-radius: 14px; overflow: hidden; background: #F2F2F4; }
+.ml-img img { display: block; width: 100%; max-height: 320px; object-fit: cover; }
+.ml-its { margin-top: 10px; display: flex; flex-direction: column; gap: 6px; }
+.ml-it { display: flex; justify-content: space-between; gap: 10px; align-items: baseline; font-size: 13.5px; border-bottom: 1px dashed #ECECEF; padding-bottom: 6px; }
+.ml-it div { min-width: 0; }
+.ml-it b { font-weight: 800; } .ml-it i { font-style: normal; margin-left: 6px; color: #8A8A94; font-size: 12px; font-weight: 700; }
+.ml-it span { flex: none; font-size: 11.5px; color: #6E6E78; font-weight: 700; }
+.ml-memo { margin: 10px 0 0; font-size: 13px; color: #4A4A52; }
+.ml-note { margin: 8px 0 0; padding: 9px 12px; border-radius: 12px; background: var(--tint, #F6F6F8); font-size: 13px; font-weight: 700; color: #3E3A38; }
+.ml-act { display: flex; justify-content: flex-end; gap: 6px; margin-top: 10px; }
+.ml-act button { border: 0; background: #F2F2F4; color: #6E6E78; font-size: 12px; font-weight: 800; padding: 6px 11px; border-radius: 10px; }
+.ml-act button.sure { background: #E5484D; color: #fff; }
+.ml-empty { text-align: center; color: #8A8A94; font-size: 13px; font-weight: 700; margin: 8px 0 18px; }
+.ml-chips { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 12px; }
+.ml-chips button { border: 0; background: #F2F2F4; color: #4A4A52; font-weight: 800; font-size: 13px; padding: 8px 12px; border-radius: 12px; }
+.ml-chips button.on { background: var(--seal, var(--primary)); color: #fff; }
+.ml-ph { display: block; border: 2px dashed #D8D8DE; border-radius: 16px; padding: 14px; text-align: center; font-weight: 800; color: var(--primary); cursor: pointer; margin-bottom: 10px; }
+.ml-ph img { display: block; width: 100%; max-height: 240px; object-fit: cover; border-radius: 12px; margin-top: 10px; }
+.ml-ai { display: block; width: 100%; border: 0; border-radius: 14px; padding: 12px; margin-bottom: 12px; font-weight: 900; font-size: 14.5px; color: #fff; background: linear-gradient(120deg, var(--seal, var(--primary)), #8E6CF0); }
+.ml-ai small { display: block; font-size: 11px; font-weight: 700; opacity: .85; }
+.ml-ai.busy { opacity: .6; }
+.ml-ed { margin-top: 12px; }
+.ml-edh b { font-size: 14px; } .ml-edh small { display: block; font-size: 11px; color: #8A8A94; margin: 2px 0 8px; }
+.ml-row { display: grid; grid-template-columns: 1fr 1fr 1fr 22px; gap: 6px; padding: 9px; border-radius: 12px; background: #F7F7F9; margin-bottom: 6px; align-items: center; }
+.ml-row .mn { grid-column: 1 / 4; }
+.ml-row .mx { grid-column: 4; grid-row: 1; border: 0; background: none; font-size: 20px; color: #A0A0A8; }
+.ml-row input { width: 100%; min-width: 0; border: 1px solid #E2E2E6; border-radius: 9px; padding: 7px 8px; font-size: 14px; background: #fff; }
+.ml-row label { display: flex; align-items: center; gap: 3px; font-size: 11px; font-weight: 800; color: #6E6E78; margin: 0; }
+.ml-more { border: 0; background: none; color: var(--primary); font-weight: 900; font-size: 13.5px; padding: 6px 0; }
+.ml-sum { margin-top: 8px; padding: 10px 12px; border-radius: 12px; background: var(--tint, #F6F6F8); }
+.ml-sum > b { display: block; font-size: 16px; font-weight: 900; margin-bottom: 6px; }
+
 /* ===== 가볍게 (2026-11-17 팀장 "홈페이지·핸드폰 전체가 렉") =====
    폰에서 제일 무거운 것: 계속 움직이는 칸에 흐림(blur) 필터 · 화면에 붙은 막대·아래 탭의 뒤 흐림(backdrop-filter). 모양은 거의 같게 두고 뺌.
    화면 밖 칸(.offv)·앱을 안 볼 때(html.hid)는 움직임 멈춤. */

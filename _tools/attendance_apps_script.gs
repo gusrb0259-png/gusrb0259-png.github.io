@@ -266,6 +266,14 @@ function ocr_(b64) {
     try { DriveApp.getFileById(id).setTrashed(true); } catch (e) {}
   }
 }
+function mealFolder_() {   // 식단 사진 (2026-11-20)
+  const p = PropertiesService.getScriptProperties();
+  const id = p.getProperty('MLF');
+  if (id) { try { return DriveApp.getFolderById(id); } catch (e) {} }
+  const f = DriveApp.createFolder('PT노트 식단 사진');
+  p.setProperty('MLF', f.getId());
+  return f;
+}
 function fmFolder_() {
   const p = PropertiesService.getScriptProperties();
   const id = p.getProperty('FMF');
@@ -380,6 +388,46 @@ function doPost(e) {
     if (!keyOk_(b.key)) return json_({ ok: false, error: 'key' });
     try { DriveApp.getFileById(String(b.id || '')).setTrashed(true); } catch (err) {}
     return json_({ ok: true });
+  }
+  // ---- 식단 사진 기록 (2026-11-20 팀장 "식단 사진으로 찍어서 회원님도 나도 기록, AI가 양·칼로리·순탄수·순단백·지방 분석")
+  //   meal_img: 회원 폰도 올릴 수 있음(열쇠 X) — 사진만, 3MB 이하, 드라이브 "PT노트 식단 사진" 폴더, 링크 있는 사람 보기.
+  //   meal_ai : 스크립트 속성 GEMINI_KEY(구글 AI Studio 무료 키)가 있으면 Gemini로 사진 분석 → {items:[{n,g,kcal,c,p,f}], note}. 없으면 error 'nokey'.
+  //             모델은 스크립트 속성 GEMINI_MODEL(없으면 gemini-2.5-flash).
+  if (b.a === 'meal_img') {
+    if (!/^[a-z0-9-]{3,40}$/.test(m)) return json_({ ok: false, error: 'm' });
+    if (!b.data || String(b.data).length > 4200000) return json_({ ok: false, error: 'size' });
+    const blob = Utilities.newBlob(Utilities.base64Decode(String(b.data)), 'image/jpeg', m + '_' + Date.now() + '.jpg');
+    const file = mealFolder_().createFile(blob);
+    try { file.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW); } catch (err) {}
+    return json_({ ok: true, id: file.getId() });
+  }
+  if (b.a === 'meal_ai') {
+    const key = PropertiesService.getScriptProperties().getProperty('GEMINI_KEY');
+    if (!key) return json_({ ok: false, error: 'nokey' });
+    if (!b.data || String(b.data).length > 4200000) return json_({ ok: false, error: 'size' });
+    const model = PropertiesService.getScriptProperties().getProperty('GEMINI_MODEL') || 'gemini-2.5-flash';
+    const ask = '이 사진은 헬스장 PT 회원이 먹은 한 끼예요. 사진 속 음식을 하나씩 찾아서 각각 한국어 이름, 대략 먹은 양(g), 칼로리(kcal), ' +
+      '순탄수화물(식이섬유 뺀 탄수화물 g), 단백질(g), 지방(g)을 추정해 주세요. 그릇·숟가락·손 크기로 양을 가늠하고, 모르면 일반적인 1인분으로. ' +
+      '숫자는 정수(지방·단백질은 소수 한 자리까지). note 에는 트레이너가 회원에게 하듯 따뜻하고 짧은 한국어 한마디(단백질이 부족하면 보충 팁 등, 40자 이내).' +
+      (b.hint ? ' 회원 메모: ' + String(b.hint).slice(0, 200) : '') +
+      ' JSON만: {"items":[{"n":"현미밥","g":150,"kcal":220,"c":45,"p":4.5,"f":1.5}],"note":"..."}';
+    const body = { contents: [{ parts: [{ text: ask }, { inline_data: { mime_type: 'image/jpeg', data: String(b.data) } }] }],
+      generationConfig: { responseMimeType: 'application/json', temperature: 0.2 } };
+    try {
+      const r = UrlFetchApp.fetch('https://generativelanguage.googleapis.com/v1beta/models/' + model + ':generateContent?key=' + encodeURIComponent(key),
+        { method: 'post', contentType: 'application/json', payload: JSON.stringify(body), muteHttpExceptions: true });
+      const j = JSON.parse(r.getContentText());
+      const t = j && j.candidates && j.candidates[0] && j.candidates[0].content && j.candidates[0].content.parts && j.candidates[0].content.parts[0].text;
+      if (!t) return json_({ ok: false, error: 'ai', detail: String(r.getResponseCode()) + ' ' + String((j && j.error && j.error.message) || '').slice(0, 120) });
+      const o = JSON.parse(String(t).replace(/^```(json)?|```$/g, ''));
+      const items = (o.items || []).slice(0, 12).map(function (x) {
+        const n = function (v, mx) { v = Number(v); return isFinite(v) && v >= 0 && v <= mx ? Math.round(v * 10) / 10 : 0; };
+        return { n: String(x.n || '').slice(0, 30), g: n(x.g, 3000), kcal: Math.round(n(x.kcal, 5000)), c: n(x.c, 1000), p: n(x.p, 500), f: n(x.f, 500) };
+      }).filter(function (x) { return x.n; });
+      return json_({ ok: true, items: items, note: String(o.note || '').slice(0, 80) });
+    } catch (err) {
+      return json_({ ok: false, error: 'ai', detail: String(err).slice(0, 120) });
+    }
   }
   if (b.a !== 'inbody_add') return json_({ ok: false, error: 'action' });
   const d = String(b.d || '');

@@ -313,6 +313,13 @@ _tools/anatomy_v3.py  인체모형 v3 (자극 부위 그림). build(경로, 앞 
 - 선생님 보기에서만 보임: 복습지 목록 카드 "✓ 봤어요 11/18"(초록) / "아직 안 봤어요"(회색), 복습지 안 맨 위 한 줄(처음 본 시각·몇 번·마지막). 선생님 페이지 회원 카드(꾹 눌러 펼침) "복습지 n개 · 봄 m". 코드 app.js seenMark·seenServer·seenChip·seenLine, coach index.html r.M._seen.
 - 기록은 이 기능을 올린 뒤부터(그 전에 본 건 모름).
 
+## 먹은 것 기록 — 식단 사진 (2026-11-20 팀장 "식단 사진으로 찍어 나도 회원님도 기록, 양·칼로리·순탄수·순단백·지방 분석")
+- 식단 탭 맨 위 "먹은 것 기록": 날짜 넘기기(‹ ›, 미래 X) · 하루 칼로리 합계 + 순탄수·순단백·지방 g·칼로리 비율 막대 · "📷 사진 찍어 기록하기" · 끼니 카드(사진·음식별 g/kcal/탄단지·메모·한마디·고치기·삭제 두 번). 회원 폰·선생님 보기 둘 다 기록·고치기·삭제(누가 썼는지 "회원님 기록/선생님 기록"). PT 안내서 데모에선 버튼 숨김.
+- 기록 창: 끼니(아침·점심·저녁·간식·운동 후) · 사진(앨범/카메라, 긴 쪽 1280px JPEG) · "✨ 사진 보고 자동 분석" · 메모 · 음식 줄(이름·g·kcal·탄·단·지). 음식 이름이 app.js FOOD_DB(100g당 대략값 60여 개)에 있으면 g 넣으면 자동 계산, 자동 분석 값도 g를 고치면 비례로 다시 계산.
+- 저장: 창고 kv `mw:<주소>:meal:<YYYY-MM-DD>` [{id,t,img,memo,note,items:[{n,g,kcal,c,p,f}],by,at}] (하루 4KB ≈ 6~8끼). 폰 기억 ptnote:<주소>:meal. c = 순탄수(식이섬유 뺀).
+- 사진: 창고 POST meal_img {m, data} → 드라이브 "PT노트 식단 사진" 폴더(회원 폰도 올림, 열쇠 X). 자동 분석: POST meal_ai {data, hint} → 스크립트 속성 **GEMINI_KEY**(구글 AI Studio 키) 있으면 Gemini(GEMINI_MODEL, 기본 gemini-2.5-flash)가 {items, note} — 키가 없으면 "자동 분석 준비 중" 안내만. **창고 코드 바뀜(meal_img·meal_ai) → 새 버전 배포 + UrlFetchApp 권한 승인 필요.**
+- 코드 app.js FOOD_DB·mealServer·mealSection·mealSheet·mealSave, style.css "먹은 것 기록" 블록.
+
 ## 가볍게 (2026-11-17 팀장 "홈페이지·핸드폰 전체가 렉")
 - 로딩 화면 최소 1초 → 0.35초. 계속 움직이는 큰 카드 빛 덩어리의 blur 필터·위 막대·아래 탭·팝업의 backdrop-filter(뒤 흐림) 뺌(모양은 거의 같음, style.css 맨 아래 "가볍게").
 - 화면 밖 칸은 .offv로 CSS 애니메이션 멈춤 + 그 안 움직이는 SVG 아이콘 pauseAnimations, 앱을 안 볼 땐(html.hid) 전부 멈춤 — app.js "가볍게" 블록(IntersectionObserver, #view 자식 감시). 새 칸도 자동.
