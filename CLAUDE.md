@@ -419,3 +419,4 @@ _tools/anatomy_v3.py  인체모형 v3 (자극 부위 그림). build(경로, 앞 
 - 로고뿐 아니라 글자 GYMTOS·짐토스·도당점도 화면에서 전부 뺌: site.js brand·branch = "" → 회원 노트 아래 띠 "MY PT NOTE · PERSONAL TRAINING", 리포트 "담당 박현규 팀장"만, 회원 index.html·og:title "OOO 회원님 PT 노트", 404·첫 화면·선생님 페이지 제목·부제(PT NOTE), PT 안내서 문구. **새 회원 껍데기·새 화면에도 GYMTOS/짐토스/도당점 글자 넣지 말 것.** (코드 주석·_tools는 화면에 안 나와서 그대로)
 ## 옛 화면 자동 새로고침 (2026-11-21)
 - bump_ver.py가 assets/ver.txt에 버전을 씀 → app.js가 열 때 ver.txt(no-store)를 보고 지금 화면의 ?v= 보다 새것이면 한 번 location.reload(). GitHub Pages가 index.html을 최대 10분 캐시해서 "안 바뀌었다"가 생겼음. **코드 고치면 꼭 bump_ver 돌릴 것.**
+- (2026-11-23 "여기도 짐토스 있잖아") 선생님 페이지도 같은 자동 새로고침(coach index.html 맨 위, site.js ?v= 와 ver.txt 비교) + 앱으로 돌아올 때(visibilitychange)도 확인. 선생님 페이지 부제는 "PT NOTE · 담당 회원 n명".

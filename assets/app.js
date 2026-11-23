@@ -46,12 +46,13 @@
   (function () {
     var cur = SCRIPT && (SCRIPT.src.match(/[?&]v=(\w+)/) || [])[1];
     if (!cur || !window.fetch) return;
-    fetch(BASE + "ver.txt?t=" + Date.now(), { cache: "no-store" }).then(function (r) { return r.ok ? r.text() : ""; }).then(function (v) {
+    document.addEventListener("visibilitychange", function () { if (!document.hidden) chk(); });
+    chk(); function chk() { fetch(BASE + "ver.txt?t=" + Date.now(), { cache: "no-store" }).then(function (r) { return r.ok ? r.text() : ""; }).then(function (v) {
       v = (v || "").trim();
       if (!/^\d{10}$/.test(v) || v <= cur) return;
       var k = "ptver:" + v; try { if (sessionStorage.getItem(k)) return; sessionStorage.setItem(k, "1"); } catch (e) { return; }
       location.reload();
-    }).catch(function () {});
+    }).catch(function () {}); }
   })();
   var THEME = M.sex === "F" ? "F" : "M";
   /* 사이트 기본 정보 (assets/site.js — 없으면 아래 기본값) */
