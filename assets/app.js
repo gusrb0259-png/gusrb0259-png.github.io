@@ -117,7 +117,8 @@
     "스미스 슈러그": "smith_shrug", "인클라인 덤벨 컬": "incline_db_curl", "스파이더 컬": "spider_curl", "프리처 컬 머신": "preacher_curl_machine", "프리쳐컬 머신": "preacher_curl_machine", "덤벨 숄더 프레스": "shoulder_press", "랙 밴드 푸쉬업": "band_push_up",
     "체스트 프레스 머신": "chest_press", "플랫 벤치프레스 머신": "lying_chest_press", "플랫 벤치 프레스 머신": "lying_chest_press", "힙쓰러스트 머신": "hip_thrust", "몬스터 글루트": "hip_thrust", "몬스터글루트": "hip_thrust", "케이블 힙 킥백": "cable_kickback", "힙 익스텐션": "back_extension"
   };
-  function iconSrc(key) { return BASE + "icons/" + THEME + "/" + key + ".png"; }
+  function icv() { return THEME === "F" && !THM ? "W" : THEME; }   /* 2026-11-24 여성 기본 테마(애프리콧·플럼·모브) 그림 = W, 회원 테마(pinkcheck·chihuahua)는 예전 F */
+  function iconSrc(key) { return BASE + "icons/" + icv() + "/" + key + ".png"; }
   function iconOf(it) {
     if (it.icon) return it.icon;
     var n = it.name || "";
@@ -131,7 +132,7 @@
   function dayIcon(d) { return !d || d.rest ? "rest" : d.cardio_only ? "treadmill" : d.pick ? "dumbbell" : iconOf(mainItem(d)); }
   /* 운동 아이콘: assets/exicons.js(움직이는 SVG, 2026-11-10)에 있는 종목은 그걸로, 없으면 예전 PNG. still = 멈춘 그림(작은 칸용) */
   function img(key, cls, still) {
-    if (window.EXI && EXI.has(key)) return EXI.svg(key, { sex: THM === "pinkcheck" ? "P" : THM === "chihuahua" ? "C" : THEME, cls: cls || "icn", still: !!still });
+    if (window.EXI && EXI.has(key)) return EXI.svg(key, { sex: THM === "pinkcheck" ? "P" : THM === "chihuahua" ? "C" : icv(), cls: cls || "icn", still: !!still });
     return '<img class="' + (cls || "icn") + '" src="' + iconSrc(key) + '" alt="" loading="lazy">';
   }
   document.documentElement.setAttribute("data-sex", M.sex === "F" ? "F" : "M");
@@ -3809,7 +3810,7 @@
   /* ---------------- 식단 */
   /* M.diet: null = 준비 중 / 문자열 = 그대로 / 객체 = 종이 다이어트 식단표(2026-10-21 표준 틀)와 같은 구성 (2026-11-05) */
   function foodImg(key, cls) {
-    var src = /^ic_/.test(key) ? BASE + "food/" + THEME + "/" + key + ".png" : BASE + "food/" + key + ".png";
+    var src = /^ic_/.test(key) ? BASE + "food/" + icv() + "/" + key + ".png" : BASE + "food/" + key + ".png";
     return '<img class="' + (cls || "fd-img") + '" src="' + src + '" alt="" loading="lazy">';
   }
   function dietBar() {
@@ -4990,7 +4991,7 @@
     var standalone = !!((window.matchMedia && matchMedia("(display-mode: standalone)").matches) || navigator.standalone === true);
     return { ios: ios, and: and, kakao: kakao, inapp: inapp, sam: sam, standalone: standalone, mobile: ios || and };
   }
-  function instIcon() { return BASE + "icon-" + (THEME === "F" ? "f" : "m") + "-192.png"; }
+  function instIcon() { return BASE + "icon-" + (icv() === "W" ? "w" : THEME === "F" ? "f" : "m") + "-192.png"; }
   var IN_SV = {
     share: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="m7 8 5-5 5 5"/><path d="M6 11H5a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-8a1 1 0 0 0-1-1h-1"/></svg>',
     plus: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3.5" y="3.5" width="17" height="17" rx="4"/><path d="M12 8v8M8 12h8"/></svg>',

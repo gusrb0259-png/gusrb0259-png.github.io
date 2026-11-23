@@ -13,6 +13,7 @@ A = os.path.join(ROOT, "assets")
 C = {
     "m": dict(bg="#1C1C1E", cover="#2C2C33", pages="#D9D9DE", ring="#BFBFC6", rib="#C9A227", text="#FFFFFF", logo="logo.png"),
     "f": dict(bg="#D35C14", cover="#A8460C", pages="#F8DFCB", ring="#FFE0C7", rib="#FFFFFF", text="#FFFFFF", logo="logo.png"),
+    "w": dict(bg="#3A1D37", cover="#A868A6", pages="#FCA873", ring="#FCD3B6", rib="#FCA873", text="#FFFFFF", logo="logo.png"),   # 여성 기본 테마 2026-11-24 애프리콧·플럼·모브
 }
 
 

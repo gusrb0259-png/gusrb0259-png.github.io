@@ -2682,3 +2682,14 @@ button.exr-ic { border: 0; padding: 0; cursor: pointer; }
 .mu-c.p { box-shadow: inset 0 0 0 1.5px #D8402F; } .mu-c.s { box-shadow: inset 0 0 0 1.5px #F4A88F; }
 .mu-c.on.p { background: #D8402F; color: #fff; } .mu-c.on.s { background: #FBD3C5; color: #9A3B28; }
 .mu-role.p { color: #B4513B; }
+
+/* ===== 여성 기본 테마 (2026-11-24 팀장 "여자 회원님들은 이 색으로, 기본 테마인 사람들만") — 애프리콧 #FCA873 · 플럼 #3A1D37 · 모브 #A868A6
+   회원 테마(pinkcheck·chihuahua 등 data-theme 있는 회원)는 예전 그대로. 그림: icons/W · food/W · exicons STY.W · icon-w-*.png ===== */
+:root[data-sex="F"]:not([data-theme]) {
+  --primary: #A868A6; --side: #3A1D37; --key: #3A1D37; --tint: #F7EEF6; --tint2: #EBD8E9;
+  --muted: #FFF1E7; --dot: #FCA873; --rule: #EAD9E7;
+  --page: #FBF6F4; --seal: #A868A6; --hero: #3A1D37; --hero-sub: #F3D9EC; --hero-eye: #FCA873; --hero-go-ink: #3A1D37;
+  --hw-track: #F1E3EF; --seg: #EFDFEC; --hero2: #A868A6; --hero3: #FCA873; --hero-sh: rgba(58, 29, 55, .34);
+  --kp-hi: #3A1D37; --led: #FCA873;
+}
+:root[data-sex="F"]:not([data-theme]) .hero-r { background: rgba(58, 29, 55, .25); }
