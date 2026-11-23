@@ -117,7 +117,7 @@
     "스미스 슈러그": "smith_shrug", "인클라인 덤벨 컬": "incline_db_curl", "스파이더 컬": "spider_curl", "프리처 컬 머신": "preacher_curl_machine", "프리쳐컬 머신": "preacher_curl_machine", "덤벨 숄더 프레스": "shoulder_press", "랙 밴드 푸쉬업": "band_push_up",
     "체스트 프레스 머신": "chest_press", "플랫 벤치프레스 머신": "lying_chest_press", "플랫 벤치 프레스 머신": "lying_chest_press", "힙쓰러스트 머신": "hip_thrust", "몬스터 글루트": "hip_thrust", "몬스터글루트": "hip_thrust", "케이블 힙 킥백": "cable_kickback", "힙 익스텐션": "back_extension"
   };
-  function icv() { return THEME === "F" && !THM ? "W" : THEME; }   /* 2026-11-24 여성 기본 테마(애프리콧·플럼·모브) 그림 = W, 회원 테마(pinkcheck·chihuahua)는 예전 F */
+  function icv() { return THM ? THEME : THEME === "F" ? "W" : "N"; }   /* 기본 테마 그림: 여 W(애프리콧·플럼·모브) · 남 N(블랙·세룰리언·네온 로즈, 2026-11-24) */   /* 2026-11-24 여성 기본 테마(애프리콧·플럼·모브) 그림 = W, 회원 테마(pinkcheck·chihuahua)는 예전 F */
   function iconSrc(key) { return BASE + "icons/" + icv() + "/" + key + ".png"; }
   function iconOf(it) {
     if (it.icon) return it.icon;
@@ -4991,7 +4991,7 @@
     var standalone = !!((window.matchMedia && matchMedia("(display-mode: standalone)").matches) || navigator.standalone === true);
     return { ios: ios, and: and, kakao: kakao, inapp: inapp, sam: sam, standalone: standalone, mobile: ios || and };
   }
-  function instIcon() { return BASE + "icon-" + (icv() === "W" ? "w" : THEME === "F" ? "f" : "m") + "-192.png"; }
+  function instIcon() { return BASE + "icon-" + icv().toLowerCase() + "-192.png"; }
   var IN_SV = {
     share: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="m7 8 5-5 5 5"/><path d="M6 11H5a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-8a1 1 0 0 0-1-1h-1"/></svg>',
     plus: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3.5" y="3.5" width="17" height="17" rx="4"/><path d="M12 8v8M8 12h8"/></svg>',

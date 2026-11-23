@@ -108,9 +108,9 @@ _tools/anatomy_v3.py  인체모형 v3 (자극 부위 그림). build(경로, 앞 
 ## 새 회원 PT 노트 만들기
 0. **PT 시작일을 꼭 받기** (트레이너이 말해줌, "10월"처럼 달만 주면 그 달 15일로). 안 알려주면 물어볼 것. → data.js journey.start
 1. 주소: `m/<이름 로마자>-<랜덤 소문자·숫자 6자>/` (예: jisu-k3x9qa). 추측하기 어렵게.
-2. `m/sample-k7d2qx/index.html`·`manifest.webmanifest` 복사(스크립트 태그 그대로) → 제목·og:title·헤더 문구의 이름, og:image 경로, `<html data-sex>`, theme-color(남 #1C1C1E / 여 기본 #3A1D37), 아이콘 icon-m|w(여 기본 테마), manifest 색·아이콘 바꾸기. (여자 회원은 기존 여자 회원 jihye-693h3o 폴더를 복사하는 게 쉬움)
+2. `m/sample-k7d2qx/index.html`·`manifest.webmanifest` 복사(스크립트 태그 그대로) → 제목·og:title·헤더 문구의 이름, og:image 경로, `<html data-sex>`, theme-color(남 기본 #0A0A0A / 여 기본 #3A1D37), 아이콘 icon-n|w(기본 테마), manifest 색·아이콘 바꾸기. (여자 회원은 기존 여자 회원 jihye-693h3o 폴더를 복사하는 게 쉬움)
 3. data.js 작성 (아래 형식). sex "F"면 핑크 테마·핑크 아이콘 자동.
-4. og.jpg 생성: `python3 _tools/make_og.py m/<주소>/og.jpg "<이름>" M|W "<담당 이름> <직함>"` (여 기본 테마 = W 플럼·모브 + 애프리콧 글자, 2026-11-24) (2026-11-12 — 남 블랙+골드 / 여 오렌지+브라운, 박현규는 "박현규 팀장", 다른 선생님은 "OOO 트레이너", 그룹 PT면 끝에 group).
+4. og.jpg 생성: `python3 _tools/make_og.py m/<주소>/og.jpg "<이름>" N|W "<담당 이름> <직함>"` (여 기본 테마 = W 플럼·모브 + 애프리콧 글자, 2026-11-24) (2026-11-12 — 남 블랙+골드 / 여 오렌지+브라운, 박현규는 "박현규 팀장", 다른 선생님은 "OOO 트레이너", 그룹 PT면 끝에 group).
 5. 위 회원 목록 표에 추가하고, coach-co8rde/members.js에도 주소 추가.
 
 ## data.js 형식
@@ -426,3 +426,8 @@ _tools/anatomy_v3.py  인체모형 v3 (자극 부위 그림). build(경로, 앞 
 - 애프리콧 #FCA873 · 플럼 #3A1D37 · 모브 #A868A6. data.js theme이 없는 여성 회원만(지금 홍지현·양희란·유은정·송지혜·전소희). 이다혜 pinkcheck·채와와 chihuahua는 예전 그대로.
 - style.css 맨 아래 `:root[data-sex="F"]:not([data-theme])` 변수 덮어쓰기(큰 카드 = 플럼 바탕 + 모브·애프리콧 빛, 버튼·점 = 모브). 그림: app.js icv() = "W" → assets/icons/W(make_icons.py "#A868A6" + smith), assets/food/W(make_diet_web.py), exicons STY.W(모브 사람 + 애프리콧 자극 부위), 홈 화면 앱 아이콘 icon-w-*.png(make_member_icon.py "w"), og.jpg make_og.py W, 회원 index theme-color #3A1D37. 선생님 페이지 여자 회원 동그라미·막대 = 모브.
 - 예전 오렌지(F) 파일은 회원 테마 회원(pinkcheck·chihuahua)이 PNG·아이콘에 아직 쓰니까 지우지 말 것.
+
+## 남성 기본 테마 = 제트 블랙·세룰리언·네온 로즈 (2026-11-24 팀장 "남자는 이 조합으로")
+- #0A0A0A · #007BA7 · #FF2D95. data.js theme 없는 남성 회원(지금 백옥규·샘플). style.css 맨 아래 `:root[data-sex="M"]:not([data-theme])` — 큰 카드 블랙 + 세룰리언·로즈 빛, 글자 강조 세룰리언, 도장·점·LED 로즈. 루틴 메인 종목 금색 표시는 규칙이라 그대로.
+- 그림: app.js icv() = "N" → icons/N(make_icons.py "#007BA7" + smith), food/N, exicons STY.N(블랙 사람 + 로즈 자극 부위), icon-n-*.png, og.jpg make_og.py N, 회원 index theme-color #0A0A0A. **새 남자 회원은 icon-n·theme-color #0A0A0A·og N으로.**
+- exicons.js svg()가 sex를 F/M만 받던 걸 F·W·N도 받게 고침(P·C 테마 회원은 예전처럼 M 그림 — 건드리지 않음).

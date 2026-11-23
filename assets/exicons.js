@@ -451,6 +451,7 @@
   var STY = {
     M: { tile: "#F0F0F2", fig: "#1C1C1E", eq: "#8792A8", eq2: "#C5CCDA", floor: "#C5CCDA", hl: "#D4A62A" },
     F: { tile: "#FDF0E6", fig: "#D35C14", eq: "#A8968A", eq2: "#EAD9CC", floor: "#EAD9CC", hl: "#4A2A17" },
+    N: { tile: "#EEF5F9", fig: "#0A0A0A", eq: "#8792A8", eq2: "#C9D6DF", floor: "#C9D6DF", hl: "#FF2D95" },   /* 남성 기본 테마 2026-11-24 제트 블랙·세룰리언·네온 로즈 */
     W: { tile: "#F7EEF6", fig: "#A868A6", eq: "#A5939F", eq2: "#EADBE6", floor: "#EADBE6", hl: "#F59255" },   /* 여성 기본 테마 2026-11-24 애프리콧·플럼·모브 */
     P: { tile: "#FFF0F5", fig: "#EE86A8", eq: "#B9A3AE", eq2: "#F3DCE5", floor: "#F3DCE5", hl: "#7A4636" },   /* 회원 테마 pinkcheck */
     C: { tile: "#FBF2E8", fig: "#A97E5D", eq: "#B5A496", eq2: "#EEDDCB", floor: "#EEDDCB", hl: "#C26A55" }   /* 회원 테마 chihuahua */
@@ -512,7 +513,7 @@
   function svg(key, opt) {
     opt = opt || {};
     var ex = EX[key]; if (!ex) return "";
-    var sex = opt.sex === "F" ? "F" : "M", still = !!opt.still, ck = key + sex + (still ? "s" : "a");
+    var sex = /^(F|W|N)$/.test(opt.sex) ? opt.sex : "M", still = !!opt.still, ck = key + sex + (still ? "s" : "a");
     if (!cache[ck]) {
       var S = STY[sex], base = shapes(ex, S, still ? ex.t : 0), frames = still ? null : FR.map(function (f) { return shapes(ex, S, f.t); });
       var base0 = ex.slow ? 3.6 : 2.8, hold = ex.hold || 0, dur = f1(base0 + hold) + "s";
@@ -538,7 +539,7 @@
   window.EXI = { has: function (k) { return !!EX[k]; }, keys: function () { return Object.keys(EX); }, noMotion: noMotion,
     svg: function (k, o) { if (noMotion) { o = o || {}; o.still = true; } return svg(k, o); },
     frame: function (k, t, sex) {   /* 확인용: 특정 순간의 멈춘 그림 */
-      var S = STY[sex === "F" ? "F" : "M"], h = '<rect x=".75" y=".75" width="98.5" height="98.5" rx="23" fill="' + S.tile + '"/>';
+      var S = STY[/^(F|W|N)$/.test(sex) ? sex : "M"], h = '<rect x=".75" y=".75" width="98.5" height="98.5" rx="23" fill="' + S.tile + '"/>';
       shapes(EX[k], S, t).forEach(function (o) { var a = "", d; for (d in o.dyn) a += " " + d + '="' + o.dyn[d] + '"'; h += "<" + o.tag + " " + o.fix + a + "/>"; });
       return '<svg viewBox="0 0 100 100">' + h + "</svg>";
     } };

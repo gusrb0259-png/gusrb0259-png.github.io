@@ -2693,3 +2693,13 @@ button.exr-ic { border: 0; padding: 0; cursor: pointer; }
   --kp-hi: #3A1D37; --led: #FCA873;
 }
 :root[data-sex="F"]:not([data-theme]) .hero-r { background: rgba(58, 29, 55, .25); }
+
+/* ===== 남성 기본 테마 (2026-11-24 팀장 "남자는 이 조합으로") — 제트 블랙 #0A0A0A · 세룰리언 #007BA7 · 네온 로즈 #FF2D95
+   (메인 종목 금색 표시는 루틴 규칙이라 그대로). 그림: icons/N · food/N · exicons STY.N · icon-n-*.png ===== */
+:root[data-sex="M"]:not([data-theme]) {
+  --primary: #0A0A0A; --side: #000000; --key: #007BA7; --tint: #EEF5F9; --tint2: #DCE9F1;
+  --muted: #9FD3E8; --dot: #FF2D95; --rule: #DCE3E8;
+  --pink: #FF2D95; --pink-e: #C4146C; --pink-l: #FFC2DF;
+  --page: #F3F5F7; --seal: #FF2D95; --hero: #0A0A0A; --hero-sub: #A9C7D6; --hero-eye: #FF5AAE; --hero-blob: #007BA7; --hero-blob-o: .22;
+  --hero2: #007BA7; --hero3: #FF2D95; --hero-sh: rgba(0, 60, 90, .38); --kp-hi: #3FB7E3; --led: #FF2D95;
+}
