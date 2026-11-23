@@ -115,7 +115,7 @@
     "스미스 벤치프레스": "smith_bench_press", "스미스 클로즈그립 벤치프레스": "smith_bench_press",
     "스미스 벤트오버 로우": "smith_row", "티바 로우": "tbar_row", "티바로우": "tbar_row", "티바 로우 머신": "tbar_row", "스미스 숄더 프레스": "smith_shoulder_press", "덤벨 오버헤드 익스텐션": "overhead_ext",
     "스미스 슈러그": "smith_shrug", "인클라인 덤벨 컬": "incline_db_curl", "스파이더 컬": "spider_curl", "프리처 컬 머신": "preacher_curl_machine", "프리쳐컬 머신": "preacher_curl_machine", "덤벨 숄더 프레스": "shoulder_press", "랙 밴드 푸쉬업": "band_push_up",
-    "체스트 프레스 머신": "chest_press", "힙쓰러스트 머신": "hip_thrust", "몬스터 글루트": "hip_thrust", "몬스터글루트": "hip_thrust", "케이블 힙 킥백": "cable_kickback", "힙 익스텐션": "back_extension"
+    "체스트 프레스 머신": "chest_press", "플랫 벤치프레스 머신": "lying_chest_press", "플랫 벤치 프레스 머신": "lying_chest_press", "힙쓰러스트 머신": "hip_thrust", "몬스터 글루트": "hip_thrust", "몬스터글루트": "hip_thrust", "케이블 힙 킥백": "cable_kickback", "힙 익스텐션": "back_extension"
   };
   function iconSrc(key) { return BASE + "icons/" + THEME + "/" + key + ".png"; }
   function iconOf(it) {
@@ -3031,7 +3031,7 @@
     ["벤치프레스","가슴,삼두,어깨","바벨","bench_press"],["인클라인 벤치프레스","가슴,어깨,삼두","바벨","smith_incline_press"],["디클라인 벤치프레스","가슴,삼두","바벨","bench_press"],
     ["덤벨 벤치프레스","가슴,삼두","덤벨","db_bench_press"],["인클라인 덤벨 프레스","가슴,어깨","덤벨","incline_db_press"],["덤벨 플라이","가슴","덤벨","db_bench_press"],["인클라인 덤벨 플라이","가슴","덤벨","incline_db_press"],
     ["스미스 벤치프레스","가슴,삼두","스미스","smith_bench_press"],["스미스 인클라인 프레스","가슴,어깨","스미스","smith_incline_press"],
-    ["체스트 프레스 머신","가슴,삼두","머신","chest_press"],["라잉 체스트 프레스 머신","가슴,삼두","머신","lying_chest_press"],["인클라인 프레스 머신","가슴,어깨","머신","incline_machine_press"],["펙덱 플라이","가슴","머신","pec_deck"],
+    ["체스트 프레스 머신","가슴,삼두","머신","chest_press"],["라잉 체스트 프레스 머신","가슴,삼두","머신","lying_chest_press"],["플랫 벤치프레스 머신","가슴,삼두","머신","lying_chest_press"],["인클라인 프레스 머신","가슴,어깨","머신","incline_machine_press"],["펙덱 플라이","가슴","머신","pec_deck"],
     ["케이블 체스트 프레스","가슴","케이블","cable_chest_press"],["케이블 크로스오버","가슴","케이블","cable_chest_press"],
     ["푸쉬업","가슴,삼두","맨몸","band_push_up"],["딥스","가슴,삼두","맨몸","band_push_up"],["랙 밴드 푸쉬업","가슴,삼두","밴드","band_push_up"],
     ["랫풀다운","등,이두","머신","lat_pulldown"],["와이드 그립 랫풀다운","등","머신","wide_pulldown"],["클로즈그립 랫풀다운","등,이두","머신","close_grip_pulldown"],["패럴렐 그립 랫풀다운","등,이두","머신","close_grip_pulldown"],
