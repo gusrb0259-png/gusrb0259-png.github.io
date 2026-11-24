@@ -113,7 +113,7 @@
     "스탠딩 사이드 레터럴 레이즈 머신": "lateral_raise_standing", "시티드 레터럴 레이즈": "seated_lateral_raise", "시티드 사이드 레터럴 레이즈": "seated_lateral_raise", "숄더 프레스 머신": "shoulder_press", "머신 비하인드 넥 프레스": "shoulder_press", "비하인드 넥 프레스": "shoulder_press", "숄더 프레스": "shoulder_press",
     "덤벨 컬": "db_curl", "머신 암 컬": "db_curl", "암 컬 머신": "db_curl", "머신 암컬": "db_curl", "해머 컬": "db_curl", "덤벨 슈러그": "shrug", "플랭크": "plank",
     "스미스 벤치프레스": "smith_bench_press", "스미스 클로즈그립 벤치프레스": "smith_bench_press",
-    "스미스 벤트오버 로우": "smith_row", "티바 로우": "tbar_row", "티바로우": "tbar_row", "티바 로우 머신": "tbar_row", "스미스 숄더 프레스": "smith_shoulder_press", "덤벨 오버헤드 익스텐션": "overhead_ext",
+    "스미스 벤트오버 로우": "smith_row", "티바 로우": "tbar_row", "Y 레이즈": "lateral_raise", "Y레이즈": "lateral_raise", "케이블 Y 레이즈": "lateral_raise", "티바로우": "tbar_row", "티바 로우 머신": "tbar_row", "스미스 숄더 프레스": "smith_shoulder_press", "덤벨 오버헤드 익스텐션": "overhead_ext",
     "스미스 슈러그": "smith_shrug", "인클라인 덤벨 컬": "incline_db_curl", "스파이더 컬": "spider_curl", "프리처 컬 머신": "preacher_curl_machine", "프리쳐컬 머신": "preacher_curl_machine", "덤벨 숄더 프레스": "shoulder_press", "랙 밴드 푸쉬업": "band_push_up",
     "체스트 프레스 머신": "chest_press", "플랫 벤치프레스 머신": "lying_chest_press", "플랫 벤치 프레스 머신": "lying_chest_press", "힙쓰러스트 머신": "hip_thrust", "몬스터 글루트": "hip_thrust", "몬스터글루트": "hip_thrust", "케이블 힙 킥백": "cable_kickback", "힙 익스텐션": "back_extension"
   };
