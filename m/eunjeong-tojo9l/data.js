@@ -10,6 +10,12 @@ window.MEMBER = {
   "notices": [
     {
       "date": "2026. 11. 24",
+      "title": "스탠딩 덤벨 숄더 프레스 자세 복습지가 올라왔어요",
+      "body": "배와 엉덩이에 힘 주고 허리는 곧게, 덤벨을 귀 옆에서 머리 위로 곧게 밀어 올리기!",
+      "link": "form-standing-shoulder-press"
+    },
+    {
+      "date": "2026. 11. 24",
       "title": "Y 레이즈 자세 복습지가 올라왔어요",
       "body": "어깨는 귀에서 멀리 내린 채, 팔을 머리 위로 Y자로 뻗어 올리기!",
       "link": "form-y-raise"
@@ -34,6 +40,79 @@ window.MEMBER = {
   ],
   "next_class": null,
   "forms": [
+    {
+      "id": "standing-shoulder-press",
+      "dir": "media/form-standing-shoulder-press/",
+      "date": "2026. 11. 24",
+      "exercise": "스탠딩 덤벨 숄더 프레스",
+      "exercise_en": "Standing Dumbbell Shoulder Press",
+      "part": "어깨",
+      "targets": [
+        "어깨 앞·옆(전면·측면 삼각근)",
+        "팔 뒤(삼두근)"
+      ],
+      "benefit": "어깨 전체를 채워서 어깨가 동그랗고 넓어 보이게 하고, 서서 버티는 동안 배·엉덩이까지 같이 단단해져요",
+      "key_point": "배와 엉덩이에 힘 주고 허리는 곧게, 덤벨을 귀 옆에서 머리 위로 곧게 밀어 올리기!",
+      "good_points": [
+        {
+          "title": "몸통 고정",
+          "desc": "서서 밀어 올릴 때 허리를 젖히지 않고 몸통을 곧게 세웠어요"
+        },
+        {
+          "title": "양손 같은 높이",
+          "desc": "두 덤벨이 같은 높이로 올라가고 내려와서 좌우 균형이 좋았어요"
+        },
+        {
+          "title": "끝까지 밀기",
+          "desc": "덤벨을 머리 위까지 쭉 밀어 올려서 가동범위를 끝까지 썼어요"
+        }
+      ],
+      "primary_muscles": [
+        {
+          "name": "전면 삼각근",
+          "where": "어깨 앞"
+        },
+        {
+          "name": "측면 삼각근",
+          "where": "어깨 옆"
+        }
+      ],
+      "secondary_muscles": "삼두근(팔 뒤) · 승모근 · 복근(몸통 버티기)",
+      "feel_good": "어깨 앞·옆이 뜨겁게 차오르면 성공",
+      "feel_stop": "허리가 뻐근하거나 어깨 안쪽이 찌릿하면 바로 멈추고 무게 낮추기",
+      "steps": [
+        {
+          "title": "자리 잡기",
+          "desc": "발은 골반 너비로 서고 무릎은 살짝 풀어요. 덤벨을 귀 옆에 두고 팔꿈치는 손목 아래, 배·엉덩이에 힘 줘요",
+          "chip": "숨 들이마시기",
+          "media": "step1.jpg"
+        },
+        {
+          "title": "머리 위로 밀기",
+          "desc": "허리를 젖히지 않고 덤벨을 머리 위로 곧게 밀어 올려요. 끝에서 팔꿈치를 딱 잠그지 않아요",
+          "chip": "숨 내쉬기",
+          "media": "step2.webp",
+          "loop": true
+        },
+        {
+          "title": "천천히 내리기",
+          "desc": "무게를 버티며 2~3초 동안 귀 옆까지 내려요",
+          "chip": "숨 들이마시기",
+          "media": "step3.webp",
+          "loop": true
+        }
+      ],
+      "do": [
+        "배·엉덩이에 힘 주고 곧게 서기",
+        "팔꿈치는 손목 아래",
+        "두 덤벨 같은 높이로"
+      ],
+      "dont": [
+        "허리를 젖혀 밀기",
+        "무릎 반동으로 밀기",
+        "어깨를 귀 쪽으로 으쓱 올리기"
+      ]
+    },
     {
       "id": "y-raise",
       "dir": "media/form-y-raise/",
