@@ -431,3 +431,6 @@ _tools/anatomy_v3.py  인체모형 v3 (자극 부위 그림). build(경로, 앞 
 - #0A0A0A · #007BA7 · #FF2D95. data.js theme 없는 남성 회원(지금 백옥규·샘플). style.css 맨 아래 `:root[data-sex="M"]:not([data-theme])` — 큰 카드 블랙 + 세룰리언·로즈 빛, 글자 강조 세룰리언, 도장·점·LED 로즈. 루틴 메인 종목 금색 표시는 규칙이라 그대로.
 - 그림: app.js icv() = "N" → icons/N(make_icons.py "#007BA7" + smith), food/N, exicons STY.N(블랙 사람 + 로즈 자극 부위), icon-n-*.png, og.jpg make_og.py N, 회원 index theme-color #0A0A0A. **새 남자 회원은 icon-n·theme-color #0A0A0A·og N으로.**
 - exicons.js svg()가 sex를 F/M만 받던 걸 F·W·N도 받게 고침(P·C 테마 회원은 예전처럼 M 그림 — 건드리지 않음).
+
+## 이다혜 앱 아이콘 = 분홍 체크 + 덤벨 (2026-11-27 팀장 "이다혜님 핸드폰에 뜨는 아이콘 덤벨로")
+- assets/icon-p-180/192/512.png (`python3 _tools/make_icon_dumbbell.py`) — 이다혜 index.html·manifest만 씀. 아이폰은 홈 화면 아이콘을 지우고 다시 추가해야 바뀜.
