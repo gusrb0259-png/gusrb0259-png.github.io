@@ -10,6 +10,12 @@ window.MEMBER = {
   "notices": [
     {
       "date": "2026. 11. 27",
+      "title": "와이드 풀다운 자세 복습지가 올라왔어요",
+      "body": "손잡이를 넓게 잡고 가슴을 든 채, 팔꿈치를 옆으로 끌어내려 등 옆을 넓히기!",
+      "link": "form-wide-pulldown"
+    },
+    {
+      "date": "2026. 11. 27",
       "title": "언더그립 랫풀다운 자세 복습지가 올라왔어요",
       "body": "손바닥이 나를 보게 어깨너비로 잡고, 가슴을 든 채 팔꿈치를 옆구리로 끌어내리기!",
       "link": "form-underhand-pulldown"
@@ -94,6 +100,35 @@ window.MEMBER = {
   ],
   "next_class": null,
   "forms": [
+    {
+      "id": "wide-pulldown",
+      "dir": "media/form-wide-pulldown/",
+      "date": "2026. 11. 27",
+      "exercise": "와이드 풀다운",
+      "exercise_en": "Wide Grip Pulldown",
+      "part": "등",
+      "targets": ["등 옆(광배근)", "날개뼈 사이(능형근·중부 승모근)"],
+      "benefit": "등 옆을 넓혀서 허리가 더 잘록해 보이는 역삼각 라인과 바른 자세를 만들어 줘요",
+      "key_point": "손잡이를 넓게 잡고 가슴을 든 채, 팔꿈치를 옆으로 끌어내려 등 옆을 넓히기!",
+      "good_points": [
+        {"title": "엉덩이 고정", "desc": "앉은 자리에서 엉덩이가 들리지 않고 몸통을 단단히 고정했어요"},
+        {"title": "넓게 잡기", "desc": "손잡이를 어깨보다 넓게 잡아서 등 옆(광배근)에 힘이 잘 들어갔어요"},
+        {"title": "끝까지 펴 주기", "desc": "올라갈 때 팔을 끝까지 펴서 등이 쭉 늘어났어요"}
+      ],
+      "primary_muscles": [
+        {"name": "광배근", "where": "등 옆 · 겨드랑이 아래"}
+      ],
+      "secondary_muscles": "능형근·중부 승모근(날개뼈 사이) · 대원근 · 후면 삼각근 · 이두근",
+      "feel_good": "겨드랑이 아래 등 옆이 조이고, 날개뼈가 아래로 모이면 성공",
+      "feel_stop": "어깨 앞이 찌릿하거나 목이 당기면 바로 멈추고 무게 낮추기",
+      "steps": [
+        {"title": "자리 잡기", "desc": "의자에 앉아 넓은 손잡이를 어깨보다 넓게 잡아요. 팔은 쭉 펴고 가슴을 들어요", "chip": "숨 들이마시기", "media": "step1.jpg"},
+        {"title": "팔꿈치로 끌어내리기", "desc": "어깨를 먼저 내리고, 팔꿈치를 옆으로 넓게 끌어내리며 손잡이를 어깨 높이까지 당겨요", "chip": "숨 내쉬기", "media": "step2.webp", "loop": true},
+        {"title": "천천히 올리기", "desc": "무게를 버티며 2~3초 동안 팔을 펴요. 위에서 등이 쭉 늘어나는 느낌까지", "chip": "숨 들이마시기", "media": "step3.webp", "loop": true}
+      ],
+      "do": ["가슴을 들고 살짝 뒤로 기대기", "팔꿈치는 옆으로 넓게", "어깨는 귀에서 멀리 내리기"],
+      "dont": ["어깨를 으쓱 올리며 당기기", "몸을 뒤로 크게 젖혀 반동 쓰기", "팔 힘으로만 당기기"]
+    },
     {
       "id": "underhand-pulldown",
       "dir": "media/form-underhand-pulldown/",
