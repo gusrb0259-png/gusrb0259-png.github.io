@@ -13,6 +13,12 @@ window.MEMBER = {
   "notices": [
     {
       "date": "2026. 11. 27",
+      "title": "스탠딩 아웃타이 자세 복습지가 올라왔어요",
+      "body": "몸통은 곧게 세우고 손잡이 꽉! 다리를 옆으로 밀 때 몸이 기울지 않게",
+      "link": "form-standing-outer-thigh"
+    },
+    {
+      "date": "2026. 11. 27",
       "title": "아웃타이 자세 복습지가 올라왔어요",
       "body": "상체를 살짝 숙이고, 무릎으로 패드를 바깥으로 밀어요!",
       "link": "form-outer-thigh"
@@ -139,6 +145,35 @@ window.MEMBER = {
   ],
   "next_class": null,
   "forms": [
+    {
+      "id": "standing-outer-thigh",
+      "dir": "media/form-standing-outer-thigh/",
+      "date": "2026. 11. 27",
+      "exercise": "스탠딩 아웃타이",
+      "exercise_en": "Standing Hip Abduction",
+      "part": "엉덩이",
+      "targets": ["엉덩이 옆(중둔근)", "엉덩이 위쪽(대둔근 윗부분)"],
+      "benefit": "엉덩이 옆을 채워서 골반 라인이 예뻐지고, 걷거나 스쿼트할 때 무릎·골반이 안정돼요",
+      "key_point": "몸통은 곧게 세우고 손잡이 꽉! 다리를 옆으로 밀 때 몸이 기울지 않게",
+      "good_points": [
+        {"title": "손잡이 꽉 잡기", "desc": "손잡이를 단단히 잡아서 몸통이 흔들리지 않았어요"},
+        {"title": "디딤발 고정", "desc": "버티는 다리가 흔들리지 않고 바닥을 잘 눌러 줬어요"},
+        {"title": "천천히 돌아오기", "desc": "다리를 모을 때 툭 떨어뜨리지 않고 천천히 돌아왔어요"}
+      ],
+      "primary_muscles": [
+        {"name": "중둔근", "where": "엉덩이 옆 · 골반 바깥"}
+      ],
+      "secondary_muscles": "대둔근 윗부분 · 대퇴근막장근(골반 앞 바깥)",
+      "feel_good": "엉덩이 옆(골반 바깥)이 뻐근하게 타면 성공",
+      "feel_stop": "허리 옆이나 고관절 앞이 찌릿하면 바로 멈추고 무게·범위 줄이기",
+      "steps": [
+        {"title": "자리 잡기", "desc": "기계 옆에 서서 다리 바깥쪽에 패드를 대요. 손잡이를 잡고 몸통은 곧게, 디딤발 무릎은 살짝 굽혀요", "chip": "배에 힘 꽉", "media": "step1.jpg"},
+        {"title": "옆으로 밀기", "desc": "몸통은 그대로 두고 다리를 옆으로 밀어 올려요. 끝에서 엉덩이 옆을 1초 꽉 조여요", "chip": "숨 내쉬기", "media": "step2.webp", "loop": true},
+        {"title": "천천히 모으기", "desc": "무게를 버티며 2~3초 동안 다리를 제자리로 가져와요. 끝까지 툭 놓지 않기", "chip": "숨 들이마시기", "media": "step3.webp", "loop": true}
+      ],
+      "do": ["몸통은 곧게 세우기", "발끝은 앞을 보게", "밀어낸 끝에서 1초 멈춤"],
+      "dont": ["상체를 반대쪽으로 기울이기", "반동으로 다리 차기", "허리를 비틀며 밀기"]
+    },
     {
       "id": "outer-thigh",
       "dir": "media/form-outer-thigh/",
