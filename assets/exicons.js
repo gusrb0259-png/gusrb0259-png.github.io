@@ -451,8 +451,8 @@
   var STY = {
     M: { tile: "#F0F0F2", fig: "#1C1C1E", eq: "#8792A8", eq2: "#C5CCDA", floor: "#C5CCDA", hl: "#D4A62A" },
     F: { tile: "#FDF0E6", fig: "#D35C14", eq: "#A8968A", eq2: "#EAD9CC", floor: "#EAD9CC", hl: "#4A2A17" },
-    N: { tile: "#EEF5F9", fig: "#0A0A0A", eq: "#8792A8", eq2: "#C9D6DF", floor: "#C9D6DF", hl: "#FF2D95" },   /* 남성 기본 테마 2026-11-24 제트 블랙·세룰리언·네온 로즈 */
-    W: { tile: "#F7EEF6", fig: "#A868A6", eq: "#A5939F", eq2: "#EADBE6", floor: "#EADBE6", hl: "#F59255" },   /* 여성 기본 테마 2026-11-24 애프리콧·플럼·모브 */
+    N: { tile: "#EEF2F8", fig: "#0E1424", eq: "#8792A8", eq2: "#C9D3E0", floor: "#C9D3E0", hl: "#6E9BE0" },   /* 남성 기본 테마 2026-11-24 제트 블랙·세룰리언·네온 로즈 */
+    W: { tile: "#EAF4F8", fig: "#1D6F8E", eq: "#8FA3AE", eq2: "#D3E3EA", floor: "#D3E3EA", hl: "#F08A6E" },   /* 여성 기본 테마 2026-11-24 애프리콧·플럼·모브 */
     P: { tile: "#FFF0F5", fig: "#EE86A8", eq: "#B9A3AE", eq2: "#F3DCE5", floor: "#F3DCE5", hl: "#7A4636" },   /* 회원 테마 pinkcheck */
     C: { tile: "#FBF2E8", fig: "#A97E5D", eq: "#B5A496", eq2: "#EEDDCB", floor: "#EEDDCB", hl: "#C26A55" }   /* 회원 테마 chihuahua */
   };

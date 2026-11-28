@@ -13,8 +13,8 @@ A = os.path.join(ROOT, "assets")
 C = {
     "m": dict(bg="#1C1C1E", cover="#2C2C33", pages="#D9D9DE", ring="#BFBFC6", rib="#C9A227", text="#FFFFFF", logo="logo.png"),
     "f": dict(bg="#D35C14", cover="#A8460C", pages="#F8DFCB", ring="#FFE0C7", rib="#FFFFFF", text="#FFFFFF", logo="logo.png"),
-    "n": dict(bg="#0A0A0A", cover="#12212B", pages="#007BA7", ring="#3FB7E3", rib="#FF2D95", text="#FFFFFF", logo="logo.png"),   # 남성 기본 테마 2026-11-24 제트 블랙·세룰리언·네온 로즈
-    "w": dict(bg="#3A1D37", cover="#A868A6", pages="#FCA873", ring="#FCD3B6", rib="#FCA873", text="#FFFFFF", logo="logo.png"),   # 여성 기본 테마 2026-11-24 애프리콧·플럼·모브
+    "n": dict(bg="#0E1424", cover="#1C2740", pages="#9DB8E0", ring="#C9D8EE", rib="#6E8FBF", text="#FFFFFF", logo="logo.png"),   # 남성 기본 테마 2026-11-24 제트 블랙·세룰리언·네온 로즈
+    "w": dict(bg="#0B3550", cover="#1D6F8E", pages="#EAF4F8", ring="#8FD6EA", rib="#6EC3DC", text="#FFFFFF", logo="logo.png"),   # 여성 기본 테마 2026-11-24 애프리콧·플럼·모브
 }
 
 

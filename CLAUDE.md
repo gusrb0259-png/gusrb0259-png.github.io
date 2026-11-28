@@ -434,3 +434,8 @@ _tools/anatomy_v3.py  인체모형 v3 (자극 부위 그림). build(경로, 앞 
 
 ## 이다혜 앱 아이콘 = 분홍 체크 + 덤벨 (2026-11-27 팀장 "이다혜님 핸드폰에 뜨는 아이콘 덤벨로")
 - assets/icon-p-180/192/512.png (`python3 _tools/make_icon_dumbbell.py`) — 이다혜 index.html·manifest만 씀. 아이폰은 홈 화면 아이콘을 지우고 다시 추가해야 바뀜.
+
+## 기본 테마 색 바꿈 (2026-11-28 팀장 인스타 디자인 캡처 "남잔 왼쪽 위 사진 색감, 여잔 오른쪽 사진 위 색감")
+- 남(N) = 크롬 스틸 나이트: 딥 네이비 블랙 #0E1424 · 스틸 블루 #6E8FBF(글자 강조 #4E6E9E) · 아이스 #9DB8E0 · 실버 #C9D8EE. icons/N = make_icons.py "#4E6E9E", theme-color #0E1424.
+- 여(W) = 깊은 바다 리퀴드 글래스: 딥 오션 #0B3550 · 틸 #1D6F8E · 아쿠아 #6EC3DC · 물거품 #EAF4F8 (자극 부위 산호 #F08A6E). icons/W = make_icons.py "#1D6F8E", theme-color #0B3550.
+- 위 2026-11-24 남·여 기본 테마 설명의 색 숫자는 이걸로 바뀜(파일·구조는 그대로 N/W). og.jpg·앱 아이콘·food·exicons STY.N/W 전부 다시 만듦. 테마 회원(pinkcheck·chihuahua)은 그대로.

@@ -7,8 +7,8 @@ out, name, sex, trn = sys.argv[1:5]
 group = len(sys.argv) > 5
 F = "/usr/share/fonts/opentype/noto/NotoSansCJK-%s.ttc"
 def font(w, s): return ImageFont.truetype(F % w, s, index=1)  # index 1 = KR
-if sex == "N": top, bot, band, sub, bt = (0, 62, 88), (10, 10, 10), (0, 0, 0), (255, 45, 149), (63, 183, 227)   # 남성 기본 테마 2026-11-24
-elif sex == "W": top, bot, band, sub, bt = (168, 104, 166), (92, 45, 88), (58, 29, 55), (252, 168, 115), (252, 168, 115)   # 여성 기본 테마 2026-11-24
+if sex == "N": top, bot, band, sub, bt = (59, 83, 120), (14, 20, 36), (7, 11, 22), (157, 184, 224), (201, 216, 238)   # 남성 기본 테마 2026-11-24
+elif sex == "W": top, bot, band, sub, bt = (29, 111, 142), (11, 53, 80), (7, 36, 56), (143, 214, 234), (143, 214, 234)   # 여성 기본 테마 2026-11-24
 elif sex == "F": top, bot, band, sub, bt = (211, 92, 20), (190, 82, 18), (74, 42, 23), (255, 228, 205), (255, 222, 196)
 else: top, bot, band, sub, bt = (38, 38, 42), (28, 28, 30), (14, 14, 15), (201, 162, 39), (201, 162, 39)
 W, H, BH = 1200, 630, 90

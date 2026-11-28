@@ -2683,23 +2683,23 @@ button.exr-ic { border: 0; padding: 0; cursor: pointer; }
 .mu-c.on.p { background: #D8402F; color: #fff; } .mu-c.on.s { background: #FBD3C5; color: #9A3B28; }
 .mu-role.p { color: #B4513B; }
 
-/* ===== 여성 기본 테마 (2026-11-24 팀장 "여자 회원님들은 이 색으로, 기본 테마인 사람들만") — 애프리콧 #FCA873 · 플럼 #3A1D37 · 모브 #A868A6
+/* ===== 여성 기본 테마 (2026-11-28 팀장 "여자는 오른쪽 사진 위 색감" — 깊은 바다 리퀴드 글래스: 딥 오션 #0B3550 · 틸 #1D6F8E · 아쿠아 #6EC3DC · 물거품 #EAF4F8)
    회원 테마(pinkcheck·chihuahua 등 data-theme 있는 회원)는 예전 그대로. 그림: icons/W · food/W · exicons STY.W · icon-w-*.png ===== */
 :root[data-sex="F"]:not([data-theme]) {
-  --primary: #A868A6; --side: #3A1D37; --key: #3A1D37; --tint: #F7EEF6; --tint2: #EBD8E9;
-  --muted: #FFF1E7; --dot: #FCA873; --rule: #EAD9E7;
-  --page: #FBF6F4; --seal: #A868A6; --hero: #3A1D37; --hero-sub: #F3D9EC; --hero-eye: #FCA873; --hero-go-ink: #3A1D37;
-  --hw-track: #F1E3EF; --seg: #EFDFEC; --hero2: #A868A6; --hero3: #FCA873; --hero-sh: rgba(58, 29, 55, .34);
-  --kp-hi: #3A1D37; --led: #FCA873;
+  --primary: #1D6F8E; --side: #0B3550; --key: #0B3550; --tint: #EAF4F8; --tint2: #D3E7EF;
+  --muted: #E6F5FA; --dot: #6EC3DC; --rule: #D6E6EE;
+  --page: #F3F8FA; --seal: #1D6F8E; --hero: #0B3550; --hero-sub: #CDE6EF; --hero-eye: #8FD6EA; --hero-go-ink: #0B3550;
+  --hw-track: #DDEEF4; --seg: #DCEBF1; --hero2: #1D6F8E; --hero3: #8FD6EA; --hero-sh: rgba(11, 53, 80, .34);
+  --kp-hi: #0B3550; --led: #6EC3DC;
 }
-:root[data-sex="F"]:not([data-theme]) .hero-r { background: rgba(58, 29, 55, .25); }
+:root[data-sex="F"]:not([data-theme]) .hero-r { background: rgba(11, 53, 80, .25); }
 
-/* ===== 남성 기본 테마 (2026-11-24 팀장 "남자는 이 조합으로") — 제트 블랙 #0A0A0A · 세룰리언 #007BA7 · 네온 로즈 #FF2D95
+/* ===== 남성 기본 테마 (2026-11-28 팀장 "남자는 왼쪽 위 사진 색감" — 크롬 스틸 나이트: 딥 네이비 블랙 #0E1424 · 스틸 블루 #6E8FBF · 아이스 #9DB8E0 · 실버 #C9D8EE)
    (메인 종목 금색 표시는 루틴 규칙이라 그대로). 그림: icons/N · food/N · exicons STY.N · icon-n-*.png ===== */
 :root[data-sex="M"]:not([data-theme]) {
-  --primary: #0A0A0A; --side: #000000; --key: #007BA7; --tint: #EEF5F9; --tint2: #DCE9F1;
-  --muted: #9FD3E8; --dot: #FF2D95; --rule: #DCE3E8;
-  --pink: #FF2D95; --pink-e: #C4146C; --pink-l: #FFC2DF;
-  --page: #F3F5F7; --seal: #FF2D95; --hero: #0A0A0A; --hero-sub: #A9C7D6; --hero-eye: #FF5AAE; --hero-blob: #007BA7; --hero-blob-o: .22;
-  --hero2: #007BA7; --hero3: #FF2D95; --hero-sh: rgba(0, 60, 90, .38); --kp-hi: #3FB7E3; --led: #FF2D95;
+  --primary: #0E1424; --side: #070B16; --key: #4E6E9E; --tint: #EEF2F8; --tint2: #DCE4F0;
+  --muted: #B7C7DE; --dot: #9DB8E0; --rule: #DDE3EC;
+  --pink: #7FA3D6; --pink-e: #4E6E9E; --pink-l: #D6E3F5;
+  --page: #F2F4F8; --seal: #6E8FBF; --hero: #0E1424; --hero-sub: #B9C6DA; --hero-eye: #C9D8EE; --hero-blob: #6E8FBF; --hero-blob-o: .24;
+  --hero2: #3B5378; --hero3: #C9D8EE; --hero-sh: rgba(14, 20, 36, .4); --kp-hi: #9DB8E0; --led: #9DB8E0;
 }

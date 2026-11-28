@@ -16,8 +16,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap">
-<link rel="stylesheet" href="/assets/style.css?v=2611252130">
-<script src="/assets/site.js?v=2611252130"></script>
+<link rel="stylesheet" href="/assets/style.css?v=2611282011">
+<script src="/assets/site.js?v=2611282011"></script>
 <style>
 .wrap { padding-bottom: calc(40px + env(safe-area-inset-bottom, 0px)); }
 .sum { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
@@ -41,7 +41,7 @@
 .mcard { background: var(--paper); border-radius: 16px; padding: 14px; box-shadow: 0 1px 2px rgba(30, 35, 48, .06); display: flex; flex-direction: column; gap: 12px; }
 .mtop { display: flex; align-items: center; gap: 12px; text-decoration: none; color: inherit; }
 .av { width: 48px; height: 48px; border-radius: 50%; display: grid; place-items: center; color: #fff; font-size: 20px; font-weight: 900; flex: none; }
-.av.M { background: #1C1C1E; } .av.F { background: #A868A6; }
+.av.M { background: #1C1C1E; } .av.F { background: #1D6F8E; }
 .mtop > div { flex: 1; min-width: 0; }
 .mtop h3 { margin: 0; font-size: 17px; line-height: 1.3; }
 .mtop p { margin: 2px 0 0; font-size: 12.5px; color: var(--faint); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -148,7 +148,7 @@
 .rk .nm b { font-size: 14.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .rk .bar { height: 7px; border-radius: 99px; background: #EEF0F4; overflow: hidden; }
 .rk .bar i { display: block; height: 100%; border-radius: 99px; background: var(--primary); }
-.rk.F .bar i { background: #A868A6; }
+.rk.F .bar i { background: #1D6F8E; }
 .rk.r1 .bar i { background: linear-gradient(90deg, #C99A2E, #F6D77A); }
 .rk .cnt { text-align: right; line-height: 1.2; }
 .rk .cnt b { font-size: 16px; font-weight: 900; font-variant-numeric: tabular-nums; }
@@ -210,7 +210,7 @@ section.folded .fsum:not(:empty) { display: inline; }
   body.pad .wrap > * { flex-shrink: 0; }
   body.pad .pane { display: flex; flex-direction: column; min-width: 0; min-height: 0; background: var(--page); }
   body.pad .mcard.sel { box-shadow: 0 0 0 2.5px var(--primary), 0 4px 14px rgba(30, 35, 48, .12); }
-  body.pad .mcard.sel.F { box-shadow: 0 0 0 2.5px #A868A6, 0 4px 14px rgba(30, 35, 48, .12); }
+  body.pad .mcard.sel.F { box-shadow: 0 0 0 2.5px #1D6F8E, 0 4px 14px rgba(30, 35, 48, .12); }
   body.pad .hero h1 { font-size: 26px; }
 }
 @media (min-width: 1100px) { body.pad { grid-template-columns: 430px 1fr; } }
@@ -371,7 +371,7 @@ body.pad .mcard.sel .av { outline: 3px solid var(--key); outline-offset: 3px; }
   "use strict";
   /* 옛 화면 자동 새로고침 (2026-11-23 팀장 "여기도 짐토스 있잖아" — 홈 화면 앱이 예전 페이지를 붙잡고 있었음). app.js와 같은 방식: assets/ver.txt가 지금 site.js ?v= 보다 새것이면 한 번 새로고침 */
   (function () {
-    var sc = document.querySelector('script[src*="/assets/site.js?v=2611252130"]'), cur = sc && (sc.getAttribute("src").match(/[?&]v=(\w+)/) || [])[1];
+    var sc = document.querySelector('script[src*="/assets/site.js?v=2611282011"]'), cur = sc && (sc.getAttribute("src").match(/[?&]v=(\w+)/) || [])[1];
     if (!cur || !window.fetch) return;
     function chk() {
       fetch("/assets/ver.txt?t=" + Date.now(), { cache: "no-store" }).then(function (r) { return r.ok ? r.text() : ""; }).then(function (v) {
@@ -1010,7 +1010,7 @@ body.pad .mcard.sel .av { outline: 3px solid var(--key); outline-offset: 3px; }
      2026-11-12 처음엔 Web Worker였는데 아이폰 사파리에서 동욱쌤 회원이 안 보여서 iframe으로 바꿈 */
   var XF = '<!doctype html><meta charset="utf-8"><script>(function(){var d=__D__,t="?t="+Date.now(),o={api:"",members:[]};' +
     'function ld(u){return new Promise(function(ok){var s=document.createElement("script");s.src=u;s.onload=s.onerror=function(){ok()};document.head.appendChild(s);});}' +
-    'ld(d.site+"/assets/site.js?v=2611252130"+t).then(function(){o.api=(window.SITE||{}).att_api||"";return ld(d.site+"/"+d.coach+"/members.js"+t);}).then(function(){' +
+    'ld(d.site+"/assets/site.js?v=2611282011"+t).then(function(){o.api=(window.SITE||{}).att_api||"";return ld(d.site+"/"+d.coach+"/members.js"+t);}).then(function(){' +
     'var L=(window.COACH_MEMBERS||[]).filter(function(x){return /^[a-z0-9-]{3,40}$/.test(x)}),i=0;' +
     'function nx(){if(i>=L.length){parent.postMessage(JSON.stringify({xpt:d.id,o:o}),"*");return;}var sl=L[i++];window.MEMBER=null;' +
     'ld(d.site+"/m/"+sl+"/data.js"+t).then(function(){if(window.MEMBER){try{o.members.push({slug:sl,M:JSON.parse(JSON.stringify(window.MEMBER))});}catch(e){}}nx();});}nx();});})();<\/script>';
