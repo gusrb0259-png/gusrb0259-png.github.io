@@ -2703,3 +2703,34 @@ button.exr-ic { border: 0; padding: 0; cursor: pointer; }
   --page: #F2F4F8; --seal: #6E8FBF; --hero: #0E1424; --hero-sub: #B9C6DA; --hero-eye: #C9D8EE; --hero-blob: #6E8FBF; --hero-blob-o: .24;
   --hero2: #3B5378; --hero3: #C9D8EE; --hero-sh: rgba(14, 20, 36, .4); --kp-hi: #9DB8E0; --led: #9DB8E0;
 }
+/* 여성 기본 테마 윤슬 (2026-11-28 팀장 "여잔 조금 더 바다 윤슬 느낌") — 큰 카드에 햇빛이 물결에 반짝이는 가로 빛 조각(세 겹이 다른 방향·속도로 흘러 반짝반짝) + 빛 띠가 천천히 지나감. blur 없음(가볍게 규칙) */
+:root[data-sex="F"]:not([data-theme]) .thero,
+:root[data-sex="F"]:not([data-theme]) .hero {
+  background-color: #0B3550;
+  background-image:
+    radial-gradient(5px 1.6px at 10% 24%, #fff, transparent 75%),
+    radial-gradient(3px 1.2px at 31% 62%, rgba(230,250,255,.95), transparent 75%),
+    radial-gradient(6px 1.8px at 52% 36%, #fff, transparent 75%),
+    radial-gradient(3.5px 1.3px at 70% 80%, rgba(230,250,255,.9), transparent 75%),
+    radial-gradient(4.5px 1.5px at 88% 20%, #fff, transparent 75%),
+    radial-gradient(8px 2px at 22% 86%, rgba(255,255,255,.85), transparent 75%),
+    radial-gradient(7px 2px at 60% 12%, rgba(230,250,255,.85), transparent 75%),
+    radial-gradient(9px 2.2px at 82% 54%, rgba(255,255,255,.8), transparent 75%),
+    radial-gradient(2px 2px at 40% 48%, #fff, transparent 75%),
+    radial-gradient(2.4px 2.4px at 76% 66%, #fff, transparent 75%),
+    radial-gradient(2px 2px at 6% 70%, rgba(230,250,255,.9), transparent 75%),
+    linear-gradient(112deg, transparent 30%, rgba(143,214,234,.18) 43%, rgba(255,255,255,.32) 50%, rgba(143,214,234,.18) 57%, transparent 70%),
+    radial-gradient(120% 90% at 85% 0%, rgba(110,195,220,.5), transparent 60%),
+    radial-gradient(90% 70% at 10% 100%, rgba(29,111,142,.7), transparent 70%),
+    linear-gradient(165deg, #0B3550 0%, #0F4A6E 50%, #1D6F8E 100%);
+  background-size: 150px 96px, 150px 96px, 150px 96px, 150px 96px, 150px 96px,
+    210px 130px, 210px 130px, 210px 130px, 120px 80px, 120px 80px, 120px 80px,
+    260% 100%, 100% 100%, 100% 100%, 100% 100%;
+  animation: yunseul 8s linear infinite;
+}
+@keyframes yunseul {
+  from { background-position: 0 0, 0 0, 0 0, 0 0, 0 0, 0 0, 0 0, 0 0, 0 0, 0 0, 0 0, 130% 0, 0 0, 0 0, 0 0; }
+  to   { background-position: 150px 12px, 150px 12px, 150px 12px, 150px 12px, 150px 12px, -210px -14px, -210px -14px, -210px -14px, 120px -40px, 120px -40px, 120px -40px, -130% 0, 0 0, 0 0, 0 0; }
+}
+@media (prefers-reduced-motion: reduce) { :root[data-sex="F"]:not([data-theme]) .thero, :root[data-sex="F"]:not([data-theme]) .hero { animation: none; } }
+.offv .thero, .offv .hero, html.hid .thero, html.hid .hero { animation-play-state: paused; }
