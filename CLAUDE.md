@@ -439,4 +439,4 @@ _tools/anatomy_v3.py  인체모형 v3 (자극 부위 그림). build(경로, 앞 
 - 남(N) = 크롬 스틸 나이트: 딥 네이비 블랙 #0E1424 · 스틸 블루 #6E8FBF(글자 강조 #4E6E9E) · 아이스 #9DB8E0 · 실버 #C9D8EE. icons/N = make_icons.py "#4E6E9E", theme-color #0E1424.
 - 여(W) = 깊은 바다 리퀴드 글래스: 딥 오션 #0B3550 · 틸 #1D6F8E · 아쿠아 #6EC3DC · 물거품 #EAF4F8 (자극 부위 산호 #F08A6E). icons/W = make_icons.py "#1D6F8E", theme-color #0B3550.
 - 위 2026-11-24 남·여 기본 테마 설명의 색 숫자는 이걸로 바뀜(파일·구조는 그대로 N/W). og.jpg·앱 아이콘·food·exicons STY.N/W 전부 다시 만듦. 테마 회원(pinkcheck·chihuahua)은 그대로.
-- 2026-11-28 "여잔 조금 더 바다 윤슬 느낌": 여성 기본 테마 큰 카드(.thero·.hero)에 윤슬 — 가로 빛 조각 세 겹이 다른 방향으로 흐르고 빛 띠가 지나감(style.css 맨 아래 yunseul, blur 없음, 화면 밖·움직임 줄이기면 멈춤).
+- 2026-11-28 "한강 윤슬 느낌"(팀장 사진): 여성 기본 테마 큰 카드(.thero·.hero) = 짙은 회청색 물(#2A3135→#444D52) + 동그란 빛망울(흰 속·분홍/살구/연보라 테두리), 위는 듬성·아래는 촘촘한 띠, 세 겹이 다른 방향으로 흘러 반짝(style.css 맨 아래 yunseul, blur 없음, 화면 밖·움직임 줄이기면 멈춤).
